@@ -1,5 +1,6 @@
 package com.xinchaongaymoi.hotelbookingapp.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -39,7 +40,9 @@ class OTPConfirmActivity : AppCompatActivity() {
             val enteredOTP = edt_otp.text.toString()
             if (enteredOTP == otp) {
                 Toast.makeText(this, "OTP Verified", Toast.LENGTH_SHORT).show()
-                // Proceed to next step
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(this, "Invalid OTP", Toast.LENGTH_SHORT).show()
             }
@@ -51,9 +54,7 @@ class OTPConfirmActivity : AppCompatActivity() {
         val random = Random()
         return (100000..999999).random().toString() // 6-digit OTP
     }
-
-    // Send OTP to the provided email address
-    private fun sendOTPToEmail(email: String, otp: String) {
+    private fun createEmailSession(): Session {
         val emailProperties = Properties()
         emailProperties["mail.smtp.host"] = "smtp.gmail.com"
         emailProperties["mail.smtp.socketFactory.port"] = "465"
@@ -61,9 +62,16 @@ class OTPConfirmActivity : AppCompatActivity() {
         emailProperties["mail.smtp.auth"] = "true"
         emailProperties["mail.smtp.port"] = "465"
 
-        val session = Session.getDefaultInstance(emailProperties)
+        return Session.getInstance(emailProperties, object : javax.mail.Authenticator() {
+            override fun getPasswordAuthentication(): javax.mail.PasswordAuthentication {
+                return javax.mail.PasswordAuthentication("izunasorakami@gmail.com", "lgml sscx njej vqgk")
+            }
+        })
+    }
+    // Send OTP to the provided email address
+    private fun sendOTPToEmail(email: String, otp: String) {
+        val session = createEmailSession()
         val message = MimeMessage(session)
-
         try {
             message.setFrom(InternetAddress("your_email@gmail.com"))
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email))

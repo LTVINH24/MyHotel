@@ -38,7 +38,8 @@ class AuthenActivity : AppCompatActivity() {
                     firebaseAuth.createUserWithEmailAndPassword(email,password)
                         .addOnCompleteListener{
                             if(it.isSuccessful){
-                                val intent = Intent(this, MainActivity::class.java)
+                                val intent = Intent(this, OTPConfirmActivity::class.java)
+                                intent.putExtra("email", email)
                                 startActivity(intent)
                                 finish()
                             }
