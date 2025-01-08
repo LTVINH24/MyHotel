@@ -20,6 +20,9 @@
             android:name=".activity.RoomDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.OTPConfirmActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.SearchActivity"
             android:exported="false" />
         <activity
@@ -30,19 +33,17 @@
             android:exported="true"
             android:label="@string/title_activity_aut"
             android:theme="@style/Theme.HotelBookingApp">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.HotelBookingApp.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
     </application>
 
