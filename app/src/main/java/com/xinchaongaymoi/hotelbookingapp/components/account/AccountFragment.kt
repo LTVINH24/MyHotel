@@ -1,5 +1,6 @@
 package com.xinchaongaymoi.hotelbookingapp.components.account
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xinchaongaymoi.hotelbookingapp.R
+import com.xinchaongaymoi.hotelbookingapp.activity.AccountDetailActivity
 import com.xinchaongaymoi.hotelbookingapp.model.AccountPageItem
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAccountBinding
 import com.xinchaongaymoi.hotelbookingapp.components.LanguageBottomSheet
@@ -40,9 +42,13 @@ private var _binding: FragmentAccountBinding? = null
       val accountRecyclerView: RecyclerView = binding.accountAndSecurityRecyclerView
       val settingsRecyclerView: RecyclerView = binding.settingsRecyclerView
       val accountItemList = listOf(
-          AccountPageItem(R.drawable.ic_account, getString(R.string.string_account)){},
+          AccountPageItem(R.drawable.ic_account, getString(R.string.string_account)){
+              val intent = Intent(requireActivity(),AccountDetailActivity::class.java)
+              startActivity(intent)
+          },
           AccountPageItem(R.drawable.ic_star, getString(R.string.my_reviews)){}
       )
+
       val accountAndSecurityAdapter = AccountPageItemAdapter(accountItemList)
         accountRecyclerView.adapter = accountAndSecurityAdapter
       accountRecyclerView.layoutManager = LinearLayoutManager(this.context)

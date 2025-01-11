@@ -20,6 +20,9 @@
             android:name=".activity.RoomDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.AccountDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.OTPConfirmActivity"
             android:exported="false" />
         <activity

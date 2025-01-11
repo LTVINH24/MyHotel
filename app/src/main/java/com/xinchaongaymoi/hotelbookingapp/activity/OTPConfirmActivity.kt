@@ -35,7 +35,6 @@ class OTPConfirmActivity : AppCompatActivity() {
         }
         edt_otp = findViewById(R.id.otp)
         verify = findViewById(R.id.verifyBtn)
-        // Handle OTP confirmation (simplified for demonstration)
         verify.setOnClickListener {
             val enteredOTP = edt_otp.text.toString()
             if (enteredOTP == otp) {
