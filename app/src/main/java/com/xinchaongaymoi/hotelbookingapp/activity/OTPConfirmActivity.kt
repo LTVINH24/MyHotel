@@ -2,6 +2,7 @@ package com.xinchaongaymoi.hotelbookingapp.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -76,7 +77,7 @@ class OTPConfirmActivity : AppCompatActivity() {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email))
             message.subject = "Your OTP Code"
             message.setText("Your OTP code is: $otp")
-
+            Log.e("OTP Verify","Success")
             Thread {
                 try {
                     Transport.send(message)

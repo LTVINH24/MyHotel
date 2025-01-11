@@ -1,6 +1,7 @@
 package com.xinchaongaymoi.hotelbookingapp.activity
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
@@ -18,6 +19,7 @@ class AccountDetailActivity:AppCompatActivity() {
     private lateinit var phone:EditText
     private lateinit var password:EditText
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,9 +30,12 @@ class AccountDetailActivity:AppCompatActivity() {
         password = findViewById(R.id.pro_password)
         phone = findViewById(R.id.pro_phone)
 
-        name.setText("")
-        email.setText("")
-        password.setText("")
-        phone.setText("")
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val _name = sharedPreferences.getString("name","Unknown")
+        val _email = sharedPreferences.getString("email","Unknown")
+        val _phone = sharedPreferences.getString("name","Unknown")
+        name.setText(_name.toString())
+        email.setText(_email.toString())
+        phone.setText(_phone.toString())
     }
 }

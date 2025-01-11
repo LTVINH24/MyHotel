@@ -1,6 +1,7 @@
 package com.xinchaongaymoi.hotelbookingapp.activity
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -19,7 +20,9 @@ import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
 class AuthenActivity : AppCompatActivity() {
     private lateinit var binding:ActivityAuthenBinding
     private lateinit var firebaseAuth:FirebaseAuth
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         binding = ActivityAuthenBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -44,7 +47,9 @@ class AuthenActivity : AppCompatActivity() {
                         .addOnCompleteListener{
                             if(it.isSuccessful){
                                 val user = firebaseAuth.currentUser
-                                user?.let { saveUserToDatabase(it) }
+                                val _name = binding.nameET.text.toString()
+                                val _phone = binding.phoneET.text.toString()
+                                user?.let { saveUserToDatabase(it, _name, _phone) }
                                 val intent = Intent(this, OTPConfirmActivity::class.java)
                                 intent.putExtra("email", email)
                                 startActivity(intent)
@@ -66,16 +71,21 @@ class AuthenActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
     }
-    fun saveUserToDatabase(user: FirebaseUser) {
+    fun saveUserToDatabase(user: FirebaseUser, _name:String, _phone:String) {
         val database = FirebaseDatabase.getInstance()
         val userRef: DatabaseReference = database.getReference("user").child(user.uid)
 
         val userData = UserInfo(
             email = user.email ?: "No Email",
-            name = user.displayName ?: "No Name",
-            phone = user.phoneNumber ?:"No Phone Number",
+            name = _name,
+            phone = _phone
         )
-
+        sharedPreferences.edit().apply {
+            putString("name", _name)
+            putString("email", user.email)
+            putString("phone", _phone)
+            apply()
+        }
         userRef.setValue(userData)
             .addOnSuccessListener {
                 Log.d("SaveUser", "User data saved successfully!")

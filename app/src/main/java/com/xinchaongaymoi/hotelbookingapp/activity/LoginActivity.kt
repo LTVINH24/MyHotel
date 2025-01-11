@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         binding=ActivityLogin2Binding.inflate(layoutInflater)
         firebaseAuth=FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         enableEdgeToEdge()
         setContentView(binding.root)
         Log.e("id",getString(R.string.default_web_client_id) )
@@ -119,11 +120,12 @@ class LoginActivity : AppCompatActivity() {
                 if (snapshot.exists()) {
                     val name = snapshot.child("name").getValue(String::class.java) ?: "Unknown"
                     val email = snapshot.child("email").getValue(String::class.java) ?: "Unknown"
-
+                    val phone = snapshot.child("phoneNumber").getValue(String::class.java) ?: "Unknown"
                     // Save user info in SharedPreferences
                     sharedPreferences.edit().apply {
                         putString("name", name)
                         putString("email", email)
+                        putString("phone", phone)
                         apply()
                     }
 
