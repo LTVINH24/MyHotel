@@ -99,6 +99,9 @@ dependencies {
     implementation ("com.sun.mail:android-mail:1.6.0")
     implementation ("com.sun.mail:android-activation:1.6.0")
 
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    implementation ("com.google.firebase:firebase-auth:22.0.5")
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)

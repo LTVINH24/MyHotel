@@ -1,6 +1,5 @@
 package com.xinchaongaymoi.hotelbookingapp.activity
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -9,13 +8,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.xinchaongaymoi.hotelbookingapp.R
-import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityAuthenBinding
 
 class AccountDetailActivity:AppCompatActivity() {
     private lateinit var name:EditText
@@ -61,6 +57,11 @@ class AccountDetailActivity:AppCompatActivity() {
                 } else {
                     Log.e("Firebase", "Error: ${task.exception?.message}")
                 }
+            }
+            val pass = password.text.toString()
+            if (pass != "") {
+                firebaseAuth = FirebaseAuth.getInstance()
+                firebaseAuth.currentUser?.updatePassword(pass)
             }
         }
     }

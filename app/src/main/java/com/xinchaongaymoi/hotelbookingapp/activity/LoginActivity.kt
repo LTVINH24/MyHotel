@@ -77,13 +77,19 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             handleResult(task)
         } else {
-            Log.i("GoogleSignIn", "Failed with resultCode: ${result.resultCode}")
+            Log.i("GoogleSignIn", "Failed with resultCode: ${result.resultCode}, data: ${result.data}")
+            result.data?.extras?.let {
+                for (key in it.keySet()) {
+                    Log.i("GoogleSignInExtras", "Key: $key, Value: ${it[key]}")
+                }
+            }
         }
     }
+
     private fun handleResult(task:Task<GoogleSignInAccount>)
     {
         if(task.isSuccessful){
