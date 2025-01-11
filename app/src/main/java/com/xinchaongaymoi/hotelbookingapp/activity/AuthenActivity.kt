@@ -81,6 +81,7 @@ class AuthenActivity : AppCompatActivity() {
             phone = _phone
         )
         sharedPreferences.edit().apply {
+            putString("id",user.uid)
             putString("name", _name)
             putString("email", user.email)
             putString("phone", _phone)

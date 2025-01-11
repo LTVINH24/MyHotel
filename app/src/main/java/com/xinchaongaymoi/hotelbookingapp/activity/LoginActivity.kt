@@ -123,6 +123,7 @@ class LoginActivity : AppCompatActivity() {
                     val phone = snapshot.child("phoneNumber").getValue(String::class.java) ?: "Unknown"
                     // Save user info in SharedPreferences
                     sharedPreferences.edit().apply {
+                        putString("id",userId)
                         putString("name", name)
                         putString("email", email)
                         putString("phone", phone)
