@@ -1,5 +1,6 @@
 package com.xinchaongaymoi.hotelbookingapp.components.search
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +15,8 @@ import com.google.android.material.tabs.TabLayout
 import com.xinchaongaymoi.hotelbookingapp.adapter.RoomAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentSearchResultBinding
 import com.xinchaongaymoi.hotelbookingapp.R
+import com.xinchaongaymoi.hotelbookingapp.activity.RoomDetailActivity
+
 class SearchResultFragment : Fragment() {
 
     private val viewModel :SearchViewModel by activityViewModels()
@@ -60,10 +63,18 @@ class SearchResultFragment : Fragment() {
     private fun setupRecyclerView()
     {
         roomAdapter = RoomAdapter()
+        
+        // Thêm click listener cho adapter
+        roomAdapter.setOnItemClickListener { roomId ->
+            val intent = Intent(requireContext(), RoomDetailActivity::class.java).apply {
+                putExtra("ROOM_ID", roomId)
+            }
+            startActivity(intent)
+        }
+        
         binding.recyclerViewRooms.apply {
-            adapter=roomAdapter
-            layoutManager =LinearLayoutManager(context)
-
+            adapter = roomAdapter
+            layoutManager = LinearLayoutManager(context)
         }
     }
     private fun observeViewModel(){

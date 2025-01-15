@@ -8,7 +8,11 @@ import com.xinchaongaymoi.hotelbookingapp.databinding.RoomItemSearchBinding
 
 class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomViewHolder>() {
     private var roomList = mutableListOf<Room>()
-    var onItemClick: ((Room) -> Unit)? = null
+    private var onItemClickListener: ((String) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (String) -> Unit) {
+        onItemClickListener = listener
+    }
 
     inner class RoomViewHolder(private val binding: RoomItemSearchBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -29,8 +33,11 @@ class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomViewHolder>() {
                 Glide.with(roomImage.context)
                     .load(room.mainImage)
                     .into(roomImage)
-            }
 
+                itemView.setOnClickListener {
+                    onItemClickListener?.invoke(room.id)
+                }
+            }
         }
     }
 
