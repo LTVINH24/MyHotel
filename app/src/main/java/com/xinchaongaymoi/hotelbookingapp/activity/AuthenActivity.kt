@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityAuthenBinding
 
@@ -38,9 +39,23 @@ class AuthenActivity : AppCompatActivity() {
                     firebaseAuth.createUserWithEmailAndPassword(email,password)
                         .addOnCompleteListener{
                             if(it.isSuccessful){
-                                val intent = Intent(this, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
+                                val user = firebaseAuth.currentUser
+                                val userRef = FirebaseDatabase.getInstance().getReference("users")
+                                    .child(user?.uid ?: "")
+                                
+                                val userData = hashMapOf(
+                                    "email" to email,
+                                    "role" to "user", // Mặc định role là user
+                                    "name" to "", // Có thể thêm các trường khác
+                                    "phone" to ""
+                                )
+                                
+                                userRef.setValue(userData).addOnCompleteListener { dbTask ->
+                                    if (dbTask.isSuccessful) {
+                                        startActivity(Intent(this, MainActivity::class.java))
+                                        finish()
+                                    }
+                                }
                             }
                             else{
                                 Toast.makeText(this,it.exception.toString(),Toast.LENGTH_SHORT).show()
