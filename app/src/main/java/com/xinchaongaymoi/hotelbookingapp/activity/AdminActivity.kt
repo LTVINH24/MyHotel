@@ -3,27 +3,23 @@ package com.xinchaongaymoi.hotelbookingapp.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityAdminBinding
 
 class AdminActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdminBinding
-    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        firebaseAuth = FirebaseAuth.getInstance()
+        val navView: BottomNavigationView = binding.navView
+        val navController = findNavController(R.id.nav_host_fragment_activity_admin)
 
-        // Lấy email của admin và hiển thị
-        val currentUser = firebaseAuth.currentUser
-        binding.welcomeText.text = "Xin chào, ${currentUser?.email ?: "Admin"}!"
-
-        // Xử lý sự kiện click button quản lý users
-        binding.btnManageUsers.setOnClickListener {
-            startActivity(Intent(this, AdminManageUsersActivity::class.java))
-        }
+        navView.setupWithNavController(navController)
     }
 } 
