@@ -1,9 +1,12 @@
 package com.xinchaongaymoi.hotelbookingapp.components.admin.users
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -21,6 +24,11 @@ class AdminUsersFragment : Fragment() {
     private var _binding: FragmentAdminUsersBinding? = null
     private val binding get() = _binding!!
     private lateinit var userAdapter: AdminUserAdapter
+    
+    private var currentPage = 1
+    private val itemsPerPage = 10
+    private var searchQuery = ""
+    private var totalUsers = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +42,8 @@ class AdminUsersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        setupSearch()
+        setupPagination()
         loadUsers()
     }
 
@@ -60,28 +70,115 @@ class AdminUsersFragment : Fragment() {
         }
     }
 
+    private fun setupSearch() {
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                searchQuery = s?.toString()?.lowercase() ?: ""
+                currentPage = 1
+                loadUsers()
+            }
+        })
+    }
+
+    private fun setupPagination() {
+        binding.prevButton.setOnClickListener {
+            if (currentPage > 1) {
+                currentPage--
+                loadUsers()
+            }
+        }
+
+        binding.nextButton.setOnClickListener {
+            val totalPages = (totalUsers + itemsPerPage - 1) / itemsPerPage
+            if (currentPage < totalPages) {
+                currentPage++
+                loadUsers()
+            }
+        }
+
+        binding.pageEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val newPage = binding.pageEditText.text.toString().toIntOrNull()
+                val totalPages = (totalUsers + itemsPerPage - 1) / itemsPerPage
+                
+                if (newPage != null && newPage in 1..totalPages) {
+                    currentPage = newPage
+                    loadUsers()
+                    true
+                } else {
+                    Toast.makeText(context, "Số trang không hợp lệ", Toast.LENGTH_SHORT).show()
+                    binding.pageEditText.setText(currentPage.toString())
+                    false
+                }
+            } else {
+                false
+            }
+        }
+    }
+
     private fun loadUsers() {
         val usersRef = FirebaseDatabase.getInstance().getReference("user")
+            .orderByChild("name") // Sắp xếp theo tên
+
         usersRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val users = mutableListOf<User>()
+                val allUsers = mutableListOf<User>()
+                
+                // Lọc và sắp xếp users
                 for (userSnapshot in snapshot.children) {
-                    val uid = userSnapshot.key ?: ""
-                    val email = userSnapshot.child("email").getValue(String::class.java) ?: ""
-                    val name = userSnapshot.child("name").getValue(String::class.java) ?: ""
-                    val phone = userSnapshot.child("phone").getValue(String::class.java) ?: ""
-                    val role = userSnapshot.child("role").getValue(String::class.java) ?: ""
-                    val isBanned = userSnapshot.child("isBanned").getValue(Boolean::class.java) ?: false
+                    val user = userSnapshot.toUser()
                     
-                    users.add(User(uid, email, name, phone, role, isBanned))
+                    // Lọc theo search query
+                    if (searchQuery.isNotEmpty()) {
+                        val nameMatch = user.name.lowercase().contains(searchQuery)
+                        val emailMatch = user.email.lowercase().contains(searchQuery)
+                        if (!nameMatch && !emailMatch) continue
+                    }
+                    
+                    allUsers.add(user)
                 }
-                userAdapter.updateUsers(users)
+
+                // Sắp xếp theo tên (không phân biệt hoa thường)
+                allUsers.sortWith(compareBy { it.name.lowercase() })
+                
+                // Cập nhật tổng số users và tính toán phân trang
+                totalUsers = allUsers.size
+                val startIndex = (currentPage - 1) * itemsPerPage
+                val endIndex = minOf(startIndex + itemsPerPage, totalUsers)
+                
+                // Cập nhật UI phân trang
+                updatePaginationUI()
+                
+                // Cập nhật danh sách hiển thị
+                val pagedUsers = allUsers.subList(startIndex, endIndex)
+                userAdapter.updateUsers(pagedUsers)
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(context, "Lỗi: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun updatePaginationUI() {
+        val totalPages = (totalUsers + itemsPerPage - 1) / itemsPerPage
+        binding.pageEditText.setText(currentPage.toString())
+        binding.totalPagesText.text = totalPages.toString()
+        binding.prevButton.isEnabled = currentPage > 1
+        binding.nextButton.isEnabled = currentPage < totalPages
+    }
+
+    private fun DataSnapshot.toUser(): User {
+        return User(
+            uid = key ?: "",
+            email = child("email").getValue(String::class.java) ?: "",
+            name = child("name").getValue(String::class.java) ?: "",
+            phone = child("phone").getValue(String::class.java) ?: "",
+            role = child("role").getValue(String::class.java) ?: "",
+            isBanned = child("isBanned").getValue(Boolean::class.java) ?: false
+        )
     }
 
     private fun toggleUserBan(user: User) {
