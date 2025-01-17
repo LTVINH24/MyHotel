@@ -21,25 +21,49 @@ class BookingActivity : AppCompatActivity() {
     private lateinit var bookingService: BookingService
     private lateinit var roomService: RoomService
     private lateinit var sharedPreferences: SharedPreferences
+    
+    companion object {
+        private const val TAG = "BookingActivity"
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBookingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        bookingService  = BookingService()
+        bookingService = BookingService()
         roomService = RoomService()
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-        val roomId = intent.getStringExtra("Room_ID") ?: return
 
-        val checkIn = intent.getStringExtra("CHECK_IN") ?: return
-        val checkOut = intent.getStringExtra("CHECK_OUT") ?: return
+        // Sửa lại key ROOM_ID để khớp với SearchResultFragment
+        val roomId = intent.getStringExtra("ROOM_ID")
+        val checkIn = intent.getStringExtra("CHECK_IN")
+        val checkOut = intent.getStringExtra("CHECK_OUT")
 
-        roomService.getRoomById(roomId){
-            room->
-            if(room!=null){
-                setRoomInfo(room)
-                setBookingDetails(room,checkIn,checkOut)
+        // Thêm log để debug
+        Log.d(TAG, "Received data: roomId=$roomId, checkIn=$checkIn, checkOut=$checkOut")
+
+        if (roomId == null || checkIn == null || checkOut == null) {
+            Toast.makeText(this, "Missing required booking information", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        // Hiển thị loading
+        binding.progressBar.visibility = View.VISIBLE
+
+        roomService.getRoomById(roomId) { room ->
+            runOnUiThread {
+                binding.progressBar.visibility = View.GONE
+                if (room != null) {
+                    setRoomInfo(room)
+                    setBookingDetails(room, checkIn, checkOut)
+                } else {
+                    Toast.makeText(this, "Could not load room information", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
             }
         }
+
         binding.btnConfirmBooking.setOnClickListener {
             handleBooking(roomId, checkIn, checkOut)
         }

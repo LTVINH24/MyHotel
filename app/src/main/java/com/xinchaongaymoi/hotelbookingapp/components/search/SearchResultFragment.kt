@@ -17,6 +17,8 @@ import com.xinchaongaymoi.hotelbookingapp.adapter.RoomAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentSearchResultBinding
 import com.xinchaongaymoi.hotelbookingapp.R
 import androidx.navigation.fragment.findNavController
+import com.xinchaongaymoi.hotelbookingapp.activity.BookingActivity
+import android.util.Log
 
 class SearchResultFragment : Fragment() {
     private var BOOKING_REQUEST_CODE = 100
@@ -66,6 +68,18 @@ class SearchResultFragment : Fragment() {
         roomAdapter = RoomAdapter().apply {
             setOnItemClickListener { room ->
                 navigateToRoomDetail(room.id)
+            }
+
+            setOnBookClickListener { room ->
+                val intent = Intent(requireContext(), BookingActivity::class.java).apply {
+                    putExtra("ROOM_ID", room.id)
+                    putExtra("CHECK_IN", viewModel.checkInDate.value)
+                    putExtra("CHECK_OUT", viewModel.checkOutDate.value)
+                }
+                Log.d("SearchResultFragment", "Sending data: roomId=${room.id}, " +
+                    "checkIn=${viewModel.checkInDate.value}, " +
+                    "checkOut=${viewModel.checkOutDate.value}")
+                startActivityForResult(intent, BOOKING_REQUEST_CODE)
             }
         }
         binding.recyclerViewRooms.apply {

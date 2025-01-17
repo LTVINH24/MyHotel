@@ -1,47 +1,49 @@
 package com.xinchaongaymoi.hotelbookingapp.adapter
+
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.activity.BookingActivity
 import com.xinchaongaymoi.hotelbookingapp.model.Room
 import com.xinchaongaymoi.hotelbookingapp.databinding.RoomItemSearchBinding
 import android.util.Log
 
 class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomViewHolder>() {
-    private var roomList = mutableListOf<Room>()
-    private var BOOKING_REQUEST_CODE = 100
+    private var rooms = listOf<Room>()
+    private var onItemClickListener: ((Room) -> Unit)? = null
+    private var onBookClickListener: ((Room) -> Unit)? = null
     private var checkInDate: String? = null
     private var checkOutDate: String? = null
-    var onItemClick: ((Room) -> Unit)? = null
-    fun setOnItemClickListener(listener: (Room) -> Unit) {
-        onItemClick = listener
-    }
-    inner class RoomViewHolder(private val binding: RoomItemSearchBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+
+    inner class RoomViewHolder(private val binding: RoomItemSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(room: Room) {
             binding.apply {
-                Log.i("Tesssss",room.toString())
-                roomName.text = room.roomName
-                tvBedCount.text = "Total bed: ${room.totalBed}"
-                roomPrice.text = "Price: ${room.pricePerNight} $"
-                roomArea.text = "Area: ${room.area} m2"
-                ratingBar.rating=room.rating.toFloat()
-                Glide.with(roomImage.context)
+                // Load hình ảnh bằng Glide
+                Glide.with(itemView.context)
                     .load(room.mainImage)
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.error_image)
                     .into(roomImage)
 
+                roomName.text = room.roomName
+                tvBedCount.text = room.totalBed.toString()
+                roomArea.text = "${room.area} m²"
+                roomPrice.text = "${room.pricePerNight}đ"
+                ratingBar.rating = room.rating.toFloat()
+                ratingValue.text = room.rating.toString()
 
-            }
-            binding.btnBookNow.setOnClickListener {
-                val context = itemView.context
-                val intent = Intent(context, BookingActivity::class.java).apply {
-                    putExtra("Room_ID", room.id)
-                    putExtra("CHECK_IN", checkInDate)
-                    putExtra("CHECK_OUT", checkOutDate)
+                // Xử lý click cho toàn bộ card
+                cardViewRoom.setOnClickListener {
+                    onItemClickListener?.invoke(room)
                 }
-                (context as androidx.fragment.app.FragmentActivity).startActivityForResult(intent, BOOKING_REQUEST_CODE)
+
+                // Xử lý click cho nút đặt ngay
+                btnBookNow.setOnClickListener {
+                    onBookClickListener?.invoke(room)
+                }
             }
         }
     }
@@ -49,23 +51,34 @@ class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
         val binding = RoomItemSearchBinding.inflate(
             LayoutInflater.from(parent.context),
-            parent,false
+            parent,
+            false
         )
         return RoomViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
-        val room =roomList[position]
-        holder.bind(room)
+        holder.bind(rooms[position])
     }
-    fun updateRooms(newRooms:List<Room>){
-        roomList.clear()
-        roomList.addAll(newRooms)
+
+    override fun getItemCount(): Int = rooms.size
+
+    fun setOnItemClickListener(listener: (Room) -> Unit) {
+        onItemClickListener = listener
+    }
+
+    fun setOnBookClickListener(listener: (Room) -> Unit) {
+        onBookClickListener = listener
+    }
+
+    fun updateRooms(newRooms: List<Room>) {
+        rooms = newRooms
         notifyDataSetChanged()
     }
-    fun setDates(checkIn: String?, checkOut: String?) {
+
+    fun setDates(checkIn: String, checkOut: String) {
         checkInDate = checkIn
         checkOutDate = checkOut
+        notifyDataSetChanged()
     }
-    override fun getItemCount(): Int = roomList.size
 }
