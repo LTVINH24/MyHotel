@@ -7,7 +7,16 @@
     <fragment
         android:id="@+id/navigation_users"
         android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.users.AdminUsersFragment"
-        android:label="Quản lý tài khoản" />
+        android:label="Quản lý tài khoản">
+        <action
+            android:id="@+id/action_users_to_detail"
+            app:destination="@id/userDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userDetailFragment"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.users.UserDetailFragment"
+        android:label="Chi tiết người dùng" />
 
     <fragment
         android:id="@+id/navigation_rooms"

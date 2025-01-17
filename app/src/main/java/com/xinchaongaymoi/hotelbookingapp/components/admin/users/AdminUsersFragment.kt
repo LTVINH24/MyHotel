@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.adapter.AdminUserAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminUsersBinding
 import com.xinchaongaymoi.hotelbookingapp.model.User
@@ -38,8 +40,14 @@ class AdminUsersFragment : Fragment() {
     private fun setupRecyclerView() {
         userAdapter = AdminUserAdapter(
             onUserDetail = { user ->
-                // TODO: Navigate to user detail screen
-                Toast.makeText(context, "Xem chi tiết: ${user.name}", Toast.LENGTH_SHORT).show()
+                val bundle = Bundle().apply {
+                    putString("user_name", user.name)
+                    putString("user_email", user.email)
+                    putString("user_phone", user.phone)
+                    putString("user_role", user.role)
+                    putBoolean("user_is_banned", user.isBanned)
+                }
+                findNavController().navigate(R.id.action_users_to_detail, bundle)
             },
             onToggleBan = { user ->
                 toggleUserBan(user)
