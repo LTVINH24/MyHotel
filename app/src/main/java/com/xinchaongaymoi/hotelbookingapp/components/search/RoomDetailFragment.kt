@@ -80,35 +80,60 @@ class RoomDetailFragment : Fragment() {
 
         roomRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d(TAG, "Room data received: ${snapshot.value}")
                 if (snapshot.exists()) {
                     try {
+                        // Load ảnh vào ViewPager
                         val imageList = snapshot.child("images").children.mapNotNull { it.value?.toString() }
-                        Log.d(TAG, "Images found: ${imageList.size}")
                         imageSliderAdapter.updateImages(imageList)
 
                         binding.apply {
+                            // Tên phòng
                             tvRoomName.text = snapshot.child("roomName").value?.toString() ?: "N/A"
+                            
+                            // Loại phòng
+                            tvRoomType.text = "Loại phòng: ${snapshot.child("roomType").value?.toString() ?: "N/A"}"
+                            
+                            // Diện tích
                             tvArea.text = "Diện tích: ${snapshot.child("area").value?.toString() ?: "N/A"} m²"
+                            
+                            // Thông tin giường
                             tvBedType.text = "Loại giường: ${snapshot.child("bedType").value?.toString() ?: "N/A"}"
-                            tvLocation.text = "Vị trí: ${snapshot.child("location").value?.toString() ?: "N/A"}"
-                            tvMaxGuests.text = "Số khách tối đa: ${snapshot.child("maxGuests").value?.toString() ?: "N/A"}"
-                            tvPricePerHour.text = "Giá theo giờ: ${snapshot.child("pricePerHour").value?.toString() ?: "N/A"}$"
-                            tvPricePerNight.text = "Giá theo đêm: ${snapshot.child("pricePerNight").value?.toString() ?: "N/A"}$"
+                            tvTotalBed.text = "Số giường: ${snapshot.child("totalBed").value?.toString() ?: "N/A"}"
+                            
+                            // Số khách tối đa
+                            tvMaxGuests.text = "Số khách tối đa: ${snapshot.child("maxGuests").value?.toString() ?: "N/A"} người"
+                            
+                            // Giá phòng
+                            val pricePerNight = snapshot.child("pricePerNight").value?.toString()?.toDoubleOrNull() ?: 0.0
+                            tvPricePerNight.text = "Giá theo đêm: ${String.format("%,.0f", pricePerNight)}đ"
+                            
+                            // Tiện ích
                             tvUtilities.text = "Tiện ích: ${snapshot.child("utilities").value?.toString() ?: "N/A"}"
+                            
+                            // Đánh giá với RatingBar và số
+                            val rating = snapshot.child("rating").value?.toString()?.toDoubleOrNull() ?: 0.0
+                            ratingBar.rating = rating.toFloat()
+                            tvRating.text = "(${String.format("%.1f", rating)})"
+                            tvRatingLabel.text = "Đánh giá:"
+                            
+                            // Ảnh chính
+                            val mainImage = snapshot.child("mainImage").value?.toString()
+                            if (!mainImage.isNullOrEmpty()) {
+                                imageList.toMutableList().apply {
+                                    if (!contains(mainImage)) add(0, mainImage)
+                                }.let { imageSliderAdapter.updateImages(it) }
+                            }
                         }
                     } catch (e: Exception) {
                         Log.e(TAG, "Error updating UI: ${e.message}", e)
                         Toast.makeText(context, "Lỗi khi hiển thị thông tin phòng", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Log.e(TAG, "Room not found")
                     binding.tvRoomName.text = "Không tìm thấy thông tin phòng!"
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Database error: ${error.message}")
                 binding.tvRoomName.text = "Lỗi khi tải dữ liệu: ${error.message}"
             }
         })
