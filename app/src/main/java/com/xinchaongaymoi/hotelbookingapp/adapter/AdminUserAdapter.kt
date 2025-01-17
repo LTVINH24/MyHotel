@@ -1,9 +1,11 @@
 package com.xinchaongaymoi.hotelbookingapp.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ItemAdminUserBinding
@@ -65,6 +67,14 @@ class AdminUserAdapter(
                 "admin" -> "Quản trị viên"
                 else -> "Người dùng"
             }
+            
+            binding.tvUserStatus.text = if (user.isBanned) "Đã khóa" else "Hoạt động"
+            binding.tvUserStatus.setTextColor(
+                if (user.isBanned) 
+                    ContextCompat.getColor(binding.root.context, android.R.color.holo_red_dark)
+                else 
+                    ContextCompat.getColor(binding.root.context, android.R.color.holo_green_dark)
+            )
 
             binding.btnMore.setOnClickListener { view ->
                 PopupMenu(view.context, view).apply {
