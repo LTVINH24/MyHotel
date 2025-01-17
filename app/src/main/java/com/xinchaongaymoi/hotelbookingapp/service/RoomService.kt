@@ -134,4 +134,15 @@ class RoomService {
 
         })
     }
+    fun addRoom(room:Room,callback:(Boolean)->Unit){
+        val roomId = roomsRef.push().key?:return
+        val roomWithId = room.copy(id = roomId)
+        roomsRef.child(roomId).setValue(roomWithId)
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener{
+                callback(false)
+            }
+    }
 }
