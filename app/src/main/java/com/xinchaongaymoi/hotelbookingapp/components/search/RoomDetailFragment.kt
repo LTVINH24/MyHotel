@@ -1,21 +1,27 @@
 package com.xinchaongaymoi.hotelbookingapp.components.search
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.firebase.database.*
 import com.xinchaongaymoi.hotelbookingapp.adapter.ImageSliderAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentRoomDetailBinding
+import com.xinchaongaymoi.hotelbookingapp.activity.BookingActivity
 
 class RoomDetailFragment : Fragment() {
     private var _binding: FragmentRoomDetailBinding? = null
     private val binding get() = _binding!!
     private lateinit var imageSliderAdapter: ImageSliderAdapter
     private val TAG = "RoomDetailFragment"
+    private val BOOKING_REQUEST_CODE = 100
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,9 +35,15 @@ class RoomDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Khởi tạo adapter trước với list rỗng
         imageSliderAdapter = ImageSliderAdapter(emptyList())
         binding.viewPagerImages.adapter = imageSliderAdapter
+
+        // Thêm click listener cho nút đặt phòng
+        binding.btnBookNow.setOnClickListener {
+            arguments?.getString("ROOM_ID")?.let { roomId ->
+                navigateToBooking(roomId)
+            }
+        }
 
         arguments?.getString("ROOM_ID")?.let { roomId ->
             Log.d(TAG, "Fetching details for room: $roomId")
@@ -39,6 +51,25 @@ class RoomDetailFragment : Fragment() {
         } ?: run {
             Log.e(TAG, "No room ID provided")
             Toast.makeText(context, "Không tìm thấy ID phòng!", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.popBackStack()
+        }
+    }
+
+    private fun navigateToBooking(roomId: String) {
+        val intent = Intent(requireContext(), BookingActivity::class.java).apply {
+            putExtra("ROOM_ID", roomId)
+            // Lấy ngày check-in và check-out từ SearchViewModel
+            val searchViewModel: SearchViewModel by activityViewModels()
+            putExtra("CHECK_IN", searchViewModel.checkInDate.value)
+            putExtra("CHECK_OUT", searchViewModel.checkOutDate.value)
+        }
+        startActivityForResult(intent, BOOKING_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BOOKING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // Quay lại màn hình trước đó sau khi đặt phòng thành công
             parentFragmentManager.popBackStack()
         }
     }
