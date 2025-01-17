@@ -10,12 +10,9 @@ import com.xinchaongaymoi.hotelbookingapp.adapter.AdminRoomAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminRoomsBinding
 import com.xinchaongaymoi.hotelbookingapp.service.RoomService
 
-class AdminRoomsFragment : Fragment() {
+class AddRoom : Fragment() {
     private var _binding: FragmentAdminRoomsBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var roomAdapter: AdminRoomAdapter
-    private val roomService = RoomService()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,34 +24,11 @@ class AdminRoomsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-        loadRooms()
 
     }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    private fun setupRecyclerView(){
-        roomAdapter = AdminRoomAdapter(
-            mutableListOf(),
-            onEditClick = {
-                room->
-            },
-            onDeleteClick = {
-                room->
-            }
-        )
-        binding.roomsRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = roomAdapter
-        }
-    }
-    private fun loadRooms(){
-        binding.loadingProgressBar.visibility =View.VISIBLE
-        roomService.getAllRooms { rooms->
-            binding.loadingProgressBar.visibility =View.GONE
-           roomAdapter.updateRooms(rooms)
-        }
-    }
-} 
+
+}

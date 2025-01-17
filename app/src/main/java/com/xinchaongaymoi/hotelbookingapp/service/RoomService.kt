@@ -111,9 +111,27 @@ class RoomService {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("RoomService", "Lỗi khi lấy danh sách phòng theo loại", error.toException())
+                    Log.e("RoomService", "Error", error.toException())
                     callback(emptyList())
                 }
             })
+    }
+    fun getAllRooms(callback: (MutableList<Room>) -> Unit){
+        roomsRef.addValueEventListener(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+               val rooms = mutableListOf<Room>()
+                for(data in snapshot.children)
+                {
+                    val room = data.getValue(Room::class.java)
+                    room?.let { rooms.add(it) }
+                }
+                callback(rooms)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(emptyList<Room>().toMutableList())
+            }
+
+        })
     }
 }

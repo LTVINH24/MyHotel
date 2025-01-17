@@ -57,7 +57,6 @@ class RoomDetailActivity : AppCompatActivity() {
                     binding.tvRoomName.text = roomName
                     binding.tvArea.text = "Area: $area m²"
                     binding.tvBedType.text = "Bed Type: $bedType"
-                    binding.tvLocation.text = "Location: $location"
                     binding.tvMaxGuests.text = "Max Guests: $maxGuests"
                     binding.tvPricePerHour.text = "Price per Hour: $pricePerHour USD"
                     binding.tvPricePerNight.text = "Price per Night: $pricePerNight USD"

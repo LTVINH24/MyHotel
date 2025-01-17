@@ -3,6 +3,7 @@ data class Room(
     val id:String="",
     val roomName:String ="",
     val mainImage:String ="",
+    val images: List<String> = listOf(),
     val roomType:String ="",
     val location:String="",
     val area:Double=0.0,
