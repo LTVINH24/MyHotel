@@ -32,15 +32,27 @@
                 android:textStyle="bold"
                 android:textColor="#212121"/>
 
-            <TextView
-                android:id="@+id/roomLocation"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="4dp"
-                android:textColor="#757575"
-                android:textSize="16sp"
-                app:drawableStartCompat="@drawable/ic_location" />
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_bed"
+                    app:tint="#455A64" />
+
+                <TextView
+                    android:id="@+id/tvBedCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="#455A64"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -7,6 +7,7 @@ data class Booking(
     val checkInDate: String = "",
     val checkOutDate: String = "",
     val status: String = "",
+    val checkoutStatus:String ="",
     val createdAt:String="",
     val totalPrice:Double=0.0
 )
