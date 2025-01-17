@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewRoom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="8dp"
     app:cardElevation="3dp">
 
@@ -117,6 +121,8 @@
                     android:paddingHorizontal="16dp"
                     android:text="Đặt ngay"
                     app:cornerRadius="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:textColor="#FFFFFF"
                     android:backgroundTint="#6200EE"/>
             </LinearLayout>
