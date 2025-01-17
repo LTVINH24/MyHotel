@@ -1,4 +1,5 @@
 package com.xinchaongaymoi.hotelbookingapp.components.admin.rooms
+import android.app.Activity
 import android.app.role.RoleManager
 import android.content.Intent
 import android.net.Uri
@@ -153,6 +154,22 @@ class AddRoom : Fragment() {
                 uploadCount++
                 if (uploadCount == extraImages.size) {
                     callback(uploadedUrls)
+                }
+            }
+        }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_MAIN_IMAGE -> {
+                    selectedMainImageUri = data?.data
+                    binding.roomImageView.setImageURI(selectedMainImageUri)
+                }
+                REQUEST_EXTRA_IMAGES -> {
+                    data?.data?.let { uri ->
+                        extraImagesAdapter.addImage(uri)
+                    }
                 }
             }
         }

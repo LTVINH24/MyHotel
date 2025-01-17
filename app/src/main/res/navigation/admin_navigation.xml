@@ -28,4 +28,11 @@
         android:id="@+id/navigation_settings"
         android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.settings.AdminSettingsFragment"
         android:label="Cài đặt" />
+    <fragment
+        android:id="@+id/addRoomFragment"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.rooms.AddRoom"
+        android:label="Thêm phòng mới" />
+    <action
+        android:id="@+id/action_adminRoomsFragment_to_addRoomFragment"
+        app:destination="@id/addRoomFragment" />
 </navigation> 

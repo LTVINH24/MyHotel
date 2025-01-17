@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.xinchaongaymoi.hotelbookingapp.adapter.AdminRoomAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminRoomsBinding
 import com.xinchaongaymoi.hotelbookingapp.service.RoomService
-
+import com.xinchaongaymoi.hotelbookingapp.R
 class AdminRoomsFragment : Fragment() {
     private var _binding: FragmentAdminRoomsBinding? = null
     private val binding get() = _binding!!
@@ -29,7 +30,9 @@ class AdminRoomsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         loadRooms()
-
+        binding.fabAddRoom.setOnClickListener{
+            findNavController().navigate(R.id.action_adminRoomsFragment_to_addRoomFragment)
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()

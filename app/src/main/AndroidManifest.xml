@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:name=".App"
@@ -37,13 +39,7 @@
         <activity
             android:name=".activity.RoomDetailActivity"
             android:exported="false" />
-        <activity
-            android:name=".activity.SearchActivity"
-            android:exported="false" />
 
-        <activity
-            android:name=".activity.AdminManageUsersActivity"
-            android:exported="false" />
 
         <activity
             android:name=".activity.AdminActivity"
