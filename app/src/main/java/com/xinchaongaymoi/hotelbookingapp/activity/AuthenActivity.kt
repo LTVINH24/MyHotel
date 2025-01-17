@@ -40,14 +40,15 @@ class AuthenActivity : AppCompatActivity() {
                         .addOnCompleteListener{
                             if(it.isSuccessful){
                                 val user = firebaseAuth.currentUser
-                                val userRef = FirebaseDatabase.getInstance().getReference("users")
+                                val userRef = FirebaseDatabase.getInstance().getReference("user")
                                     .child(user?.uid ?: "")
                                 
                                 val userData = hashMapOf(
                                     "email" to email,
-                                    "role" to "user", // Mặc định role là user
-                                    "name" to "", // Có thể thêm các trường khác
-                                    "phone" to ""
+                                    "role" to "user",
+                                    "name" to "",
+                                    "phone" to "",
+                                    "isBanned" to false
                                 )
                                 
                                 userRef.setValue(userData).addOnCompleteListener { dbTask ->

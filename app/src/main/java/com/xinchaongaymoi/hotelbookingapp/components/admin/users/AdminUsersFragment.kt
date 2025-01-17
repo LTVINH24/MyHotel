@@ -66,9 +66,14 @@ class AdminUsersFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val users = mutableListOf<User>()
                 for (userSnapshot in snapshot.children) {
-                    userSnapshot.getValue(User::class.java)?.let { user ->
-                        users.add(user.copy(uid = userSnapshot.key ?: ""))
-                    }
+                    val uid = userSnapshot.key ?: ""
+                    val email = userSnapshot.child("email").getValue(String::class.java) ?: ""
+                    val name = userSnapshot.child("name").getValue(String::class.java) ?: ""
+                    val phone = userSnapshot.child("phone").getValue(String::class.java) ?: ""
+                    val role = userSnapshot.child("role").getValue(String::class.java) ?: ""
+                    val isBanned = userSnapshot.child("isBanned").getValue(Boolean::class.java) ?: false
+                    
+                    users.add(User(uid, email, name, phone, role, isBanned))
                 }
                 userAdapter.updateUsers(users)
             }
@@ -81,10 +86,20 @@ class AdminUsersFragment : Fragment() {
 
     private fun toggleUserBan(user: User) {
         val userRef = FirebaseDatabase.getInstance().getReference("user").child(user.uid)
-        userRef.child("isBanned").setValue(!user.isBanned)
+        val newBanStatus = !user.isBanned
+        
+        userRef.child("isBanned").setValue(newBanStatus)
             .addOnSuccessListener {
-                val message = if (!user.isBanned) "Đã ban tài khoản" else "Đã unban tài khoản"
+                user.isBanned = newBanStatus
+                
+                val message = if (newBanStatus) {
+                    "Đã ban tài khoản ${user.email}"
+                } else {
+                    "Đã unban tài khoản ${user.email}"
+                }
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                
+                userAdapter.notifyDataSetChanged()
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()

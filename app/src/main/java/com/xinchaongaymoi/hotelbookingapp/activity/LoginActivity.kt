@@ -15,7 +15,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityLogin2Binding
 
@@ -98,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
             if(it.isSuccessful) {
                 val user = firebaseAuth.currentUser
                 user?.let { firebaseUser ->
-                    val userRef = FirebaseDatabase.getInstance().getReference("users")
+                    val userRef = FirebaseDatabase.getInstance().getReference("user")
                         .child(firebaseUser.uid)
                     
                     userRef.get().addOnSuccessListener { snapshot ->
@@ -107,7 +110,8 @@ class LoginActivity : AppCompatActivity() {
                                 "email" to firebaseUser.email,
                                 "role" to "user",
                                 "name" to (firebaseUser.displayName ?: ""),
-                                "phone" to (firebaseUser.phoneNumber ?: "")
+                                "phone" to (firebaseUser.phoneNumber ?: ""),
+                                "isBanned" to false
                             )
                             userRef.setValue(userData)
                         }
@@ -121,31 +125,52 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateBasedOnRole(userId: String) {
-        Log.d("LoginDebug", "Starting navigateBasedOnRole with userId: $userId")
-        
         val userRef = FirebaseDatabase.getInstance().getReference("user").child(userId)
         userRef.get().addOnSuccessListener { snapshot ->
-            Log.d("LoginDebug", "Database snapshot exists: ${snapshot.exists()}")
-            Log.d("LoginDebug", "Full snapshot value: ${snapshot.value}")
-            
+            val isBanned = snapshot.child("isBanned").getValue(Boolean::class.java) ?: false
+            if (isBanned) {
+                val usersRef = FirebaseDatabase.getInstance().getReference("user")
+                usersRef.orderByChild("role").equalTo("admin").limitToFirst(1)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            var adminEmail = ""
+                            for (adminSnapshot in snapshot.children) {
+                                adminEmail = adminSnapshot.child("email").getValue(String::class.java) ?: ""
+                                break
+                            }
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Tài khoản đã bị khóa. Vui lòng liên hệ email: $adminEmail để được hỗ trợ",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            firebaseAuth.signOut()
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Tài khoản đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            firebaseAuth.signOut()
+                        }
+                    })
+                return@addOnSuccessListener
+            }
+
             val role = snapshot.child("role").value?.toString()
-            Log.d("LoginDebug", "Role value: $role")
-            
             when (role) {
                 "admin" -> {
-                    Log.d("LoginDebug", "Role is admin, navigating to AdminActivity")
                     startActivity(Intent(this, AdminActivity::class.java))
                     finish()
                 }
                 else -> {
-                    Log.d("LoginDebug", "Role is not admin ($role), navigating to MainActivity")
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 }
             }
         }.addOnFailureListener { exception ->
             Log.e("LoginDebug", "Error getting data", exception)
-            Log.e("LoginDebug", "Error details: ${exception.message}")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }

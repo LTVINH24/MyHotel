@@ -6,5 +6,5 @@ data class User(
     val name: String = "",
     val phone: String = "",
     val role: String = "",
-    val isBanned: Boolean = false
+    var isBanned: Boolean = false
 ) 

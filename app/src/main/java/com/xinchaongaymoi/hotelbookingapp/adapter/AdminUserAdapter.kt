@@ -74,8 +74,9 @@ class AdminUserAdapter(
                     if (user.role.lowercase() == "admin") {
                         menu.findItem(R.id.action_toggle_ban).isVisible = false
                     } else {
-                        menu.findItem(R.id.action_toggle_ban).title = 
-                            if (user.isBanned) "Unban tài khoản" else "Ban tài khoản"
+                        // Cập nhật text dựa trên trạng thái ban hiện tại
+                        val menuItem = menu.findItem(R.id.action_toggle_ban)
+                        menuItem.title = if (user.isBanned) "Unban tài khoản" else "Ban tài khoản"
                     }
                     
                     setOnMenuItemClickListener { item ->
@@ -86,6 +87,8 @@ class AdminUserAdapter(
                             }
                             R.id.action_toggle_ban -> {
                                 onToggleBan(user)
+                                // Cập nhật lại menu sau khi toggle
+                                item.title = if (!user.isBanned) "Unban tài khoản" else "Ban tài khoản"
                                 true
                             }
                             else -> false
