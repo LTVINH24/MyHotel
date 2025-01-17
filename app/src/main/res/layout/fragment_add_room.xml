@@ -26,10 +26,31 @@
             android:src="@drawable/placeholder_image"/>
 
         <Button
-            android:id="@+id/btnSelectImage"
+            android:id="@+id/btnSelectMainImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chọn ảnh"
+            android:text="Chọn ảnh chính"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ảnh phụ"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/extraImagesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"/>
+
+        <Button
+            android:id="@+id/btnAddExtraImages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thêm ảnh phụ"
             android:layout_marginTop="8dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
