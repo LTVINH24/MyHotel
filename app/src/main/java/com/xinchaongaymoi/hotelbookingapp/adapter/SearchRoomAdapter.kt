@@ -12,6 +12,7 @@ import com.xinchaongaymoi.hotelbookingapp.model.Room
 import com.xinchaongaymoi.hotelbookingapp.R
 import android.view.View
 import android.view.ViewGroup
+
 class SearchRoomAdapter(private val roomType: String) : RecyclerView.Adapter<SearchRoomAdapter.ViewHolder>() {
 
     companion object {
