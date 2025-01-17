@@ -60,5 +60,19 @@
         android:id="@+id/navigation_account"
         android:name="com.xinchaongaymoi.hotelbookingapp.components.account.AccountFragment"
         android:label="@string/menu_account"
-        tools:layout="@layout/fragment_account"/>
+        tools:layout="@layout/fragment_account">
+        <action
+            android:id="@+id/action_accountFragment_to_bookingHistoryFragment"
+            app:destination="@id/navigation_booking_history"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_booking_history"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.account.BookingHistory"
+        android:label="Lịch sử đặt phòng"
+        tools:layout="@layout/fragment_booking_history" />
 </navigation>

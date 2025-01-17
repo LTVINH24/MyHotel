@@ -34,7 +34,7 @@ class AccountDetailActivity:AppCompatActivity() {
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val _name = sharedPreferences.getString("name","Unknown")
         val _email = sharedPreferences.getString("email","Unknown")
-        val _phone = sharedPreferences.getString("name","Unknown")
+        val _phone = sharedPreferences.getString("phone","Unknown")
         name.setText(_name.toString())
         email.setText(_email.toString())
         phone.setText(_phone.toString())

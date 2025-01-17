@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xinchaongaymoi.hotelbookingapp.R
@@ -50,6 +51,12 @@ private var _binding: FragmentAccountBinding? = null
               val intent = Intent(requireActivity(),AccountDetailActivity::class.java)
               startActivity(intent)
           },
+          AccountPageItem(R.drawable.ic_star, "Bookings History"){
+              findNavController().navigate(
+                  R.id.action_accountFragment_to_bookingHistoryFragment
+              )
+          } ,
+
           AccountPageItem(R.drawable.ic_star, getString(R.string.my_reviews)){} ,
           AccountPageItem(R.drawable.ic_star, "Log out"){
               val intent = Intent(requireActivity(),LoginActivity::class.java)

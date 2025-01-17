@@ -94,6 +94,14 @@ class LoginActivity : AppCompatActivity() {
         if(task.isSuccessful){
             val account :GoogleSignInAccount?=task.result
             if(account!=null){
+                sharedPreferences.edit().apply {
+                    putString("displayName", account.displayName)
+                    putString("email", account.email)
+                    putString("photoUrl", account.photoUrl?.toString())
+                    putString("id", account.id)
+                    apply()
+                }
+                Log.i("SharedPreferences", "User info saved successfully")
                 updateUI(account)
             }
         }
