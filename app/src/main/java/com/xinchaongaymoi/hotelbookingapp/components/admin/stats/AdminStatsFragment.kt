@@ -19,6 +19,10 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
+import android.content.Context
+import com.github.mikephil.charting.formatter.IValueFormatter
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.utils.ViewPortHandler
 
 class AdminStatsFragment : Fragment() {
     private var _binding: FragmentAdminStatsBinding? = null
@@ -343,8 +347,167 @@ class AdminStatsFragment : Fragment() {
     }
 
     private fun loadRevenueStats(period: String) {
-        // TODO: Implement revenue statistics based on period
-        // Cần thêm logic để tính toán doanh thu theo ngày/tuần/tháng/năm
+        val entries = ArrayList<Entry>()
+        val dateLabels = ArrayList<String>()
+        val vietnamTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh")
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
+            timeZone = vietnamTimeZone
+        }
+        
+        // Lấy ngày hiện tại theo GMT+7
+        val calendar = Calendar.getInstance(vietnamTimeZone)
+        val currentDate = calendar.time
+        
+        // Tính toán khoảng thời gian dựa trên period
+        val (startDate, endDate) = when (period) {
+            "day" -> {
+                calendar.add(Calendar.DAY_OF_YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.DAY_OF_YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "week" -> {
+                calendar.add(Calendar.WEEK_OF_YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.WEEK_OF_YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "month" -> {
+                calendar.add(Calendar.MONTH, -1)
+                val start = calendar.time
+                calendar.add(Calendar.MONTH, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "year" -> {
+                calendar.add(Calendar.YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            else -> Pair(currentDate, currentDate)
+        }
+        
+        database.child("Booking").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val revenueMap = mutableMapOf<String, Float>()
+                var totalRevenue = 0f
+                
+                // Nếu là ngày hoặc tuần, tạo tất cả các ngày trong khoảng
+                if (period == "day" || period == "week") {
+                    val tempCalendar = Calendar.getInstance(vietnamTimeZone)
+                    tempCalendar.time = startDate
+                    while (!tempCalendar.time.after(endDate)) {
+                        revenueMap[dateFormat.format(tempCalendar.time)] = 0f
+                        tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    }
+                }
+                
+                // Tính doanh thu
+                for (bookingSnapshot in snapshot.children) {
+                    val checkOutDate = bookingSnapshot.child("checkOutDate").getValue(String::class.java)
+                    val checkoutStatus = bookingSnapshot.child("checkoutStatus").getValue(String::class.java)
+                    val totalPrice = bookingSnapshot.child("totalPrice").getValue(Long::class.java) ?: 0L
+                    
+                    if (checkOutDate != null && checkoutStatus == "paid") {
+                        try {
+                            val date = dateFormat.parse(checkOutDate)
+                            if (date != null && !date.before(startDate) && !date.after(endDate)) {
+                                val dateStr = dateFormat.format(date)
+                                revenueMap[dateStr] = revenueMap.getOrDefault(dateStr, 0f) + totalPrice
+                                totalRevenue += totalPrice
+                            }
+                        } catch (e: Exception) {
+                            println("Date parsing error: ${e.message}")
+                        }
+                    }
+                }
+                
+                // Sắp xếp theo ngày
+                val sortedData = if (period == "day" || period == "week") {
+                    revenueMap.entries.sortedBy { 
+                        dateFormat.parse(it.key)?.time ?: 0
+                    }
+                } else {
+                    // Đối với tháng và năm, chỉ lấy những ngày có doanh thu
+                    revenueMap.entries.filter { it.value > 0 }
+                        .sortedBy { dateFormat.parse(it.key)?.time ?: 0 }
+                }
+                
+                // Chuyển đổi dữ liệu thành entries và labels
+                sortedData.forEachIndexed { index, entry ->
+                    entries.add(Entry(index.toFloat(), entry.value))
+                    dateLabels.add(entry.key)
+                }
+                
+                // Cập nhật biểu đồ
+                val dataSet = LineDataSet(entries, "Doanh thu").apply {
+                    color = Color.BLUE
+                    setCircleColor(Color.BLUE)
+                    lineWidth = 2f
+                    circleRadius = 4f
+                    valueTextSize = 10f
+                    setDrawValues(true)
+                    valueFormatter = object : IValueFormatter {
+                        override fun getFormattedValue(value: Float, entry: Entry?, dataSetIndex: Int, viewPortHandler: ViewPortHandler?): String {
+                            return String.format("%,.0f$", value)
+                        }
+                    }
+                }
+                
+                binding.revenueLineChart.apply {
+                    xAxis.apply {
+                        position = XAxis.XAxisPosition.BOTTOM
+                        labelRotationAngle = 45f
+                        granularity = 1f
+                        valueFormatter = IndexAxisValueFormatter(dateLabels)
+                        setDrawGridLines(true)
+                    }
+                    
+                    axisLeft.apply {
+                        axisMinimum = 0f
+                        valueFormatter = object : IAxisValueFormatter {
+                            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                                return String.format("%,.0f$", value)
+                            }
+                        }
+                    }
+                    
+                    // Tăng chiều cao của biểu đồ
+                    layoutParams = layoutParams.apply {
+                        height = 300.dpToPx(context)
+                    }
+                    
+                    // Căn chỉnh legend
+                    legend.apply {
+                        horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                        verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                        orientation = Legend.LegendOrientation.HORIZONTAL
+                        setDrawInside(false)
+                        yOffset = 10f
+                        xOffset = 0f
+                        textSize = 12f
+                    }
+                    
+                    // Thêm padding cho biểu đồ
+                    setExtraOffsets(20f, 20f, 20f, 20f)
+                    
+                    data = LineData(dataSet)
+                    description.isEnabled = false
+                    invalidate()
+                }
+                
+                // Hiển thị tổng doanh thu
+                binding.tvTotalRevenue.text = String.format("Tổng doanh thu: %,.0f VNĐ", totalRevenue)
+            }
+            
+            override fun onCancelled(error: DatabaseError) {
+                println("Error loading revenue stats: ${error.message}")
+            }
+        })
     }
 
     private fun updateChartConfig(chart: LineChart, entries: List<Entry>, labels: List<String>) {
@@ -479,8 +642,8 @@ class AdminStatsFragment : Fragment() {
                     circleRadius = 4f
                     valueTextSize = 10f
                     setDrawValues(true)
-                    valueFormatter = object : PercentFormatter() {
-                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                    valueFormatter = object : IValueFormatter {
+                        override fun getFormattedValue(value: Float, entry: Entry?, dataSetIndex: Int, viewPortHandler: ViewPortHandler?): String {
                             return value.toInt().toString()
                         }
                     }
@@ -489,6 +652,11 @@ class AdminStatsFragment : Fragment() {
                 binding.checkinLineChart.apply {
                     data = LineData(dataSet)
                     invalidate()
+                    axisLeft.valueFormatter = object : IAxisValueFormatter {
+                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                            return value.toInt().toString()
+                        }
+                    }
                 }
             }
             
@@ -596,8 +764,8 @@ class AdminStatsFragment : Fragment() {
                     circleRadius = 4f
                     valueTextSize = 10f
                     setDrawValues(true)
-                    valueFormatter = object : PercentFormatter() {
-                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                    valueFormatter = object : IValueFormatter {
+                        override fun getFormattedValue(value: Float, entry: Entry?, dataSetIndex: Int, viewPortHandler: ViewPortHandler?): String {
                             return value.toInt().toString()
                         }
                     }
@@ -606,6 +774,11 @@ class AdminStatsFragment : Fragment() {
                 binding.checkoutLineChart.apply {
                     data = LineData(dataSet)
                     invalidate()
+                    axisLeft.valueFormatter = object : IAxisValueFormatter {
+                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                            return value.toInt().toString()
+                        }
+                    }
                 }
             }
             
@@ -618,5 +791,14 @@ class AdminStatsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // Extension function để chuyển đổi dp sang px
+    private fun Int.dpToPx(context: Context?): Int {
+        return if (context != null) {
+            (this * context.resources.displayMetrics.density).toInt()
+        } else {
+            this
+        }
     }
 } 

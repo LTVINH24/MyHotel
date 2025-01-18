@@ -105,8 +105,19 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/revenueLineChart"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="300dp"
                     android:layout_marginTop="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvTotalRevenue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:text="Tổng doanh thu: 0 VNĐ" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
