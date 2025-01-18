@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.xinchaongaymoi.hotelbookingapp.R
@@ -47,6 +48,23 @@ class AuthenActivity : AppCompatActivity() {
                         .addOnCompleteListener{
                             if(it.isSuccessful){
                                 val user = firebaseAuth.currentUser
+                                val userRef = FirebaseDatabase.getInstance().getReference("user")
+                                    .child(user?.uid ?: "")
+                                
+                                val userData = hashMapOf(
+                                    "email" to email,
+                                    "role" to "user",
+                                    "name" to "",
+                                    "phone" to "",
+                                    "isBanned" to false
+                                )
+                                
+                                userRef.setValue(userData).addOnCompleteListener { dbTask ->
+                                    if (dbTask.isSuccessful) {
+                                        startActivity(Intent(this, MainActivity::class.java))
+                                        finish()
+                                    }
+                                }
                                 val _name = binding.nameET.text.toString()
                                 val _phone = binding.phoneET.text.toString()
                                 user?.let { saveUserToDatabase(it, _name, _phone) }

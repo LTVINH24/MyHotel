@@ -44,6 +44,15 @@
         <activity
             android:name=".activity.RoomDetailActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".activity.AdminManageUsersActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.AdminActivity"
+            android:exported="false" />
+
         <activity
             android:name=".activity.AuthenActivity"
             android:exported="false" />
@@ -51,7 +60,9 @@
             android:name=".activity.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_aut"
-            android:theme="@style/Theme.HotelBookingApp"></activity>
+            android:theme="@style/Theme.HotelBookingApp">
+            android:theme="@style/Theme.HotelBookingApp">
+            </activity>
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"
