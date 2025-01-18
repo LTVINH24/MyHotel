@@ -139,6 +139,7 @@ class RoomService {
         val roomWithId = room.copy(id = roomId)
         roomsRef.child(roomId).setValue(roomWithId)
             .addOnSuccessListener {
+                Log.i("thanhhhhhcongggg","Thanhcongggggggggggg")
                 callback(true)
             }
             .addOnFailureListener{
