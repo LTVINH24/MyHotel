@@ -20,9 +20,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import android.content.Context
-import com.github.mikephil.charting.formatter.IValueFormatter
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.utils.ViewPortHandler
+import com.github.mikephil.charting.components.LegendEntry
 
 class AdminStatsFragment : Fragment() {
     private var _binding: FragmentAdminStatsBinding? = null
@@ -238,17 +236,21 @@ class AdminStatsFragment : Fragment() {
                     totalUsers++
                     when (userSnapshot.child("role").getValue(String::class.java)) {
                         "admin" -> adminCount++
-                        else -> userCount++
+                        else -> userCount++  // Mọi role khác đều tính là user
                     }
                 }
 
-                binding.tvTotalUsers.text = "Tổng số:\n$totalUsers người dùng"
-                binding.tvUsersByRole.text = "Admin: $adminCount\nUser: $userCount"
+                binding.tvTotalUsers.text = "Tổng số người dùng: $totalUsers"
+                binding.tvUsersByRole.text = """
+                    Admin: $adminCount người dùng
+                    User: $userCount người dùng
+                """.trimIndent()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                binding.tvTotalUsers.text = "Không thể tải thông tin"
-                binding.tvUsersByRole.text = "Đã xảy ra lỗi"
+                // Xử lý lỗi
+                binding.tvTotalUsers.text = "Không thể tải thông tin người dùng"
+                binding.tvUsersByRole.text = "Đã xảy ra lỗi: ${error.message}"
             }
         })
     }
@@ -320,7 +322,7 @@ class AdminStatsFragment : Fragment() {
             PieEntry(occupied.toFloat(), "Phòng đã đặt ($occupied)")
         )
 
-        val dataSet = PieDataSet(entries, "Trạng thái phòng").apply {
+        val dataSet = PieDataSet(entries, "").apply {
             colors = listOf(Color.rgb(67, 160, 71), Color.rgb(239, 83, 80))
             valueFormatter = PercentFormatter()
         }
@@ -335,14 +337,33 @@ class AdminStatsFragment : Fragment() {
             data = pieData
             setUsePercentValues(true)
             description.isEnabled = false
-            legend.isEnabled = true
             setEntryLabelColor(Color.BLACK)
             setEntryLabelTextSize(12f)
             
-            // Thêm các dòng này để biến thành hình tròn đặc
             holeRadius = 0f
             transparentCircleRadius = 0f
             setDrawCenterText(false)
+            
+            // Điều chỉnh legend
+            legend.apply {
+                isEnabled = true
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                setDrawInside(false)
+                yOffset = 15f
+                xOffset = 0f
+                textSize = 12f
+                form = Legend.LegendForm.SQUARE
+                formSize = 12f
+                formToTextSpace = 5f
+                xEntrySpace = 40f
+                
+                setCustom(mutableListOf(
+                    LegendEntry("Phòng trống ($available)", Legend.LegendForm.SQUARE, 12f, 2f, null, Color.rgb(67, 160, 71)),
+                    LegendEntry("Phòng đã đặt ($occupied)", Legend.LegendForm.SQUARE, 12f, 2f, null, Color.rgb(239, 83, 80))
+                ))
+            }
             
             invalidate()
         }
@@ -453,9 +474,9 @@ class AdminStatsFragment : Fragment() {
                     circleRadius = 4f
                     valueTextSize = 10f
                     setDrawValues(true)
-                    valueFormatter = object : IValueFormatter {
-                        override fun getFormattedValue(value: Float, entry: Entry?, dataSetIndex: Int, viewPortHandler: ViewPortHandler?): String {
-                            return String.format("%,.0f$", value)
+                    valueFormatter = object : PercentFormatter() {
+                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                            return String.format("%,.0f", value)
                         }
                     }
                 }
@@ -471,9 +492,9 @@ class AdminStatsFragment : Fragment() {
                     
                     axisLeft.apply {
                         axisMinimum = 0f
-                        valueFormatter = object : IAxisValueFormatter {
+                        valueFormatter = object : PercentFormatter() {
                             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                                return String.format("%,.0f$", value)
+                                return String.format("%,.0f", value)
                             }
                         }
                     }
@@ -644,8 +665,8 @@ class AdminStatsFragment : Fragment() {
                     circleRadius = 4f
                     valueTextSize = 10f
                     setDrawValues(true)
-                    valueFormatter = object : IValueFormatter {
-                        override fun getFormattedValue(value: Float, entry: Entry?, dataSetIndex: Int, viewPortHandler: ViewPortHandler?): String {
+                    valueFormatter = object : PercentFormatter() {
+                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                             return value.toInt().toString()
                         }
                     }
@@ -654,11 +675,6 @@ class AdminStatsFragment : Fragment() {
                 binding.checkinLineChart.apply {
                     data = LineData(dataSet)
                     invalidate()
-                    axisLeft.valueFormatter = object : IAxisValueFormatter {
-                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                            return value.toInt().toString()
-                        }
-                    }
                 }
             }
             
@@ -766,8 +782,8 @@ class AdminStatsFragment : Fragment() {
                     circleRadius = 4f
                     valueTextSize = 10f
                     setDrawValues(true)
-                    valueFormatter = object : IValueFormatter {
-                        override fun getFormattedValue(value: Float, entry: Entry?, dataSetIndex: Int, viewPortHandler: ViewPortHandler?): String {
+                    valueFormatter = object : PercentFormatter() {
+                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                             return value.toInt().toString()
                         }
                     }
@@ -776,11 +792,6 @@ class AdminStatsFragment : Fragment() {
                 binding.checkoutLineChart.apply {
                     data = LineData(dataSet)
                     invalidate()
-                    axisLeft.valueFormatter = object : IAxisValueFormatter {
-                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                            return value.toInt().toString()
-                        }
-                    }
                 }
             }
             
