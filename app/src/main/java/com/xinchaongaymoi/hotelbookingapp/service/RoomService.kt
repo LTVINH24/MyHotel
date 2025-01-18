@@ -46,7 +46,7 @@ class RoomService {
             }
 
             override fun onCancelled(error: DatabaseError) {
-
+                Log.e("RoomService", "Error fetching rooms", error.toException())
                 callback(emptyList())
             }
         })
@@ -114,6 +114,36 @@ class RoomService {
                     callback(emptyList())
                 }
             })
+    }
+    fun getAllRooms(callback: (MutableList<Room>) -> Unit){
+        roomsRef.addValueEventListener(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+               val rooms = mutableListOf<Room>()
+                for(data in snapshot.children)
+                {
+                    val room = data.getValue(Room::class.java)
+                    room?.let { rooms.add(it) }
+                }
+                callback(rooms)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(emptyList<Room>().toMutableList())
+            }
+
+        })
+    }
+    fun addRoom(room:Room,callback:(Boolean)->Unit){
+        val roomId = roomsRef.push().key?:return
+        val roomWithId = room.copy(id = roomId)
+        roomsRef.child(roomId).setValue(roomWithId)
+            .addOnSuccessListener {
+                Log.i("thanhhhhhcongggg","Thanhcongggggggggggg")
+                callback(true)
+            }
+            .addOnFailureListener{
+                callback(false)
+            }
     }
     fun getRoomById(roomId:String,callback: (Room?) -> Unit){
         roomsRef.child(roomId).addListenerForSingleValueEvent(object : ValueEventListener {
