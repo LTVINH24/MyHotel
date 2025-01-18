@@ -24,6 +24,7 @@ class GoogleMapActivity : AppCompatActivity() {
     private val places: List<Place> by lazy {
         PlacesReader(this).read()
     }
+
     private val hotelIcon: BitmapDescriptor by lazy {
         val color = ContextCompat.getColor(this, R.color.colorPrimary)
         BitmapHelper.vectorToBitmap(this, R.drawable.baseline_hotel_24, color)

@@ -1,8 +1,10 @@
 package com.xinchaongaymoi.hotelbookingapp.components.account
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +14,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.activity.AccountDetailActivity
 import com.xinchaongaymoi.hotelbookingapp.activity.LoginActivity
+import com.xinchaongaymoi.hotelbookingapp.activity.ManageAccountsActivity
 import com.xinchaongaymoi.hotelbookingapp.model.AccountPageItem
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAccountBinding
 import com.xinchaongaymoi.hotelbookingapp.components.LanguageBottomSheet
 import com.xinchaongaymoi.hotelbookingapp.components.home.AccountViewModel
+import io.kommunicate.Kommunicate
+import io.kommunicate.callbacks.KMLogoutHandler
 
 class AccountFragment : Fragment() {
 
@@ -59,9 +65,29 @@ private var _binding: FragmentAccountBinding? = null
 
           AccountPageItem(R.drawable.ic_star, getString(R.string.my_reviews)){} ,
           AccountPageItem(R.drawable.ic_star, "Log out"){
+              Kommunicate.logout(context, object : KMLogoutHandler {
+                  override fun onSuccess(context: Context?) {
+                      Log.i("Logout", "Success")
+                  }
+
+                  override fun onFailure(exception: Exception?) {
+                      Log.i("Logout", "Failed")
+                  }
+              })
+              val auth = FirebaseAuth.getInstance()
+              auth.signOut()
+
+              // Clear last used account (but keep accounts saved)
+              AccountManager.setLastUsedAccount(requireActivity(), "")
               val intent = Intent(requireActivity(),LoginActivity::class.java)
               startActivity(intent)
+          },
+          AccountPageItem(R.drawable.ic_star, "Switch Account"){
+              val intent = Intent(requireActivity(), ManageAccountsActivity::class.java)
+              startActivity(intent)
+
           }
+
       )
 
       val accountAndSecurityAdapter = AccountPageItemAdapter(accountItemList)
