@@ -10,26 +10,27 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2.5"
+        android:layout_weight="2"
         android:text="Thông tin"
         android:textStyle="bold" />
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.3"
+        android:layout_weight="1.5"
         android:text="Vai trò"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="16dp" />
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.2"
+        android:layout_weight="1.5"
         android:text="Trạng thái"
         android:textStyle="bold"
-        android:gravity="end"/>
+        android:layout_marginStart="16dp"/>
 
     <Space
-        android:layout_width="48dp"
+        android:layout_width="32dp"
         android:layout_height="wrap_content"/>
 </LinearLayout> 
