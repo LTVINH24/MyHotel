@@ -9,11 +9,16 @@ import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.components.AxisBase
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.*
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminStatsBinding
 import java.text.SimpleDateFormat
 import java.util.*
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
 
 class AdminStatsFragment : Fragment() {
     private var _binding: FragmentAdminStatsBinding? = null
@@ -32,12 +37,17 @@ class AdminStatsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupCharts()
+        
+        // Khởi tạo với entries rỗng để có cấu hình mặc định
+        updateChartConfig(binding.checkinLineChart, emptyList())
+        updateChartConfig(binding.checkoutLineChart, emptyList())
+        
+        setupTabLayouts()
         loadUserStats()
         loadRoomStats()
-        setupTabLayouts()
         loadRevenueStats("day")
         loadCheckinStats("day")
+        loadCheckoutStats("day")
     }
 
     private fun setupCharts() {
@@ -78,6 +88,70 @@ class AdminStatsFragment : Fragment() {
             setTouchEnabled(true)
             setPinchZoom(true)
             legend.isEnabled = true
+            
+            // Thêm padding cho biểu đồ
+            setExtraOffsets(8f, 16f, 8f, 16f)
+            
+            // Cấu hình trục X
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                labelRotationAngle = 45f
+                granularity = 1f
+                setDrawGridLines(true)
+            }
+            
+            // Cấu hình trục Y bên trái
+            axisLeft.apply {
+                setDrawGridLines(true)
+                setDrawAxisLine(true)
+                setDrawLabels(true)
+                granularity = 1f
+                axisMinimum = 0f
+                axisMaximum = 1f  // Giá trị mặc định là 1
+                setLabelCount(2, true)  // Chỉ hiển thị 0 và 1
+            }
+            
+            // Tắt trục Y bên phải
+            axisRight.isEnabled = false
+            
+            // Cấu hình legend
+            legend.apply {
+                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                setDrawInside(false)
+                yOffset = 15f
+            }
+
+            // Cấu hình animation
+            animateX(1000)
+        }
+
+        // Cài đặt LineChart cho check-out (tương tự)
+        binding.checkoutLineChart.apply {
+            description.isEnabled = false
+            setTouchEnabled(true)
+            setPinchZoom(true)
+            legend.isEnabled = true
+            
+            setExtraOffsets(8f, 16f, 8f, 16f)
+            
+            axisLeft.apply {
+                setDrawGridLines(true)
+                setDrawAxisLine(true)
+                setDrawLabels(true)
+                granularity = 1f
+            }
+            
+            axisRight.isEnabled = false
+            
+            legend.apply {
+                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                setDrawInside(false)
+                yOffset = 15f
+            }
         }
     }
 
@@ -117,6 +191,27 @@ class AdminStatsFragment : Fragment() {
                         1 -> loadCheckinStats("week")
                         2 -> loadCheckinStats("month")
                         3 -> loadCheckinStats("year")
+                    }
+                }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
+        }
+
+        // Thêm tabs cho check-out
+        binding.checkoutTabLayout.apply {
+            addTab(newTab().setText("Ngày"))
+            addTab(newTab().setText("Tuần"))
+            addTab(newTab().setText("Tháng"))
+            addTab(newTab().setText("Năm"))
+            
+            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    when(tab?.position) {
+                        0 -> loadCheckoutStats("day")
+                        1 -> loadCheckoutStats("week")
+                        2 -> loadCheckoutStats("month")
+                        3 -> loadCheckoutStats("year")
                     }
                 }
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -249,9 +344,258 @@ class AdminStatsFragment : Fragment() {
         // Cần thêm logic để tính toán doanh thu theo ngày/tuần/tháng/năm
     }
 
+    private fun updateChartConfig(chart: LineChart, entries: List<Entry>) {
+        val maxValue = entries.maxOfOrNull { it.y } ?: 0f
+        val yMax = if (maxValue > 0) maxValue + 0.2f else 1f
+        
+        chart.apply {
+            // Cấu hình trục Y
+            axisLeft.apply {
+                axisMinimum = 0f
+                axisMaximum = yMax
+                setLabelCount((yMax + 1).toInt(), true)
+                granularity = 1f
+            }
+            
+            // Cấu hình trục X
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                labelRotationAngle = 45f
+                granularity = 1f
+            }
+            
+            // Cấu hình chung
+            setExtraOffsets(8f, 16f, 8f, 16f)
+            description.isEnabled = false
+            legend.apply {
+                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                setDrawInside(false)
+                yOffset = 15f
+            }
+        }
+    }
+
     private fun loadCheckinStats(period: String) {
-        // TODO: Implement check-in statistics based on period
-        // Cần thêm logic để tính toán số lượt check-in theo ngày/tuần/tháng/năm
+        val entries = ArrayList<Entry>()
+        val vietnamTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh")
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
+            timeZone = vietnamTimeZone
+        }
+        
+        // Lấy ngày hiện tại theo GMT+7
+        val calendar = Calendar.getInstance(vietnamTimeZone)
+        val currentDate = calendar.time
+        
+        // Tính toán khoảng thời gian dựa trên period
+        val (startDate, endDate) = when (period) {
+            "day" -> {
+                calendar.add(Calendar.DAY_OF_YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.DAY_OF_YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "week" -> {
+                calendar.add(Calendar.WEEK_OF_YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.WEEK_OF_YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "month" -> {
+                calendar.add(Calendar.MONTH, -1)
+                val start = calendar.time
+                calendar.add(Calendar.MONTH, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "year" -> {
+                calendar.add(Calendar.YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            else -> Pair(currentDate, currentDate)
+        }
+        
+        database.child("Booking").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val checkinMap = mutableMapOf<String, Int>()
+                
+                // Nếu là ngày hoặc tuần, tạo tất cả các ngày trong khoảng
+                if (period == "day" || period == "week") {
+                    val tempCalendar = Calendar.getInstance(vietnamTimeZone)
+                    tempCalendar.time = startDate
+                    while (!tempCalendar.time.after(endDate)) {
+                        checkinMap[dateFormat.format(tempCalendar.time)] = 0
+                        tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    }
+                }
+                
+                // Đếm số lượng check-in
+                for (bookingSnapshot in snapshot.children) {
+                    val checkInDate = bookingSnapshot.child("checkInDate").getValue(String::class.java)
+                    val status = bookingSnapshot.child("status").getValue(String::class.java)
+                    
+                    if (checkInDate != null && status != "cancelled") {
+                        try {
+                            val date = dateFormat.parse(checkInDate)
+                            if (date != null && !date.before(startDate) && !date.after(endDate)) {
+                                val dateStr = dateFormat.format(date)
+                                checkinMap[dateStr] = checkinMap.getOrDefault(dateStr, 0) + 1
+                            }
+                        } catch (e: Exception) {
+                            println("Date parsing error: ${e.message}")
+                        }
+                    }
+                }
+                
+                // Sắp xếp theo ngày
+                val sortedData = checkinMap.entries.sortedBy { 
+                    dateFormat.parse(it.key)?.time ?: 0
+                }
+                
+                // Chuyển đổi dữ liệu thành entries
+                sortedData.forEachIndexed { index, entry ->
+                    entries.add(Entry(index.toFloat(), entry.value.toFloat()))
+                }
+                
+                // Cập nhật cấu hình trước khi set data
+                updateChartConfig(binding.checkinLineChart, entries)
+                
+                val dataSet = LineDataSet(entries, "Số lượt check-in").apply {
+                    color = Color.BLUE
+                    setCircleColor(Color.BLUE)
+                    lineWidth = 2f
+                    circleRadius = 4f
+                    valueTextSize = 10f
+                    setDrawValues(true)
+                    valueFormatter = object : PercentFormatter() {
+                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                            return value.toInt().toString()
+                        }
+                    }
+                }
+                
+                binding.checkinLineChart.apply {
+                    data = LineData(dataSet)
+                    invalidate()
+                }
+            }
+            
+            override fun onCancelled(error: DatabaseError) {
+                println("Error loading check-in stats: ${error.message}")
+            }
+        })
+    }
+
+    private fun loadCheckoutStats(period: String) {
+        val entries = ArrayList<Entry>()
+        val vietnamTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh")
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
+            timeZone = vietnamTimeZone
+        }
+        
+        // Lấy ngày hiện tại theo GMT+7
+        val calendar = Calendar.getInstance(vietnamTimeZone)
+        val currentDate = calendar.time
+        
+        // Tính toán khoảng thời gian dựa trên period
+        val (startDate, endDate) = when (period) {
+            "day" -> {
+                calendar.add(Calendar.DAY_OF_YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.DAY_OF_YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "week" -> {
+                calendar.add(Calendar.WEEK_OF_YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.WEEK_OF_YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "month" -> {
+                calendar.add(Calendar.MONTH, -1)
+                val start = calendar.time
+                calendar.add(Calendar.MONTH, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            "year" -> {
+                calendar.add(Calendar.YEAR, -1)
+                val start = calendar.time
+                calendar.add(Calendar.YEAR, 2)
+                val end = calendar.time
+                Pair(start, end)
+            }
+            else -> Pair(currentDate, currentDate)
+        }
+        
+        database.child("Booking").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val checkoutMap = mutableMapOf<String, Int>()
+                
+                // Nếu là ngày hoặc tuần, tạo tất cả các ngày trong khoảng
+                if (period == "day" || period == "week") {
+                    val tempCalendar = Calendar.getInstance(vietnamTimeZone)
+                    tempCalendar.time = startDate
+                    while (!tempCalendar.time.after(endDate)) {
+                        checkoutMap[dateFormat.format(tempCalendar.time)] = 0
+                        tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    }
+                }
+                
+                // Đếm số lượng check-out
+                for (bookingSnapshot in snapshot.children) {
+                    val checkOutDate = bookingSnapshot.child("checkOutDate").getValue(String::class.java)
+                    val status = bookingSnapshot.child("status").getValue(String::class.java)
+                    
+                    if (checkOutDate != null && status != "cancelled") {
+                        try {
+                            val date = dateFormat.parse(checkOutDate)
+                            if (date != null && !date.before(startDate) && !date.after(endDate)) {
+                                val dateStr = dateFormat.format(date)
+                                checkoutMap[dateStr] = checkoutMap.getOrDefault(dateStr, 0) + 1
+                            }
+                        } catch (e: Exception) {
+                            println("Date parsing error: ${e.message}")
+                        }
+                    }
+                }
+                
+                // Sắp xếp theo ngày
+                val sortedData = checkoutMap.entries.sortedBy { 
+                    dateFormat.parse(it.key)?.time ?: 0
+                }
+                
+                // Chuyển đổi dữ liệu thành entries
+                sortedData.forEachIndexed { index, entry ->
+                    entries.add(Entry(index.toFloat(), entry.value.toFloat()))
+                }
+                
+                val dataSet = LineDataSet(entries, "Số lượt check-out").apply {
+                    color = Color.RED
+                    setCircleColor(Color.RED)
+                    lineWidth = 2f
+                    circleRadius = 4f
+                    valueTextSize = 10f
+                }
+                
+                binding.checkoutLineChart.apply {
+                    data = LineData(dataSet)
+                    invalidate()
+                }
+            }
+            
+            override fun onCancelled(error: DatabaseError) {
+                println("Error loading check-out stats: ${error.message}")
+            }
+        })
     }
 
     override fun onDestroyView() {

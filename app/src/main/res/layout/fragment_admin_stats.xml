@@ -140,9 +140,33 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/checkinLineChart"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="300dp"
                     android:layout_marginTop="8dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <!-- Thêm vào sau phần checkin -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thống kê check-out"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/checkoutTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            app:tabGravity="fill"/>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/checkoutLineChart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"/>
     </LinearLayout>
 </ScrollView> 
