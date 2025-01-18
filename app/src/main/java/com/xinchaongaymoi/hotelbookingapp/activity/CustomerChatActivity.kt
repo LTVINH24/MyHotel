@@ -18,6 +18,7 @@ import com.xinchaongaymoi.hotelbookingapp.R
 import io.kommunicate.KmConversationBuilder
 import io.kommunicate.Kommunicate
 import io.kommunicate.callbacks.KMLoginHandler
+import io.kommunicate.callbacks.KMLogoutHandler
 import io.kommunicate.callbacks.KmCallback
 import io.kommunicate.callbacks.KmPrechatCallback
 import io.kommunicate.models.KmPrechatInputModel
@@ -55,9 +56,17 @@ class CustomerChatActivity : AppCompatActivity() {
             setCancelable(false)
             show()
         }
-
-//        if (KMUser.isLoggedIn(this))
-//        {
+//
+//        if (KMUser.isLoggedIn(this)) {
+//            Kommunicate.logout(this, object : KMLogoutHandler {
+//                override fun onSuccess(context: Context?) {
+//                    Log.i("Logout", "Success")
+//                }
+//
+//                override fun onFailure(exception: Exception?) {
+//                    Log.i("Logout", "Failed")
+//                }
+//            })
 //            val user = KMUser.getLoggedInUser(this)
 //            KmConversationBuilder(this)
 //                .setKmUser(user)
@@ -71,8 +80,7 @@ class CustomerChatActivity : AppCompatActivity() {
 //                        Log.d("Conversation", "Failure : $error")
 //                    }
 //                })
-//        } else
-//        {
+//        } else {
             val inputModelList: MutableList<KmPrechatInputModel> = mutableListOf()
 
             val emailField = KmPrechatInputModel().apply {
