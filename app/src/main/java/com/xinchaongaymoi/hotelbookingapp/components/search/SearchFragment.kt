@@ -20,7 +20,7 @@ import com.xinchaongaymoi.hotelbookingapp.adapter.SearchRoomAdapter
 class SearchFragment : Fragment() {
     private val viewModel: SearchViewModel by activityViewModels()
     private lateinit var binding: FragmentSearchBinding
-
+    private var guestCount = 1
     // Khởi tạo adapters
     private val luxuryRoomAdapter = SearchRoomAdapter(SearchRoomAdapter.TYPE_LUXURY)
     private val royalRoomAdapter = SearchRoomAdapter(SearchRoomAdapter.TYPE_ROYAL)
@@ -40,6 +40,7 @@ class SearchFragment : Fragment() {
         setupPriceSeekBar()
         setUpSearchBtn()
         setupRecyclerViews()
+        setupGuestCounter()
         viewModel.loadRoomsByType()
         observeRoomData()
     }
@@ -69,28 +70,28 @@ class SearchFragment : Fragment() {
                 binding.priceRangeText.text = "0$ - ${progress}$"
             }
 
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+
     }
 
     private fun setUpSearchBtn() {
         binding.btnSearch.setOnClickListener {
-            val location = binding.locationInput.text.toString().trim()
+
             val checkIn = binding.checkInDate.text.toString().trim()
             val checkOut = binding.checkOutDate.text.toString().trim()
             val maxPrice = binding.priceSeekBar.progress.toDouble().let { 
                 if (it > 0) it else null 
             }
-
-            if ((checkIn.isNotBlank() && checkOut.isBlank()) || 
-                (checkIn.isBlank() && checkOut.isNotBlank())) {
+            if ((checkIn.isBlank() && checkOut.isBlank()) ) {
                 return@setOnClickListener
             }
-
+            viewModel.setDates(checkIn, checkOut)
             viewModel.searchRooms(
-                location.ifBlank { null },
+                guestCount,
                 checkIn.ifBlank { null },
                 checkOut.ifBlank { null },
                 maxPrice
@@ -98,7 +99,22 @@ class SearchFragment : Fragment() {
             findNavController().navigate(R.id.action_searchFragment_to_searchResultFragment)
         }
     }
+    private fun setupGuestCounter() {
+        binding.guestCountText.text = guestCount.toString()
 
+        binding.decreaseGuests.setOnClickListener {
+            if (guestCount > 1) {
+                guestCount--
+                binding.guestCountText.text = guestCount.toString()
+            }
+        }
+        binding.increaseGuests.setOnClickListener {
+            if (guestCount < 10) {
+                guestCount++
+                binding.guestCountText.text = guestCount.toString()
+            }
+        }
+    }
     private fun setupRecyclerViews() {
         binding.luxuryRoomsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -110,7 +126,24 @@ class SearchFragment : Fragment() {
             adapter = royalRoomAdapter
         }
 
-        // Thêm click listeners nếu cần
+        // Thêm click listeners
+        luxuryRoomAdapter.setOnItemClickListener { room ->
+            navigateToRoomDetail(room.id)
+        }
+
+        royalRoomAdapter.setOnItemClickListener { room ->
+            navigateToRoomDetail(room.id)
+        }
+    }
+
+    private fun navigateToRoomDetail(roomId: String) {
+        // Sử dụng Navigation Component để chuyển fragment
+        findNavController().navigate(
+            R.id.action_searchFragment_to_roomDetailFragment,
+            Bundle().apply {
+                putString("ROOM_ID", roomId)
+            }
+        )
     }
 
     private fun observeRoomData() {

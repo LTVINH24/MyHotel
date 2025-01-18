@@ -8,8 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.xinchaongaymoi.hotelbookingapp.R
 
-class ImageSliderAdapter(private val images: List<String>) :
+class ImageSliderAdapter(private var imageUrls: List<String>) :
     RecyclerView.Adapter<ImageSliderAdapter.ImageViewHolder>() {
+
+    fun updateImages(newImages: List<String>) {
+        imageUrls = newImages
+        notifyDataSetChanged()
+    }
 
     inner class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageView)
@@ -23,10 +28,10 @@ class ImageSliderAdapter(private val images: List<String>) :
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         Glide.with(holder.itemView.context)
-            .load(images[position])
+            .load(imageUrls[position])
             .centerCrop()
             .into(holder.imageView)
     }
 
-    override fun getItemCount(): Int = images.size
+    override fun getItemCount(): Int = imageUrls.size
 }
