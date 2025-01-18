@@ -24,6 +24,8 @@ class AdminUsersFragment : Fragment() {
     private var _binding: FragmentAdminUsersBinding? = null
     private val binding get() = _binding!!
     private lateinit var userAdapter: AdminUserAdapter
+    private var valueEventListener: ValueEventListener? = null
+    private var usersRef = FirebaseDatabase.getInstance().getReference("user")
     
     private var currentPage = 1
     private val itemsPerPage = 10
@@ -119,18 +121,21 @@ class AdminUsersFragment : Fragment() {
     }
 
     private fun loadUsers() {
-        val usersRef = FirebaseDatabase.getInstance().getReference("user")
-            .orderByChild("name") // Sắp xếp theo tên
+        // Hủy listener cũ nếu có
+        valueEventListener?.let { 
+            usersRef.removeEventListener(it)
+        }
 
-        usersRef.addValueEventListener(object : ValueEventListener {
+        valueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                // Kiểm tra binding có tồn tại không
+                if (_binding == null) return
+
                 val allUsers = mutableListOf<User>()
                 
-                // Lọc và sắp xếp users
                 for (userSnapshot in snapshot.children) {
                     val user = userSnapshot.toUser()
                     
-                    // Lọc theo search query
                     if (searchQuery.isNotEmpty()) {
                         val nameMatch = user.name.lowercase().contains(searchQuery)
                         val emailMatch = user.email.lowercase().contains(searchQuery)
@@ -140,26 +145,27 @@ class AdminUsersFragment : Fragment() {
                     allUsers.add(user)
                 }
 
-                // Sắp xếp theo tên (không phân biệt hoa thường)
                 allUsers.sortWith(compareBy { it.name.lowercase() })
                 
-                // Cập nhật tổng số users và tính toán phân trang
                 totalUsers = allUsers.size
                 val startIndex = (currentPage - 1) * itemsPerPage
                 val endIndex = minOf(startIndex + itemsPerPage, totalUsers)
                 
-                // Cập nhật UI phân trang
                 updatePaginationUI()
                 
-                // Cập nhật danh sách hiển thị
                 val pagedUsers = allUsers.subList(startIndex, endIndex)
                 userAdapter.updateUsers(pagedUsers)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Lỗi: ${error.message}", Toast.LENGTH_SHORT).show()
+                if (_binding != null) {
+                    Toast.makeText(context, "Lỗi: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
             }
-        })
+        }
+
+        // Đăng ký listener mới
+        usersRef.orderByChild("name").addValueEventListener(valueEventListener!!)
     }
 
     private fun updatePaginationUI() {
@@ -187,23 +193,31 @@ class AdminUsersFragment : Fragment() {
         
         userRef.child("isBanned").setValue(newBanStatus)
             .addOnSuccessListener {
-                user.isBanned = newBanStatus
-                
-                val message = if (newBanStatus) {
-                    "Đã ban tài khoản ${user.email}"
-                } else {
-                    "Đã unban tài khoản ${user.email}"
+                if (_binding != null) {
+                    user.isBanned = newBanStatus
+                    
+                    val message = if (newBanStatus) {
+                        "Đã ban tài khoản ${user.email}"
+                    } else {
+                        "Đã unban tài khoản ${user.email}"
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    
+                    userAdapter.notifyDataSetChanged()
                 }
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                
-                userAdapter.notifyDataSetChanged()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
+                if (_binding != null) {
+                    Toast.makeText(context, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
     override fun onDestroyView() {
+        // Hủy đăng ký listener trước khi hủy binding
+        valueEventListener?.let {
+            usersRef.removeEventListener(it)
+        }
         super.onDestroyView()
         _binding = null
     }
