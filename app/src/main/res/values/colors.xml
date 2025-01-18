@@ -9,4 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">@color/purple_500</color>
     <color name="colorPrimaryTranslucent">#496200EE</color>
+    <color name="light_gray">#F5F5F5</color>
+    <color name="status_pending">#FF9800</color>
+    <color name="status_confirmed">#4CAF50</color>
+    <color name="status_cancelled">#F44336</color>
+    <color name="status_completed">#2196F3</color>
 </resources>

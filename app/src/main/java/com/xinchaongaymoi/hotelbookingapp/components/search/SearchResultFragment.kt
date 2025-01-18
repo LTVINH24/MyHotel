@@ -1,5 +1,6 @@
 package com.xinchaongaymoi.hotelbookingapp.components.search
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,10 +16,12 @@ import com.google.android.material.tabs.TabLayout
 import com.xinchaongaymoi.hotelbookingapp.adapter.RoomAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentSearchResultBinding
 import com.xinchaongaymoi.hotelbookingapp.R
-import com.xinchaongaymoi.hotelbookingapp.activity.RoomDetailActivity
+import androidx.navigation.fragment.findNavController
+import com.xinchaongaymoi.hotelbookingapp.activity.BookingActivity
+import android.util.Log
 
 class SearchResultFragment : Fragment() {
-
+    private var BOOKING_REQUEST_CODE = 100
     private val viewModel :SearchViewModel by activityViewModels()
     private lateinit var binding:FragmentSearchResultBinding
     private lateinit var roomAdapter:RoomAdapter
@@ -43,6 +46,7 @@ class SearchResultFragment : Fragment() {
         observeViewModel()
         setTabSort()
     }
+    
     private fun setTabSort()
     {
         binding.filterTabs.addOnTabSelectedListener(object:TabLayout.OnTabSelectedListener {
@@ -60,32 +64,72 @@ class SearchResultFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
+    
     private fun setupRecyclerView()
     {
-        roomAdapter = RoomAdapter()
-        
-        // Thêm click listener cho adapter
-        roomAdapter.setOnItemClickListener { roomId ->
-            val intent = Intent(requireContext(), RoomDetailActivity::class.java).apply {
-                putExtra("ROOM_ID", roomId)
+        roomAdapter = RoomAdapter().apply {
+            setOnItemClickListener { room ->
+                navigateToRoomDetail(room.id)
             }
-            startActivity(intent)
+
+            setOnBookClickListener { room ->
+                val intent = Intent(requireContext(), BookingActivity::class.java).apply {
+                    putExtra("ROOM_ID", room.id)
+                    putExtra("CHECK_IN", viewModel.checkInDate.value)
+                    putExtra("CHECK_OUT", viewModel.checkOutDate.value)
+                }
+                Log.d("SearchResultFragment", "Sending data: roomId=${room.id}, " +
+                    "checkIn=${viewModel.checkInDate.value}, " +
+                    "checkOut=${viewModel.checkOutDate.value}")
+                startActivityForResult(intent, BOOKING_REQUEST_CODE)
+            }
         }
-        
+
         binding.recyclerViewRooms.apply {
             adapter = roomAdapter
             layoutManager = LinearLayoutManager(context)
         }
     }
+    private fun navigateToRoomDetail(roomId: String) {
+        findNavController().navigate(
+            R.id.action_searchResultFragment_to_roomDetailFragment,
+            Bundle().apply {
+                putString("ROOM_ID", roomId)
+            }
+        )
+    }
     private fun observeViewModel(){
         viewModel.searchResults.observe(viewLifecycleOwner) { rooms ->
             roomAdapter.updateRooms(rooms)
+            binding.tvNoRooms.visibility = if (rooms.isEmpty()) View.VISIBLE else View.GONE
+            binding.recyclerViewRooms.visibility = if (rooms.isEmpty()) View.GONE else View.VISIBLE
+        }
+        viewModel.checkInDate.observe(viewLifecycleOwner) { checkIn ->
+            viewModel.checkOutDate.value?.let { checkOut ->
+                roomAdapter.setDates(checkIn, checkOut)
+            }
+        }
+
+        viewModel.checkOutDate.observe(viewLifecycleOwner) { checkOut ->
+            viewModel.checkInDate.value?.let { checkIn ->
+                roomAdapter.setDates(checkIn, checkOut)
+            }
         }
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) {
                 View.VISIBLE
             } else {
                 View.GONE
+            }
+        }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BOOKING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            viewModel.checkInDate.value?.let { checkIn ->
+                viewModel.checkOutDate.value?.let { checkOut ->
+                    viewModel.searchRooms(1, checkIn, checkOut, null)
+                }
             }
         }
     }

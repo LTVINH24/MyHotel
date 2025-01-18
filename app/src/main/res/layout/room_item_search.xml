@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewRoom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="8dp"
     app:cardElevation="3dp">
 
@@ -32,15 +36,27 @@
                 android:textStyle="bold"
                 android:textColor="#212121"/>
 
-            <TextView
-                android:id="@+id/roomLocation"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawablePadding="4dp"
-                android:textColor="#757575"
-                android:textSize="16sp"
-                app:drawableStartCompat="@drawable/ic_location" />
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_bed"
+                    app:tint="#455A64" />
+
+                <TextView
+                    android:id="@+id/tvBedCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="#455A64"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -105,6 +121,8 @@
                     android:paddingHorizontal="16dp"
                     android:text="Đặt ngay"
                     app:cornerRadius="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:textColor="#FFFFFF"
                     android:backgroundTint="#6200EE"/>
             </LinearLayout>

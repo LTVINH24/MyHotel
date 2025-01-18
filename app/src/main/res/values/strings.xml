@@ -52,11 +52,12 @@
     <string name="item_title">Item Title</string>
     <string name="string_account">Account</string>
     <string name="my_reviews">My reviews</string>
-    <string name="language">language</string>
-    <string name="select_language">Select Language</string>
+    <string name="language">Language</string>
     <string name="title_activity_show_image">ShowImageActivity</string>
     <string name="google_map_api_key">AIzaSyCjZFIOYN3k8GCE15TMUN4c_lU_LCOwpcY</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="english">English</string>
+    <string name="vietnamese">Vietnamese</string>
 
 </resources>

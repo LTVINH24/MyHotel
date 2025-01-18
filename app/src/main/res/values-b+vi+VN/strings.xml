@@ -53,5 +53,6 @@
     <string name="string_account">Tài khoản</string>
     <string name="my_reviews">Đánh giá của tôi</string>
     <string name="language">Ngôn ngữ</string>
-    <string name="select_language">Chọn ngôn ngữ</string>
+    <string name="english">Tiếng Anh</string>
+    <string name="vietnamese">Tiếng Việt</string>
 </resources>
