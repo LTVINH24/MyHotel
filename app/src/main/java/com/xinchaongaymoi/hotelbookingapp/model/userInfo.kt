@@ -7,3 +7,10 @@ data class UserInfo(
     var name: String = "",
     var phone: String = "",
 )
+data class UserAccount(
+    val userId: String,
+    val email: String,
+    val password:String,
+    val displayName: String,
+    val loginType: String // "email-password" or "google"
+)

@@ -16,6 +16,11 @@ import com.google.firebase.database.DatabaseReference
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityRegisterBinding
 import com.google.firebase.database.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager
+import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager.saveAccounts
+import com.xinchaongaymoi.hotelbookingapp.model.UserAccount
 import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
 
 class AuthenActivity : AppCompatActivity() {
@@ -67,7 +72,7 @@ class AuthenActivity : AppCompatActivity() {
                                 }
                                 val _name = binding.nameET.text.toString()
                                 val _phone = binding.phoneET.text.toString()
-                                user?.let { saveUserToDatabase(it, _name, _phone) }
+                                user?.let { saveUserToDatabase(it, _name, _phone, password) }
                                 val intent = Intent(this, OTPConfirmActivity::class.java)
                                 intent.putExtra("email", email)
                                 startActivity(intent)
@@ -89,7 +94,7 @@ class AuthenActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
     }
-    fun saveUserToDatabase(user: FirebaseUser, _name:String, _phone:String) {
+    fun saveUserToDatabase(user: FirebaseUser, _name: String, _phone: String, password:String) {
         val database = FirebaseDatabase.getInstance()
         val userRef: DatabaseReference = database.getReference("user").child(user.uid)
 
@@ -98,13 +103,39 @@ class AuthenActivity : AppCompatActivity() {
             name = _name,
             phone = _phone
         )
+
+        // Save current user info in UserPrefs
         sharedPreferences.edit().apply {
-            putString("id",user.uid)
+            putString("id", user.uid)
             putString("name", _name)
             putString("email", user.email)
             putString("phone", _phone)
             apply()
         }
+
+        // Retrieve the existing accounts
+        val existingAccounts = AccountManager.getAccounts(this).toMutableList()
+
+        // Check if the account already exists
+        val userAccount = UserAccount(
+            userId = user.uid,
+            email = user.email ?: "",
+            displayName = _name ?: "user",
+            loginType = "email-password",
+            password = password
+        )
+        if (existingAccounts.none { it.userId == user.uid }) {
+            // Add new account to the list
+            existingAccounts.add(userAccount)
+        }
+
+        // Save the updated accounts list
+        saveAccounts(this, existingAccounts)
+
+        // Save the current account as the last used account
+        AccountManager.setLastUsedAccount(this, user.uid)
+
+        // Save user data in Firebase
         userRef.setValue(userData)
             .addOnSuccessListener {
                 Log.d("SaveUser", "User data saved successfully!")
