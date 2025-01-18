@@ -45,7 +45,6 @@ class PlaceRenderer(
     ) {
         markerOptions.title(item.name)
             .position(item.latLng)
-            .icon(bicycleIcon)
     }
 
     /**
