@@ -47,11 +47,6 @@
         <activity
             android:name=".activity.CustomerChatActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.BookingActivity"
@@ -88,22 +83,25 @@
             android:name=".activity.AdminActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.HotelBookingApp" />
+        <activity
             android:name=".activity.AuthenActivity"
             android:exported="false" />
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_aut"
+            android:theme="@style/Theme.HotelBookingApp" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            android:theme="@style/Theme.HotelBookingApp" />
-        <activity
-            android:name=".activity.MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-
-            android:theme="@style/Theme.HotelBookingApp">
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
         <service
             android:name=".service.FirebaseMessagingService"
             android:exported="true">
