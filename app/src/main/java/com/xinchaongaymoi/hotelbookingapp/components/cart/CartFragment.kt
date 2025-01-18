@@ -7,35 +7,32 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentCartBinding
 
 class CartFragment : Fragment() {
 
-private var _binding: FragmentCartBinding? = null
-  // This property is only valid between onCreateView and
-  // onDestroyView.
-  private val binding get() = _binding!!
-
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    val galleryViewModel =
-            ViewModelProvider(this).get(CartViewModel::class.java)
-
-    _binding = FragmentCartBinding.inflate(inflater, container, false)
-    val root: View = binding.root
-
-    val textView: TextView = binding.textGallery
-    galleryViewModel.text.observe(viewLifecycleOwner) {
-      textView.text = it
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_cart, container, false)
     }
-    return root
-  }
 
-override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        showFoodOrderFragment()
+    }
+
+
+    private fun showFoodOrderFragment() {
+        replaceFragment(FoodOrderFragment())
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction() // dùng childFragmentManager cho fragment trong fragment
+            .replace(R.id.fragment_container_cart, fragment) // fragment_container là id layout container trong layout của MainFragment
+            .commit()
     }
 }
