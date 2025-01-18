@@ -238,21 +238,17 @@ class AdminStatsFragment : Fragment() {
                     totalUsers++
                     when (userSnapshot.child("role").getValue(String::class.java)) {
                         "admin" -> adminCount++
-                        else -> userCount++  // Mọi role khác đều tính là user
+                        else -> userCount++
                     }
                 }
 
-                binding.tvTotalUsers.text = "Tổng số người dùng: $totalUsers"
-                binding.tvUsersByRole.text = """
-                    Admin: $adminCount người dùng
-                    User: $userCount người dùng
-                """.trimIndent()
+                binding.tvTotalUsers.text = "Tổng số:\n$totalUsers người dùng"
+                binding.tvUsersByRole.text = "Admin: $adminCount\nUser: $userCount"
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Xử lý lỗi
-                binding.tvTotalUsers.text = "Không thể tải thông tin người dùng"
-                binding.tvUsersByRole.text = "Đã xảy ra lỗi: ${error.message}"
+                binding.tvTotalUsers.text = "Không thể tải thông tin"
+                binding.tvUsersByRole.text = "Đã xảy ra lỗi"
             }
         })
     }
