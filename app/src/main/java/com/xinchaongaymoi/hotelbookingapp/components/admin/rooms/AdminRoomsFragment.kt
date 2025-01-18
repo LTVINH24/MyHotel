@@ -44,6 +44,11 @@ class AdminRoomsFragment : Fragment() {
             mutableListOf(),
             onEditClick = {
                 room->
+                val bundle = Bundle().apply {
+                   putString("roomId",room.id)
+                }
+                findNavController().navigate(R.id.action_adminRoomsFragment_to_editRoomFragment,bundle)
+
             },
             onDeleteClick = {
                 room->

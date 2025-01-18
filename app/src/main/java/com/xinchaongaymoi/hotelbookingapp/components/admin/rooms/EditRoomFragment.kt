@@ -1,36 +1,35 @@
 package com.xinchaongaymoi.hotelbookingapp.components.admin.rooms
 import android.app.Activity
-import android.app.role.RoleManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.graphics.rotationMatrix
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cloudinary.Util
+import com.bumptech.glide.Glide
 import com.xinchaongaymoi.hotelbookingapp.adapter.ExtraImagesAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAddRoomBinding
-import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminRoomsBinding
 import com.xinchaongaymoi.hotelbookingapp.model.Room
 import com.xinchaongaymoi.hotelbookingapp.service.CloudinaryService
 import com.xinchaongaymoi.hotelbookingapp.service.RoomService
-import kotlin.math.max
 import android.util.Log
 
-
-class  : Fragment() {
+class EditRoomFragment : Fragment() {
     private var _binding: FragmentAddRoomBinding? = null
     private val binding get() = _binding!!
     private val roomService =RoomService()
     private val cloudinaryService = CloudinaryService()
     private var selectedMainImageUri: Uri? = null
-    private  val REQUEST_MAIN_IMAGE = 123
-    private val REQUEST_EXTRA_IMAGES =124
+    private var currentRoom: Room? = null
+    private var originalMainImage: String? = null
+    private  val REQUEST_MAIN_IMAGE = 127
+    private val REQUEST_EXTRA_IMAGES =128
     private lateinit var extraImagesAdapter: ExtraImagesAdapter
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,11 +44,46 @@ class  : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupExtraImagesRecyclerView()
         setupClickListeners()
+        val roomId = arguments?.getString("roomId")
+        roomId?.let{
+            id->
+            roomService.getRoomById(id){
+                room->room?.let{
+                    currentRoom=it
+                originalMainImage  = it.mainImage
+                activity?.runOnUiThread{
+                    loadRoomData()
+                }
+            }
+            }
+        }
 
     }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    private fun loadRoomData(){
+        currentRoom?.let {
+            room->
+            binding.apply {
+                edtRoomName.setText(room.roomName)
+                edtRoomType.setText(room.roomType)
+                edtArea.setText(room.area.toString())
+                edtBedType.setText(room.bedType)
+                edtTotalBed.setText(room.totalBed.toString())
+                edtMaxGuests.setText(room.maxGuests.toString())
+                edtPricePerNight.setText(room.pricePerNight.toString())
+                edtUtilities.setText(room.utilities)
+                edtSale.setText(room.sale.toString())
+                Glide.with(requireContext())
+                    .load(room.mainImage)
+                    .into(roomImageView)
+                room.images?.forEach{
+                    image->extraImagesAdapter.addImageUrl(image)
+                }
+            }
+        }
     }
     private fun setupExtraImagesRecyclerView(){
         extraImagesAdapter = ExtraImagesAdapter{
@@ -68,7 +102,7 @@ class  : Fragment() {
             openImagePicker(REQUEST_EXTRA_IMAGES)
         }
         binding.btnSaveRoom.setOnClickListener{
-            saveRoom()
+            updateRoom()
         }
     }
     private fun openImagePicker(requestCode:Int){
@@ -76,7 +110,7 @@ class  : Fragment() {
         intent.type= "image/*"
         startActivityForResult(intent,requestCode)
     }
-    private fun saveRoom()
+    private fun updateRoom()
     {
         try{
             val roomName = binding.edtRoomName.text.toString()
@@ -92,54 +126,57 @@ class  : Fragment() {
                 Toast.makeText(context, "Please fill in all information", Toast.LENGTH_SHORT).show()
                 return
             }
-            if (selectedMainImageUri == null) {
-                Toast.makeText(context, "Please choose main image", Toast.LENGTH_SHORT).show()
-                return
-            }
-            selectedMainImageUri?.let { mainUri->
-                cloudinaryService.uploadImage(requireContext(),mainUri){
-                        mainImageUri->
-                    if(mainImageUri!=null)
-                    {
-                        uploadExtraImages {
-                                extraImageUrls->
-                            val newRoom = Room(
-                                roomName = roomName,
-                                mainImage = mainImageUri,
-                                images = extraImageUrls,
-                                roomType = roomType,
-                                area = area,
-                                bedType = bedType,
-                                totalBed = totalBed,
-                                maxGuests = maxGuests,
-                                pricePerNight = pricePerNight,
-                                utilities = utilities,
-                                sale = sale
-                            )
-                            roomService.addRoom(newRoom){
-                                    success->
-                                if(success){
-                                    activity?.runOnUiThread {
-                                        Toast.makeText(context, "Thêm phòng thành công", Toast.LENGTH_SHORT).show()
-                                        findNavController().navigateUp()
-                                    }
-                                }
-                                else{
-                                    activity?.runOnUiThread {
-                                        Toast.makeText(context, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
+            val processUpdate = {mainImageUrl:String
+            ->uploadExtraImages {
+                extraImageUrls->
+                val updatedRoom = currentRoom?.copy(
+                    roomName = roomName,
+                    mainImage = mainImageUrl,
+                    images = extraImageUrls,
+                    roomType = roomType,
+                    area = area,
+                    bedType = bedType,
+                    totalBed = totalBed,
+                    maxGuests = maxGuests,
+                    pricePerNight = pricePerNight,
+                    utilities = utilities,
+                    sale = sale
+                )
+                updatedRoom?.let {
+                    room->roomService.updateRoom(room){
+                        success->
+                        activity?.runOnUiThread{
+                            if(success)
+                            {
+                                Toast.makeText(context,"Update successfully",Toast.LENGTH_SHORT).show()
+                                findNavController().navigateUp()
+                            }
+                            else{
+                                Toast.makeText(context,"Update failed",Toast.LENGTH_SHORT).show()
                             }
                         }
+                }
+                }
+            }
+            }
 
+            if(selectedMainImageUri !=null){
+                cloudinaryService.uploadImage(requireContext(),selectedMainImageUri!!){
+                    mainImageUri->
+                    if(mainImageUri!=null){
+                        processUpdate(mainImageUri)
                     }
                     else{
-                        activity?.runOnUiThread {
-                            Toast.makeText(context, "Không thể tải ảnh lên", Toast.LENGTH_SHORT).show()
+                        activity?.runOnUiThread{
+                            Toast.makeText(context,"Error upload image",Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             }
+            else{
+                originalMainImage?.let{processUpdate(it)}
+            }
+
         }
         catch (e: Exception)
         {
@@ -150,8 +187,9 @@ class  : Fragment() {
     }
     private fun uploadExtraImages(callback:(List<String>)->Unit){
         val extraImages = extraImagesAdapter.getAllImages()
+        val existingUrls = extraImagesAdapter.getExistingImageUrls()
         if (extraImages.isEmpty()) {
-            callback(emptyList())
+            callback(existingUrls)
             return
         }
         val uploadedUrls = mutableListOf<String>()
@@ -161,7 +199,7 @@ class  : Fragment() {
                 imageUrl?.let { uploadedUrls.add(it) }
                 uploadCount++
                 if (uploadCount == extraImages.size) {
-                    callback(uploadedUrls)
+                    callback(uploadedUrls+existingUrls)
                 }
             }
         }

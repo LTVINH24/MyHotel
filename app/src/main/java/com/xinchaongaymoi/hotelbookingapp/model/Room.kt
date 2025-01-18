@@ -5,7 +5,6 @@ data class Room(
     val mainImage:String ="",
     val images: List<String> = listOf(),
     val roomType:String ="",
-    val location:String="",
     val area:Double=0.0,
     val bedType:String="",
     val totalBed:Int=0,
@@ -14,5 +13,6 @@ data class Room(
     val pricePerHour:Double=0.0,
     val utilities:String="",
     val sale:Double=0.0,
-    val rating: Double=0.0
+    val rating: Double=0.0,
+    val isDeleted:Boolean=false
 )
