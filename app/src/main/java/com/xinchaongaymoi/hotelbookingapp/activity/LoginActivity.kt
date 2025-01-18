@@ -16,79 +16,65 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityLoginBinding
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.database.*
+
 class LoginActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var googleSignInClient:GoogleSignInClient
+    private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var database:DatabaseReference
+    private lateinit var database: DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityLoginBinding.inflate(layoutInflater)
-        firebaseAuth=FirebaseAuth.getInstance()
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        firebaseAuth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         enableEdgeToEdge()
         setContentView(binding.root)
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))  // Ensure this is correct
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(this,gso)
-        binding.loginGoogleBtn.setOnClickListener{
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        binding.loginGoogleBtn.setOnClickListener {
             signInWithGoogle()
         }
-        val loginBtn=binding.loginBtn
-        loginBtn.setOnClickListener{
+
+        binding.loginBtn.setOnClickListener {
             val email = binding.emailLoginET.text.toString()
             val password = binding.passwordLoginET.text.toString()
             
-            if(email.isNotEmpty() && password.isNotEmpty()) {
+            if (email.isNotEmpty() && password.isNotEmpty()) {
                 firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-                    if(it.isSuccessful) {
+                    if (it.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         user?.let { firebaseUser ->
                             navigateBasedOnRole(firebaseUser.uid)
                         }
                     } else {
-                        Toast.makeText(this, "Đăng nhập thất bại: ${it.exception?.message}", 
-                            Toast.LENGTH_SHORT).show()
-//
-/*
-
-            val email= binding.emailLoginET.text.toString()
-            val password =binding.passwordLoginET.text.toString()
-            
-            if(email.isNotEmpty()&&password.isNotEmpty()){
-                firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener{
-                    if(it.isSuccessful){
-                        val userId = firebaseAuth.currentUser?.uid
-                        fetchUserInfo(userId.toString())
-                        startActivity(Intent(this, MainActivity::class.java))
-                    }
-                    else{
-                       Log.i("Test loi",it.exception.toString())
-//
-*/
+                        Toast.makeText(
+                            this,
+                            "Đăng nhập thất bại: ${it.exception?.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
-        binding.linkSignUp.setOnClickListener{
+
+        binding.linkSignUp.setOnClickListener {
             startActivity(Intent(this, AuthenActivity::class.java))
         }
     }
-    private fun signInWithGoogle(){
-        val signInIntent=googleSignInClient.signInIntent
+
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
     }
 
@@ -106,11 +92,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleResult(task:Task<GoogleSignInAccount>)
-    {
-        if(task.isSuccessful){
-            val account :GoogleSignInAccount?=task.result
-            if(account!=null){
+    private fun handleResult(task: Task<GoogleSignInAccount>) {
+        if (task.isSuccessful) {
+            val account: GoogleSignInAccount? = task.result
+            if (account != null) {
                 sharedPreferences.edit().apply {
                     putString("displayName", account.displayName)
                     putString("email", account.email)
@@ -121,18 +106,15 @@ class LoginActivity : AppCompatActivity() {
                 Log.i("SharedPreferences", "User info saved successfully")
                 updateUI(account)
             }
-        }
-        else{
-
-
-            Toast.makeText(this,task.exception.toString(),Toast.LENGTH_SHORT).show()
-
+        } else {
+            Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
         }
     }
-    private fun updateUI(account: GoogleSignInAccount){
+
+    private fun updateUI(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
-            if(it.isSuccessful) {
+            if (it.isSuccessful) {
                 val user = firebaseAuth.currentUser
                 user?.let { firebaseUser ->
                     val userRef = FirebaseDatabase.getInstance().getReference("user")
@@ -157,6 +139,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun fetchUserInfo(userId: String) {
         database.child("user").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -164,16 +147,15 @@ class LoginActivity : AppCompatActivity() {
                     val name = snapshot.child("name").getValue(String::class.java) ?: "Unknown"
                     val email = snapshot.child("email").getValue(String::class.java) ?: "Unknown"
                     val phone = snapshot.child("phone").getValue(String::class.java) ?: "Unknown"
-                    // Save user info in SharedPreferences
+                    
                     sharedPreferences.edit().apply {
-                        putString("id",userId)
+                        putString("id", userId)
                         putString("name", name)
                         putString("email", email)
                         putString("phone", phone)
                         apply()
                     }
 
-                    // Navigate to HomeActivity
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -187,8 +169,6 @@ class LoginActivity : AppCompatActivity() {
             }
         })
     }
-
-}
 
     private fun navigateBasedOnRole(userId: String) {
         val userRef = FirebaseDatabase.getInstance().getReference("user").child(userId)

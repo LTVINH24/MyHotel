@@ -1,5 +1,7 @@
 package com.xinchaongaymoi.hotelbookingapp.components.search
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
