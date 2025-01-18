@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.xinchaongaymoi.hotelbookingapp.adapter.AdminRoomAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminRoomsBinding
 import com.xinchaongaymoi.hotelbookingapp.R
+import com.xinchaongaymoi.hotelbookingapp.model.Room
+
 class AdminRoomsFragment : Fragment() {
     private var _binding: FragmentAdminRoomsBinding? = null
     private val binding get() = _binding!!
@@ -44,15 +46,30 @@ class AdminRoomsFragment : Fragment() {
             mutableListOf(),
             onEditClick = {
                 room->
+                val bundle = Bundle().apply {
+                   putString("roomId",room.id)
+                }
+                findNavController().navigate(R.id.action_adminRoomsFragment_to_editRoomFragment,bundle)
+
             },
             onDeleteClick = {
-                room->
+                room->showDeteleConfirmationDialog(room)
             }
         )
         binding.roomsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = roomAdapter
         }
+    }
+    private fun showDeteleConfirmationDialog(room: Room){
+        android.app.AlertDialog.Builder(requireContext())
+            .setTitle("Confirm delete")
+            .setMessage("Are you sure you want to delete the room ${room.roomName}?")
+            .setPositiveButton("Delete") { _, _ ->
+                viewModel.deleteRoom(room)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
     private fun setupObservers() {
         viewModel.rooms.observe(viewLifecycleOwner) { rooms ->

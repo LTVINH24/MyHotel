@@ -29,11 +29,13 @@ class RoomService {
                 for (data in snapshot.children) {
                     val room = data.getValue(Room::class.java)
                     room?.let {
-                        val guestCountMatch = room.maxGuests == guestCount
-                        val priceMatch = maxPrice == null || room.pricePerNight <= maxPrice
+                        if(it.dele!="true"){
+                            val guestCountMatch = room.maxGuests == guestCount
+                            val priceMatch = maxPrice == null || room.pricePerNight <= maxPrice
 
-                        if (guestCountMatch && priceMatch) {
-                            allRooms.add(it)
+                            if (guestCountMatch && priceMatch) {
+                                allRooms.add(it)
+                            }
                         }
                     }
                 }
@@ -103,7 +105,10 @@ class RoomService {
                     for (roomSnapshot in snapshot.children) {
                         val room = roomSnapshot.getValue(Room::class.java)
                         room?.let {
-                            rooms.add(it)
+                            if(it.dele!="true"){
+                                rooms.add(it)
+
+                            }
                         }
                     }
                     callback(rooms)
@@ -121,8 +126,16 @@ class RoomService {
                val rooms = mutableListOf<Room>()
                 for(data in snapshot.children)
                 {
+
+                    val isDeletedValue = data.child("isDeleted").getValue(String::class.java)
+                    Log.d("RoomService", "isDeleted from snapshot: $isDeletedValue")
                     val room = data.getValue(Room::class.java)
-                    room?.let { rooms.add(it) }
+                    Log.i("Rommmmmmmm",room.toString())
+                    room?.let {
+                        if(it.dele!="true"){
+                            rooms.add(it)
+                        }
+                    }
                 }
                 callback(rooms)
             }
@@ -150,13 +163,16 @@ class RoomService {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     try {
-                        val room = snapshot.getValue(Room::class.java)?.copy(id = snapshot.key ?: "")
-                        callback(room)
+                        val room = snapshot.getValue(Room::class.java)
+                        if (room != null && room.dele!="true") {
+                            callback(room.copy(id = snapshot.key ?: ""))
+                        } else {
+                            callback(null)
+                        }
                     } catch (e: Exception) {
                         callback(null)
                     }
                 } else {
-
                     callback(null)
                 }
             }
@@ -164,7 +180,28 @@ class RoomService {
             override fun onCancelled(error: DatabaseError) {
                 callback(null)
             }
-
         })
+    }
+    fun updateRoom(room:Room,callback:(Boolean)->Unit){
+        room.id?.let {
+            roomId->
+            roomsRef.child(roomId).setValue(room)
+                .addOnSuccessListener {
+                    callback(true)
+                }
+                .addOnFailureListener{
+                    callback(false)
+                }
+        }?:callback(false)
+    }
+    fun deleteRoom(roomId:String,callback: (Boolean) -> Unit)
+    {
+        roomsRef.child(roomId).updateChildren(mapOf("dele" to "true"))
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener{
+                callback(false)
+            }
     }
 }

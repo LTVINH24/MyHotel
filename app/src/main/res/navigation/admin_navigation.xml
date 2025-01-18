@@ -44,4 +44,18 @@
     <action
         android:id="@+id/action_adminRoomsFragment_to_addRoomFragment"
         app:destination="@id/addRoomFragment" />
+
+
+    <action
+        android:id="@+id/action_adminRoomsFragment_to_editRoomFragment"
+        app:destination="@id/editRoomFragment" />
+
+    <fragment
+        android:id="@+id/editRoomFragment"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.rooms.EditRoomFragment"
+        android:label="Chỉnh sửa phòng">
+        <argument
+            android:name="roomId"
+            app:argType="string" />
+    </fragment>
 </navigation> 

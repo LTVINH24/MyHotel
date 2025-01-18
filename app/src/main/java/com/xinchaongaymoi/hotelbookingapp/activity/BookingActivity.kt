@@ -72,7 +72,6 @@ class BookingActivity : AppCompatActivity() {
         binding.apply {
             tvRoomName.text = room.roomName
             tvRoomType.text = "Room type: ${room.roomType}"
-            tvLocation.text = room.location
             ratingBar.rating = room.rating.toFloat()
             tvRating.text = String.format("%.1f", room.rating)
 
