@@ -167,4 +167,16 @@ class RoomService {
 
         })
     }
+    fun updateRoom(room:Room,callback:(Boolean)->Unit){
+        room.id?.let {
+            roomId->
+            roomsRef.child(roomId).setValue(room)
+                .addOnSuccessListener {
+                    callback(true)
+                }
+                .addOnFailureListener{
+                    callback(false)
+                }
+        }?:callback(false)
+    }
 }
