@@ -25,6 +25,7 @@ import com.google.firebase.database.*
 import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager
 import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager.saveAccounts
 import com.xinchaongaymoi.hotelbookingapp.model.UserAccount
 
@@ -68,16 +69,7 @@ class LoginActivity : AppCompatActivity() {
                     if(it.isSuccessful){
                         val userId = firebaseAuth.currentUser?.uid
                         val user = firebaseAuth.currentUser
-                        fetchUserInfo(userId.toString())
-                        user?.let {
-                            val account = UserAccount(
-                                userId = it.uid,
-                                email = it.email ?: "",
-                                displayName = it.displayName ?: "User",
-                                loginType = "email-password"
-                            )
-                            saveAccounts(this, listOf(account))
-                        }
+                        fetchUserInfo(userId.toString(), password)
                         startActivity(Intent(this, MainActivity::class.java))
                     }
                     else{
@@ -131,11 +123,13 @@ class LoginActivity : AppCompatActivity() {
                         userId = it.id.toString(),
                         email = it.email ?: "",
                         displayName = it.displayName ?: "Google User",
+                        password = "",
                         loginType = "google"
                     )
                     saveAccounts(this, listOf(userAccount))
                 }
                 Log.i("SharedPreferences", "User info saved successfully")
+                AccountManager.setLastUsedAccount(this, account.id.toString())
                 updateUI(account)
             }
         }
@@ -160,13 +154,13 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-    private fun fetchUserInfo(userId: String) {
+    private fun fetchUserInfo(userId: String, password:String) {
         database.child("user").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val name = snapshot.child("name").getValue(String::class.java) ?: "Unknown"
                     val email = snapshot.child("email").getValue(String::class.java) ?: "Unknown"
-                    val phone = snapshot.child("phoneNumber").getValue(String::class.java) ?: "Unknown"
+                    val phone = snapshot.child("phone").getValue(String::class.java) ?: "Unknown"
                     // Save user info in SharedPreferences
                     sharedPreferences.edit().apply {
                         putString("id",userId)
@@ -175,7 +169,15 @@ class LoginActivity : AppCompatActivity() {
                         putString("phone", phone)
                         apply()
                     }
+                    val account = UserAccount(
+                        userId = userId,
+                        email = email ?: "",
+                        displayName = name ?: "User",
+                        loginType = "email-password",
+                        password = password
+                    )
 
+                    saveAccounts(this@LoginActivity, listOf(account))
                     // Navigate to HomeActivity
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
@@ -190,6 +192,12 @@ class LoginActivity : AppCompatActivity() {
             }
         })
     }
-
+    private fun saveOrUpdateAccount(newAccount: UserAccount) {
+        val existingAccounts = AccountManager.getAccounts(this).toMutableList()
+        if (existingAccounts.none { it.userId == newAccount.userId }) {
+            existingAccounts.add(newAccount)
+            AccountManager.saveAccounts(this, existingAccounts)
+        }
+    }
 }
 

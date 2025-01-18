@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.activity.AccountDetailActivity
 import com.xinchaongaymoi.hotelbookingapp.activity.LoginActivity
@@ -53,6 +54,11 @@ private var _binding: FragmentAccountBinding? = null
           },
           AccountPageItem(R.drawable.ic_star, getString(R.string.my_reviews)){} ,
           AccountPageItem(R.drawable.ic_star, "Log out"){
+              val auth = FirebaseAuth.getInstance()
+              auth.signOut()
+
+              // Clear last used account (but keep accounts saved)
+              AccountManager.setLastUsedAccount(requireActivity(), "")
               val intent = Intent(requireActivity(),LoginActivity::class.java)
               startActivity(intent)
           },

@@ -10,6 +10,7 @@ data class UserInfo(
 data class UserAccount(
     val userId: String,
     val email: String,
+    val password:String,
     val displayName: String,
     val loginType: String // "email-password" or "google"
 )

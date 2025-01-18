@@ -10,14 +10,31 @@ object AccountManager {
     private const val ACCOUNTS_KEY = "accounts"
     private const val LAST_USED_ACCOUNT_KEY = "lastUsedAccount"
 
-    fun saveAccounts(context: Context, accounts: List<UserAccount>) {
+    fun saveAccounts(context: Context, newAccounts: List<UserAccount>) {
         val sharedPreferences = context.getSharedPreferences("UserAccounts", Context.MODE_PRIVATE)
+        val existingAccounts = getAccounts(context).toMutableList()
+
+        // Merge new accounts into existing ones
+        newAccounts.forEach { newAccount ->
+            val existingIndex = existingAccounts.indexOfFirst { it.userId == newAccount.userId }
+            if (existingIndex != -1) {
+                // Update the existing account
+                existingAccounts[existingIndex] = newAccount
+            } else {
+                // Add the new account
+                existingAccounts.add(newAccount)
+            }
+        }
+
+        // Save the updated accounts list to SharedPreferences
         val editor = sharedPreferences.edit()
         val gson = Gson()
-        editor.putString(ACCOUNTS_KEY, gson.toJson(accounts)) // Save a list of UserAccount objects
+        editor.putString(ACCOUNTS_KEY, gson.toJson(existingAccounts))
         editor.apply()
-        Log.e("user saved", "Accounts saved to UserAccounts")
+
+        Log.e("AccountManager", "Accounts saved or updated successfully.")
     }
+
 
     fun getAccounts(context: Context): List<UserAccount> {
         val sharedPreferences = context.getSharedPreferences("UserAccounts", Context.MODE_PRIVATE)
