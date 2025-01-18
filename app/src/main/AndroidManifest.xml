@@ -35,6 +35,9 @@
             android:name=".activity.GalleryActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.ManageAccountsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AccountDetailActivity"
             android:exported="false" />
         <activity

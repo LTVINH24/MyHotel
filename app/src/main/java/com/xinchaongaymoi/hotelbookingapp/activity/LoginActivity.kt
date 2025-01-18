@@ -22,11 +22,19 @@ import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityLogin2Binding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.database.*
+import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager.saveAccounts
+import com.xinchaongaymoi.hotelbookingapp.model.UserAccount
+
+
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding:ActivityLogin2Binding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient:GoogleSignInClient
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var accountsPreferences: SharedPreferences
     private lateinit var database:DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +54,11 @@ class LoginActivity : AppCompatActivity() {
         binding.loginGoogleBtn.setOnClickListener{
             signInWithGoogle()
         }
+        val gson = Gson()
+        val accountsJson = sharedPreferences.getString("accounts", "[]")
+        val accountListType = object : TypeToken<MutableList<UserInfo>>() {}.type
+        val accounts: MutableList<UserInfo> = gson.fromJson(accountsJson, accountListType)
+
         val loginBtn=binding.loginBtn
         loginBtn.setOnClickListener{
             val email= binding.emailLoginET.text.toString()
@@ -54,7 +67,17 @@ class LoginActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener{
                     if(it.isSuccessful){
                         val userId = firebaseAuth.currentUser?.uid
+                        val user = firebaseAuth.currentUser
                         fetchUserInfo(userId.toString())
+                        user?.let {
+                            val account = UserAccount(
+                                userId = it.uid,
+                                email = it.email ?: "",
+                                displayName = it.displayName ?: "User",
+                                loginType = "email-password"
+                            )
+                            saveAccounts(this, listOf(account))
+                        }
                         startActivity(Intent(this, MainActivity::class.java))
                     }
                     else{
@@ -102,6 +125,15 @@ class LoginActivity : AppCompatActivity() {
                     putString("photoUrl", account.photoUrl?.toString())
                     putString("id", account.id)
                     apply()
+                }
+                account.let {
+                    val userAccount = UserAccount(
+                        userId = it.id.toString(),
+                        email = it.email ?: "",
+                        displayName = it.displayName ?: "Google User",
+                        loginType = "google"
+                    )
+                    saveAccounts(this, listOf(userAccount))
                 }
                 Log.i("SharedPreferences", "User info saved successfully")
                 updateUI(account)

@@ -15,6 +15,10 @@ import com.google.firebase.database.DatabaseReference
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityAuthenBinding
 import com.google.firebase.database.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager.saveAccounts
+import com.xinchaongaymoi.hotelbookingapp.model.UserAccount
 import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
 
 class AuthenActivity : AppCompatActivity() {
@@ -87,6 +91,13 @@ class AuthenActivity : AppCompatActivity() {
             putString("phone", _phone)
             apply()
         }
+        val userAccount = UserAccount(
+            userId = user.uid,
+            email = user.email ?: "",
+            displayName = user.displayName ?: "user",
+            loginType = "email-password"
+        )
+        saveAccounts(this, listOf(userAccount))
         userRef.setValue(userData)
             .addOnSuccessListener {
                 Log.d("SaveUser", "User data saved successfully!")
@@ -95,5 +106,4 @@ class AuthenActivity : AppCompatActivity() {
                 Log.e("SaveUser", "Error saving user data: ${error.message}")
             }
     }
-
 }

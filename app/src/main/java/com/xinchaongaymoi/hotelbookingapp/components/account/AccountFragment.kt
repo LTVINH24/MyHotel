@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.activity.AccountDetailActivity
 import com.xinchaongaymoi.hotelbookingapp.activity.LoginActivity
+import com.xinchaongaymoi.hotelbookingapp.activity.ManageAccountsActivity
 import com.xinchaongaymoi.hotelbookingapp.model.AccountPageItem
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAccountBinding
 import com.xinchaongaymoi.hotelbookingapp.components.LanguageBottomSheet
@@ -54,7 +55,13 @@ private var _binding: FragmentAccountBinding? = null
           AccountPageItem(R.drawable.ic_star, "Log out"){
               val intent = Intent(requireActivity(),LoginActivity::class.java)
               startActivity(intent)
+          },
+          AccountPageItem(R.drawable.ic_star, "Switch Account"){
+              val intent = Intent(requireActivity(), ManageAccountsActivity::class.java)
+              startActivity(intent)
+
           }
+
       )
 
       val accountAndSecurityAdapter = AccountPageItemAdapter(accountItemList)
