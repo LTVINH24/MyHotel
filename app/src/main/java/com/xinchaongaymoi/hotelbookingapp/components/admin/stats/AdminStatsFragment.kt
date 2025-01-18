@@ -338,6 +338,12 @@ class AdminStatsFragment : Fragment() {
             legend.isEnabled = true
             setEntryLabelColor(Color.BLACK)
             setEntryLabelTextSize(12f)
+            
+            // Thêm các dòng này để biến thành hình tròn đặc
+            holeRadius = 0f
+            transparentCircleRadius = 0f
+            setDrawCenterText(false)
+            
             invalidate()
         }
     }
