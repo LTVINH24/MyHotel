@@ -38,9 +38,9 @@ class AdminStatsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Khởi tạo với entries rỗng để có cấu hình mặc định
-        updateChartConfig(binding.checkinLineChart, emptyList())
-        updateChartConfig(binding.checkoutLineChart, emptyList())
+        // Khởi tạo với entries rỗng và labels rỗng
+        updateChartConfig(binding.checkinLineChart, emptyList(), emptyList())
+        updateChartConfig(binding.checkoutLineChart, emptyList(), emptyList())
         
         setupTabLayouts()
         loadUserStats()
@@ -56,22 +56,25 @@ class AdminStatsFragment : Fragment() {
             description.isEnabled = false
             setUsePercentValues(true)
             setEntryLabelColor(Color.BLACK)
-            legend.apply {
-                isEnabled = true
-                orientation = Legend.LegendOrientation.HORIZONTAL
-                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
-                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-                setDrawInside(false)
-                yOffset = 10f
-                textSize = 12f
-                form = Legend.LegendForm.SQUARE
-                formSize = 12f
-                formToTextSpace = 5f
-                xEntrySpace = 10f
-            }
+            
+            // Đặt giá trị hole và transparent circle về 0 để có hình tròn đặc
             holeRadius = 0f
             transparentCircleRadius = 0f
             setDrawCenterText(false)
+            
+            // Cấu hình legend để căn giữa và có khoảng cách phù hợp
+            legend.apply {
+                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                setDrawInside(false)
+                yOffset = 10f
+                xOffset = 0f
+                textSize = 12f
+            }
+            
+            // Thêm padding cho biểu đồ
+            setExtraOffsets(20f, 20f, 20f, 20f)
         }
 
         // Cài đặt LineChart cho doanh thu
@@ -344,7 +347,7 @@ class AdminStatsFragment : Fragment() {
         // Cần thêm logic để tính toán doanh thu theo ngày/tuần/tháng/năm
     }
 
-    private fun updateChartConfig(chart: LineChart, entries: List<Entry>) {
+    private fun updateChartConfig(chart: LineChart, entries: List<Entry>, labels: List<String>) {
         val maxValue = entries.maxOfOrNull { it.y } ?: 0f
         val yMax = if (maxValue > 0) maxValue + 0.2f else 1f
         
@@ -362,6 +365,7 @@ class AdminStatsFragment : Fragment() {
                 position = XAxis.XAxisPosition.BOTTOM
                 labelRotationAngle = 45f
                 granularity = 1f
+                valueFormatter = IndexAxisValueFormatter(labels)
             }
             
             // Cấu hình chung
@@ -379,6 +383,7 @@ class AdminStatsFragment : Fragment() {
 
     private fun loadCheckinStats(period: String) {
         val entries = ArrayList<Entry>()
+        val dateLabels = ArrayList<String>()
         val vietnamTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh")
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
             timeZone = vietnamTimeZone
@@ -458,13 +463,14 @@ class AdminStatsFragment : Fragment() {
                     dateFormat.parse(it.key)?.time ?: 0
                 }
                 
-                // Chuyển đổi dữ liệu thành entries
+                // Chuyển đổi dữ liệu thành entries và labels
                 sortedData.forEachIndexed { index, entry ->
                     entries.add(Entry(index.toFloat(), entry.value.toFloat()))
+                    dateLabels.add(entry.key) // entry.key là ngày dạng dd/MM/yyyy
                 }
                 
-                // Cập nhật cấu hình trước khi set data
-                updateChartConfig(binding.checkinLineChart, entries)
+                // Cập nhật cấu hình với labels
+                updateChartConfig(binding.checkinLineChart, entries, dateLabels)
                 
                 val dataSet = LineDataSet(entries, "Số lượt check-in").apply {
                     color = Color.BLUE
@@ -494,6 +500,7 @@ class AdminStatsFragment : Fragment() {
 
     private fun loadCheckoutStats(period: String) {
         val entries = ArrayList<Entry>()
+        val dateLabels = ArrayList<String>()
         val vietnamTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh")
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
             timeZone = vietnamTimeZone
@@ -573,10 +580,14 @@ class AdminStatsFragment : Fragment() {
                     dateFormat.parse(it.key)?.time ?: 0
                 }
                 
-                // Chuyển đổi dữ liệu thành entries
+                // Chuyển đổi dữ liệu thành entries và labels
                 sortedData.forEachIndexed { index, entry ->
                     entries.add(Entry(index.toFloat(), entry.value.toFloat()))
+                    dateLabels.add(entry.key)
                 }
+                
+                // Cập nhật cấu hình với labels
+                updateChartConfig(binding.checkoutLineChart, entries, dateLabels)
                 
                 val dataSet = LineDataSet(entries, "Số lượt check-out").apply {
                     color = Color.RED
@@ -584,6 +595,12 @@ class AdminStatsFragment : Fragment() {
                     lineWidth = 2f
                     circleRadius = 4f
                     valueTextSize = 10f
+                    setDrawValues(true)
+                    valueFormatter = object : PercentFormatter() {
+                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                            return value.toInt().toString()
+                        }
+                    }
                 }
                 
                 binding.checkoutLineChart.apply {
