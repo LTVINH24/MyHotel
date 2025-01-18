@@ -38,7 +38,6 @@ class GoogleMapActivity : AppCompatActivity() {
                 MarkerOptions()
                     .title(place.name)
                     .position(place.latLng)
-                    .icon(hotelIcon)
             )
 
             // Set place as the tag on the marker object so it can be referenced within

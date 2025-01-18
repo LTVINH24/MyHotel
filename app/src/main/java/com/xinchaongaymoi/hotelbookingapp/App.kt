@@ -1,6 +1,7 @@
 package com.xinchaongaymoi.hotelbookingapp
 
 import android.app.Application
+import com.xinchaongaymoi.hotelbookingapp.service.CloudinaryManager
 
 class App : Application() {
 
@@ -15,5 +16,6 @@ class App : Application() {
         super.onCreate()
         language = getString(R.string.english)
         instance = this
+        CloudinaryManager.initCloudinary()
     }
 }

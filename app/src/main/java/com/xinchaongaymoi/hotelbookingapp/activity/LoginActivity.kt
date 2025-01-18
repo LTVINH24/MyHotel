@@ -16,62 +16,81 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityLoginBinding
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.database.*
+
+import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager
+import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager.saveAccounts
+import com.xinchaongaymoi.hotelbookingapp.model.UserAccount
+
+
 class LoginActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var googleSignInClient:GoogleSignInClient
+    private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var accountsPreferences: SharedPreferences
     private lateinit var database:DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityLoginBinding.inflate(layoutInflater)
-        firebaseAuth=FirebaseAuth.getInstance()
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        firebaseAuth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         enableEdgeToEdge()
         setContentView(binding.root)
+        Log.e("id",getString(R.string.default_web_client_id) )
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))  // Ensure this is correct
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(this,gso)
-        binding.loginGoogleBtn.setOnClickListener{
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        binding.loginGoogleBtn.setOnClickListener {
             signInWithGoogle()
         }
-        val loginBtn=binding.loginBtn
-        loginBtn.setOnClickListener{
-            val email= binding.emailLoginET.text.toString()
-            val password =binding.passwordLoginET.text.toString()
-            if(email.isNotEmpty()&&password.isNotEmpty()){
-                firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener{
-                    if(it.isSuccessful){
+
+        binding.loginBtn.setOnClickListener {
+            val email = binding.emailLoginET.text.toString()
+            val password = binding.passwordLoginET.text.toString()
+
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val user = firebaseAuth.currentUser
                         val userId = firebaseAuth.currentUser?.uid
-                        fetchUserInfo(userId.toString())
-                        startActivity(Intent(this, MainActivity::class.java))
-                    }
-                    else{
-                       Log.i("Test loi",it.exception.toString())
+                        fetchUserInfo(userId.toString(), password)
+                        user?.let { firebaseUser ->
+                            navigateBasedOnRole(firebaseUser.uid)
+                        }
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Đăng nhập thất bại: ${it.exception?.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
-            else{
-                Toast.makeText(this,"Fields cannot be empty",Toast.LENGTH_SHORT).show()
-
-            }
         }
+        val gson = Gson()
+        val accountsJson = sharedPreferences.getString("accounts", "[]")
+        val accountListType = object : TypeToken<MutableList<UserInfo>>() {}.type
+        val accounts: MutableList<UserInfo> = gson.fromJson(accountsJson, accountListType)
+
+
         binding.linkSignUp.setOnClickListener{
             startActivity(Intent(this, AuthenActivity::class.java))
         }
     }
-    private fun signInWithGoogle(){
-        val signInIntent=googleSignInClient.signInIntent
+
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
     }
 
@@ -92,6 +111,7 @@ class LoginActivity : AppCompatActivity() {
     private fun handleResult(task:Task<GoogleSignInAccount>)
     {
         if(task.isSuccessful){
+            Log.i("thanhcong","thanhcong")
             val account :GoogleSignInAccount?=task.result
             if(account!=null){
                 sharedPreferences.edit().apply {
@@ -106,7 +126,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         else{
-
+            Log.i("thatbai","thatbai")
 
             Toast.makeText(this,task.exception.toString(),Toast.LENGTH_SHORT).show()
 
@@ -126,7 +146,8 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-    private fun fetchUserInfo(userId: String) {
+
+    private fun fetchUserInfo(userId: String, password:String) {
         database.child("user").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -157,5 +178,56 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    private fun navigateBasedOnRole(userId: String) {
+        val userRef = FirebaseDatabase.getInstance().getReference("user").child(userId)
+        userRef.get().addOnSuccessListener { snapshot ->
+            val isBanned = snapshot.child("isBanned").getValue(Boolean::class.java) ?: false
+            if (isBanned) {
+                val usersRef = FirebaseDatabase.getInstance().getReference("user")
+                usersRef.orderByChild("role").equalTo("admin").limitToFirst(1)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            var adminEmail = ""
+                            for (adminSnapshot in snapshot.children) {
+                                adminEmail = adminSnapshot.child("email").getValue(String::class.java) ?: ""
+                                break
+                            }
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Tài khoản đã bị khóa. Vui lòng liên hệ email: $adminEmail để được hỗ trợ",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            firebaseAuth.signOut()
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Tài khoản đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            firebaseAuth.signOut()
+                        }
+                    })
+                return@addOnSuccessListener
+            }
+
+            val role = snapshot.child("role").value?.toString()
+            when (role) {
+                "admin" -> {
+                    startActivity(Intent(this, AdminActivity::class.java))
+                    finish()
+                }
+                else -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("LoginDebug", "Error getting data", exception)
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+    }
 }
 
