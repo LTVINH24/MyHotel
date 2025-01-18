@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.android.material.tabs.TabLayout
@@ -45,7 +46,22 @@ class AdminStatsFragment : Fragment() {
             description.isEnabled = false
             setUsePercentValues(true)
             setEntryLabelColor(Color.BLACK)
-            legend.isEnabled = true
+            legend.apply {
+                isEnabled = true
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                setDrawInside(false)
+                yOffset = 10f
+                textSize = 12f
+                form = Legend.LegendForm.SQUARE
+                formSize = 12f
+                formToTextSpace = 5f
+                xEntrySpace = 10f
+            }
+            holeRadius = 0f
+            transparentCircleRadius = 0f
+            setDrawCenterText(false)
         }
 
         // Cài đặt LineChart cho doanh thu
@@ -140,30 +156,70 @@ class AdminStatsFragment : Fragment() {
     }
 
     private fun loadRoomStats() {
-        database.child("room").addValueEventListener(object : ValueEventListener {
+        database.child("Booking").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                var availableRooms = 0
-                var occupiedRooms = 0
-
-                for (roomSnapshot in snapshot.children) {
-                    val isAvailable = roomSnapshot.child("isAvailable")
-                        .getValue(Boolean::class.java) ?: true
-                    if (isAvailable) availableRooms++ else occupiedRooms++
+                // Lấy ngày hiện tại theo GMT+7
+                val vietnamTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh")
+                val calendar = Calendar.getInstance(vietnamTimeZone)
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
+                    timeZone = vietnamTimeZone
+                }
+                val today = dateFormat.format(calendar.time)
+                
+                // Debug log
+                println("Checking bookings for date: $today")
+                
+                var occupiedRoomIds = mutableSetOf<String>() // Lưu roomId của các phòng đã đặt
+                
+                for (bookingSnapshot in snapshot.children) {
+                    val checkInDate = bookingSnapshot.child("checkInDate").getValue(String::class.java)
+                    val checkOutDate = bookingSnapshot.child("checkOutDate").getValue(String::class.java)
+                    val roomId = bookingSnapshot.child("roomId").getValue(String::class.java)
+                    val status = bookingSnapshot.child("status").getValue(String::class.java)
+                    
+                    if (checkInDate != null && checkOutDate != null && roomId != null && 
+                        status != null && status != "cancelled") {
+                        try {
+                            val checkIn = dateFormat.parse(checkInDate)
+                            val checkOut = dateFormat.parse(checkOutDate)
+                            val currentDate = dateFormat.parse(today)
+                            
+                            if (currentDate != null && checkIn != null && checkOut != null) {
+                                if (!currentDate.before(checkIn) && !currentDate.after(checkOut)) {
+                                    occupiedRoomIds.add(roomId)
+                                    println("Room $roomId is occupied: CheckIn=$checkInDate, CheckOut=$checkOutDate")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            println("Date parsing error: ${e.message}")
+                        }
+                    }
                 }
 
-                updateRoomPieChart(availableRooms, occupiedRooms)
+                // Lấy tổng số phòng từ node rooms
+                database.child("rooms").get().addOnSuccessListener { roomsSnapshot ->
+                    val totalRooms = roomsSnapshot.childrenCount.toInt()
+                    val occupiedRooms = occupiedRoomIds.size
+                    val availableRooms = totalRooms - occupiedRooms
+                    
+                    println("Total rooms: $totalRooms")
+                    println("Occupied rooms: $occupiedRooms")
+                    println("Available rooms: $availableRooms")
+                    
+                    updateRoomPieChart(availableRooms, occupiedRooms)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Xử lý lỗi
+                println("Error loading bookings: ${error.message}")
             }
         })
     }
 
     private fun updateRoomPieChart(available: Int, occupied: Int) {
         val entries = listOf(
-            PieEntry(available.toFloat(), "Phòng trống"),
-            PieEntry(occupied.toFloat(), "Phòng đã đặt")
+            PieEntry(available.toFloat(), "Phòng trống ($available)"),
+            PieEntry(occupied.toFloat(), "Phòng đã đặt ($occupied)")
         )
 
         val dataSet = PieDataSet(entries, "Trạng thái phòng").apply {
@@ -180,6 +236,10 @@ class AdminStatsFragment : Fragment() {
         binding.roomPieChart.apply {
             data = pieData
             setUsePercentValues(true)
+            description.isEnabled = false
+            legend.isEnabled = true
+            setEntryLabelColor(Color.BLACK)
+            setEntryLabelTextSize(12f)
             invalidate()
         }
     }
