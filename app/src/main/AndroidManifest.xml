@@ -3,8 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        tools:node="merge" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage"
+        tools:node="merge" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:node="merge" /> <!-- Permissions to be used when your app targets API 33 or higher -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission
+        android:name="android.permission.RECORD_AUDIO"
+        tools:node="merge" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        tools:node="merge" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        tools:node="merge" />
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -18,10 +45,20 @@
         tools:replace="android:fullBackupContent"
         tools:targetApi="31">
         <activity
+            android:name=".activity.CustomerChatActivity"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+        <activity
             android:name=".activity.BookingActivity"
             android:exported="false" />
         <activity
             android:name=".activity.GoogleMapActivity"
+
             android:exported="true">
 
         </activity>
@@ -62,12 +99,15 @@
             android:name=".activity.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_aut"
-            android:theme="@style/Theme.HotelBookingApp">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:theme="@style/Theme.HotelBookingApp" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+
+            android:theme="@style/Theme.HotelBookingApp">
+
         </activity>
         <service
             android:name=".service.FirebaseMessagingService"
