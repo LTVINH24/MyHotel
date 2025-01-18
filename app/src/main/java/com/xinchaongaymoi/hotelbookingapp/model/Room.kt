@@ -10,9 +10,8 @@ data class Room(
     val totalBed:Int=0,
     val maxGuests:Int=0,
     val pricePerNight:Double =0.0,
-    val pricePerHour:Double=0.0,
     val utilities:String="",
     val sale:Double=0.0,
     val rating: Double=0.0,
-    val isDeleted:Boolean=false
+    val dele:String=""
 )
