@@ -7,6 +7,7 @@ plugins {
 buildscript {
     dependencies {
         classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+        classpath("com.google.gms:google-services:4.4.0")
     }
 }
 android {
@@ -113,4 +114,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation ("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics")
 }
