@@ -98,7 +98,7 @@ dependencies {
     implementation("com.facebook.android:facebook-android-sdk:17.0.2")
     implementation ("com.google.android.gms:play-services-auth")
 
-    implementation ("com.cloudinary:cloudinary-android:2.1.0")
+    implementation ("com.cloudinary:cloudinary-android:2.5.0")
     implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation("com.google.android.gms:play-services-maps:19.0.0")

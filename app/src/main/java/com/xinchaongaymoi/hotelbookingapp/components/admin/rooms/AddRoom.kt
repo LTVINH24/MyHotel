@@ -20,6 +20,7 @@ import com.xinchaongaymoi.hotelbookingapp.model.Room
 import com.xinchaongaymoi.hotelbookingapp.service.CloudinaryService
 import com.xinchaongaymoi.hotelbookingapp.service.RoomService
 import kotlin.math.max
+import android.util.Log
 
 
 class AddRoom : Fragment() {
@@ -58,7 +59,6 @@ class AddRoom : Fragment() {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             adapter = extraImagesAdapter
         }
-
     }
     private fun setupClickListeners(){
         binding.btnSelectMainImage.setOnClickListener{
@@ -119,25 +119,33 @@ class AddRoom : Fragment() {
                             roomService.addRoom(newRoom){
                                 success->
                                 if(success){
-                                    Toast.makeText(context, "Add room success", Toast.LENGTH_SHORT).show()
-                                    findNavController().navigateUp()
+                                    activity?.runOnUiThread {
+                                        Toast.makeText(context, "Thêm phòng thành công", Toast.LENGTH_SHORT).show()
+                                        findNavController().navigateUp()
+                                    }
                                 }
                                 else{
-                                    Toast.makeText(context,"Add room failed",Toast.LENGTH_SHORT).show()
+                                    activity?.runOnUiThread {
+                                        Toast.makeText(context, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                             }
                         }
 
                     }
                     else{
-                        Toast.makeText(context, "Không thể tải ảnh chính lên", Toast.LENGTH_SHORT).show()
+                        activity?.runOnUiThread {
+                            Toast.makeText(context, "Không thể tải ảnh lên", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
         }
         catch (e: Exception)
         {
-            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            activity?.runOnUiThread {
+                Toast.makeText(context, "Có lỗi xảy ra: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
     private fun uploadExtraImages(callback:(List<String>)->Unit){

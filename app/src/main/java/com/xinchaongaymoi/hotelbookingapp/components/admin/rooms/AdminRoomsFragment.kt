@@ -4,19 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.xinchaongaymoi.hotelbookingapp.adapter.AdminRoomAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminRoomsBinding
-import com.xinchaongaymoi.hotelbookingapp.service.RoomService
 import com.xinchaongaymoi.hotelbookingapp.R
 class AdminRoomsFragment : Fragment() {
     private var _binding: FragmentAdminRoomsBinding? = null
     private val binding get() = _binding!!
-
+    private val viewModel: AdminRoomsViewModel by viewModels()
     private lateinit var roomAdapter: AdminRoomAdapter
-    private val roomService = RoomService()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,7 +29,8 @@ class AdminRoomsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        loadRooms()
+        setupObservers()
+        viewModel.loadRooms()
         binding.fabAddRoom.setOnClickListener{
             findNavController().navigate(R.id.action_adminRoomsFragment_to_addRoomFragment)
         }
@@ -53,11 +54,18 @@ class AdminRoomsFragment : Fragment() {
             adapter = roomAdapter
         }
     }
-    private fun loadRooms(){
-        binding.loadingProgressBar.visibility =View.VISIBLE
-        roomService.getAllRooms { rooms->
-            binding.loadingProgressBar.visibility =View.GONE
-           roomAdapter.updateRooms(rooms)
+    private fun setupObservers() {
+        viewModel.rooms.observe(viewLifecycleOwner) { rooms ->
+            roomAdapter.updateRooms(rooms)
+        }
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage.isNotEmpty()) {
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
 } 
