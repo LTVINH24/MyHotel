@@ -111,4 +111,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Add the dependencies for live-chat
+    implementation ("io.kommunicate.sdk:kommunicateui:2.10.0")
 }
