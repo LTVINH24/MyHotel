@@ -351,7 +351,7 @@ class AdminStatsFragment : Fragment() {
                 horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
                 verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
                 setDrawInside(false)
-                yOffset = 15f
+                yOffset = 10f
                 xOffset = 0f
                 textSize = 12f
                 form = Legend.LegendForm.SQUARE
@@ -359,10 +359,26 @@ class AdminStatsFragment : Fragment() {
                 formToTextSpace = 5f
                 xEntrySpace = 40f
                 
-                setCustom(mutableListOf(
-                    LegendEntry("Phòng trống ($available)", Legend.LegendForm.SQUARE, 12f, 2f, null, Color.rgb(67, 160, 71)),
-                    LegendEntry("Phòng đã đặt ($occupied)", Legend.LegendForm.SQUARE, 12f, 2f, null, Color.rgb(239, 83, 80))
-                ))
+                // Đảm bảo không có khoảng trống thừa trong label
+                val legendEntries = mutableListOf(
+                    LegendEntry().apply {
+                        label = "Phòng trống ($available)".trim()  // Thêm trim()
+                        formColor = Color.rgb(67, 160, 71)
+                        form = Legend.LegendForm.SQUARE
+                        formSize = 12f
+                        formLineWidth = 0f  // Thêm để đảm bảo không có đường viền
+                        formLineDashEffect = null  // Loại bỏ hiệu ứng đường nét đứt
+                    },
+                    LegendEntry().apply {
+                        label = "Phòng đã đặt ($occupied)".trim()  // Thêm trim()
+                        formColor = Color.rgb(239, 83, 80)
+                        form = Legend.LegendForm.SQUARE
+                        formSize = 12f
+                        formLineWidth = 0f  // Thêm để đảm bảo không có đường viền
+                        formLineDashEffect = null  // Loại bỏ hiệu ứng đường nét đứt
+                    }
+                )
+                setCustom(legendEntries)
             }
             
             invalidate()
