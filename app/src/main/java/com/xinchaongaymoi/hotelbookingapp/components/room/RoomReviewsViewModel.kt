@@ -1,4 +1,4 @@
-package com.xinchaongaymoi.hotelbookingapp.components.review
+package com.xinchaongaymoi.hotelbookingapp.components.room
 
 
 import androidx.lifecycle.LiveData

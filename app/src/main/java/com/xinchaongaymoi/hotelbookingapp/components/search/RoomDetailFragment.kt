@@ -11,10 +11,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.*
 import com.xinchaongaymoi.hotelbookingapp.adapter.ImageSliderAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentRoomDetailBinding
 import com.xinchaongaymoi.hotelbookingapp.activity.BookingActivity
+import com.xinchaongaymoi.hotelbookingapp.R
 
 class RoomDetailFragment : Fragment() {
     private var _binding: FragmentRoomDetailBinding? = null
@@ -44,7 +46,18 @@ class RoomDetailFragment : Fragment() {
                 navigateToBooking(roomId)
             }
         }
+        binding.btnViewReviews.setOnClickListener{
+            arguments?.getString("ROOM_ID")?.let {
+                roomId->
+                val bundle = Bundle().apply {
+                    putString("roomId",roomId)
+                }
+                findNavController().navigate(
+                    R.id.action_roomDetailFragment_to_roomReviewsFragment,bundle
+                )
 
+            }
+        }
         arguments?.getString("ROOM_ID")?.let { roomId ->
             Log.d(TAG, "Fetching details for room: $roomId")
             fetchRoomDetails(roomId)
