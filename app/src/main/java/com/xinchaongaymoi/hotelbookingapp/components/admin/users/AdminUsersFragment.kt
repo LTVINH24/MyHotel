@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ServerValue
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.adapter.AdminUserAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminUsersBinding
@@ -188,21 +189,37 @@ class AdminUsersFragment : Fragment() {
     }
 
     private fun toggleUserBan(user: User) {
+        // Không cho phép ban tài khoản admin
+        if (user.role == "admin") {
+            Toast.makeText(context, "Không thể ban tài khoản admin", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val userRef = FirebaseDatabase.getInstance().getReference("user").child(user.uid)
         val newBanStatus = !user.isBanned
         
-        userRef.child("isBanned").setValue(newBanStatus)
+        // Cập nhật trạng thái ban và thêm các thông tin bổ sung
+        val updates = hashMapOf<String, Any>(
+            "isBanned" to newBanStatus,
+            "banTimestamp" to ServerValue.TIMESTAMP,  // Sử dụng server timestamp
+            "forceLogout" to true,  // Force logout khi bị ban
+            "banReason" to (if (newBanStatus) "Tài khoản bị vô hiệu hóa bởi admin" else ""),
+            "accountStatus" to (if (newBanStatus) "disabled" else "active")
+        )
+        
+        userRef.updateChildren(updates)
             .addOnSuccessListener {
                 if (_binding != null) {
                     user.isBanned = newBanStatus
                     
                     val message = if (newBanStatus) {
-                        "Đã ban tài khoản ${user.email}"
+                        "Đã vô hiệu hóa tài khoản ${user.email}"
                     } else {
-                        "Đã unban tài khoản ${user.email}"
+                        "Đã kích hoạt lại tài khoản ${user.email}"
                     }
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     
+                    // Cập nhật UI
                     userAdapter.notifyDataSetChanged()
                 }
             }
