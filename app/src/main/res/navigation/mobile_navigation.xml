@@ -75,4 +75,16 @@
         android:name="com.xinchaongaymoi.hotelbookingapp.components.account.BookingHistory"
         android:label="Lịch sử đặt phòng"
         tools:layout="@layout/fragment_booking_history" />
+    <fragment
+        android:id="@+id/fragmentRoomReviews"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.room.FragmentRoomReviews"
+        android:label="Danh gia phong">
+        <argument
+            android:name="roomId"
+            app:argType="string"/>
+    </fragment>
+
+    <action
+        android:id="@+id/action_roomDetailFragment_to_roomReviewsFragment"
+        app:destination="@id/fragmentRoomReviews" />
 </navigation>
