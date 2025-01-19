@@ -52,6 +52,7 @@ private lateinit var sharedPreferences: SharedPreferences
         loadBookingHistory()
     }
     private fun setRecyclerView(){
+        var roomId: String? = null
         adapter = BookingHistoryAdapter(
             onCancelClick = { bookingId ->
                 showCancelConfirmDialog(bookingId)
@@ -60,25 +61,16 @@ private lateinit var sharedPreferences: SharedPreferences
                 // Xử lý sự kiện khi người dùng muốn đánh giá
                 val database = Firebase.database
                 val myRef = database.getReference("Booking/$bookingId")
-                var roomId: String? = null
-                myRef.child("roomId").addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            // Lấy giá trị của roomId
-                            roomId = dataSnapshot.getValue(String::class.java)
-                            Log.d("RealtimeDB", "Room ID: $roomId")
-                        } else {
-                            Log.d("RealtimeDB", "roomId không tồn tại trong Booking/$bookingId")
-                        }
-                    }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.w("RealtimeDB", "Failed to read roomId.", databaseError.toException())
+                myRef.child("roomId").get().addOnSuccessListener {
+                    roomId = it.value.toString()
+                    val intent = Intent(requireActivity(), ReviewActivity::class.java)
+                    intent.putExtra("roomid", roomId)
+                    startActivity(intent)
+                    Log.i("firebase", "Got value ${it.value}")
+                }.addOnFailureListener {
+                        Log.e("firebase", "Error getting data", it)
                     }
-                })
-                val intent = Intent(getActivity(), ReviewActivity::class.java)
-                intent.putExtra("roomid", roomId)
-                startActivity(intent)
             }
         )
         _binding.rvBookingHistory.apply {
