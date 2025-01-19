@@ -63,20 +63,17 @@ class AuthenActivity : AppCompatActivity() {
                                     "phone" to "",
                                     "isBanned" to false
                                 )
-                                
                                 userRef.setValue(userData).addOnCompleteListener { dbTask ->
                                     if (dbTask.isSuccessful) {
-                                        startActivity(Intent(this, MainActivity::class.java))
+                                        val _name = binding.nameET.text.toString()
+                                        val _phone = binding.phoneET.text.toString()
+                                        user?.let { saveUserToDatabase(it, _name, _phone, password) }
+                                        val intent = Intent(this, OTPConfirmActivity::class.java)
+                                        intent.putExtra("email", email)
+                                        startActivity(intent)
                                         finish()
                                     }
                                 }
-                                val _name = binding.nameET.text.toString()
-                                val _phone = binding.phoneET.text.toString()
-                                user?.let { saveUserToDatabase(it, _name, _phone, password) }
-                                val intent = Intent(this, OTPConfirmActivity::class.java)
-                                intent.putExtra("email", email)
-                                startActivity(intent)
-                                finish()
                             }
                             else{
                                 Toast.makeText(this,it.exception.toString(),Toast.LENGTH_SHORT).show()
@@ -86,7 +83,6 @@ class AuthenActivity : AppCompatActivity() {
             }
             else{
                 Toast.makeText(this,"Fields cannot be empty",Toast.LENGTH_SHORT).show()
-
             }
         }
         val loginBtn=binding.linkLogin
