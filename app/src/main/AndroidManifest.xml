@@ -47,23 +47,20 @@
         tools:replace="android:fullBackupContent"
         tools:targetApi="31">
         <activity
+            android:name=".activity.FullScreenImageActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ReviewActivity"
-            android:exported="true" >
-
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".activity.CustomerChatActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".activity.BookingActivity"
             android:exported="false" />
         <activity
             android:name=".activity.GoogleMapActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -76,7 +73,13 @@
             android:theme="@style/Theme.HotelBookingApp" />
         <activity
             android:name=".activity.GalleryActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.ManageAccountsActivity"
             android:exported="false" />
