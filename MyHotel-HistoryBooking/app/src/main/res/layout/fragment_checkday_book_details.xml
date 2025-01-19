@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/silver"
+        android:padding="16dp"
+        android:elevation="4dp">
+
+        <!-- Cancel Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/silver"
+                android:layout_marginBottom="8dp"
+                app:icon="@drawable/ic_cancel"
+                app:iconTint="@color/white"
+                app:iconSize="@android:dimen/app_icon_size"
+                app:iconGravity="textStart"/>
+        </LinearLayout>
+
+
+        <!-- Date Range -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:padding="16dp"
+            android:elevation="4dp">
+
+            <!-- Check-in Date -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="#F8F8F8"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_marginEnd="4dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_marginEnd="8dp"
+                    app:tint="#6200EE"/>
+
+                <EditText
+                    android:id="@+id/checkInDate"
+                    android:layout_width="124dp"
+                    android:layout_height="50dp"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:hint="Check-in"
+                    android:textColor="#212121"
+                    android:textColorHint="#9E9E9E" />
+            </LinearLayout>
+
+            <!-- Check-out Date -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="#F8F8F8"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_marginStart="4dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_marginEnd="8dp"
+                    app:tint="#6200EE"/>
+
+                <EditText
+                    android:id="@+id/checkOutDate"
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:hint="Check-out"
+                    android:textColor="#212121"
+                    android:textColorHint="#9E9E9E" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Price Range -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+        </LinearLayout>
+
+        <!-- Search Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:layout_marginTop="12dp"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"
+            app:iconTint="#FFFFFF"
+            app:iconGravity="textStart"/>
+
+    </LinearLayout>
+</LinearLayout>
