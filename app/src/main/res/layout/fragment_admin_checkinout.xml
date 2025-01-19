@@ -8,11 +8,14 @@
 
     <TextView
         android:id="@+id/titleText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Booking Management"
+        android:text="Quản lý đặt phòng"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
