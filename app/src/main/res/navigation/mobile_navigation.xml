@@ -87,4 +87,14 @@
     <action
         android:id="@+id/action_roomDetailFragment_to_roomReviewsFragment"
         app:destination="@id/fragmentRoomReviews" />
+    <fragment
+        android:id="@+id/fragmentReviewsHistory"
+        android:label="Reviews History"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.account.ReviewHistoryFragment"
+        >
+    </fragment>
+    <action
+        android:id="@+id/action_accountFragment_to_roomReviewsHistoryFragment"
+        app:destination="@+id/fragmentReviewsHistory"
+    />
 </navigation>

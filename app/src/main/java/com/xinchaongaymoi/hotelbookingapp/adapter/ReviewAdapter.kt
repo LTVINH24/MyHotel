@@ -17,6 +17,7 @@ class ReviewAdapter(private var reviews : List<ReviewDetail> = emptyList())
                 tvUserName.text = reviewWithUser.user.name
                 ratingBar.rating = reviewWithUser.review.rating
                 tvComment.text = reviewWithUser.review.comment
+                tvReviewTime.text = reviewWithUser.getFormattedDate()
             }
         }
     }

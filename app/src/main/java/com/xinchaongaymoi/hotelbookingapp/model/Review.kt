@@ -6,4 +6,5 @@ data class Review(
     val userId: String = "",
     val comment: String = "",
     val rating: Float = 0f,
+    val createdAt:Long = System.currentTimeMillis()
 )
