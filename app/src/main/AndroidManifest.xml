@@ -100,7 +100,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true"
-            android:label="@string/title_activity_aut"
+            android:label="@string/app_name"
             android:theme="@style/Theme.HotelBookingApp">
 
             <intent-filter>
