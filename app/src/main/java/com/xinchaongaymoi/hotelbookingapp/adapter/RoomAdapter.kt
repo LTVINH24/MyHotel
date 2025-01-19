@@ -29,7 +29,7 @@ class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomViewHolder>() {
                     .into(roomImage)
 
                 roomName.text = room.roomName
-                tvBedCount.text = room.totalBed.toString()
+                tvBedCount.text = "Bed: ${room.totalBed}"
                 roomArea.text = "${room.area} m²"
                 roomPrice.text = "${room.pricePerNight}đ"
                 ratingBar.rating = room.rating.toFloat()

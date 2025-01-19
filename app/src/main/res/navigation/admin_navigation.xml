@@ -58,4 +58,16 @@
             android:name="roomId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/AdminCheckInOutDetail"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.checkinout.AdminCheckInOutDetail"
+        android:label="Chi tiết đặt phòng">
+        <argument
+            android:name="bookingIdDetail"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+    <action
+        android:id="@+id/action_adminCheckInOutFragment_to_adminCheckInOutDetail"
+        app:destination="@id/AdminCheckInOutDetail" />
 </navigation> 
