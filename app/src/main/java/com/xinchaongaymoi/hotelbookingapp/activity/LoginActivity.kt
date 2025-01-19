@@ -124,6 +124,14 @@ class LoginActivity : AppCompatActivity() {
                     putString("id", account.id)
                     apply()
                 }
+                val newAccount = UserAccount(
+                    userId = account.id ?: "Unknown",
+                    password = "",
+                    displayName = account.displayName ?: "Google User",
+                    loginType = "google",
+                    email = account.email ?: "Unknown"
+                )
+                saveAccounts(this, listOf(newAccount))
                 Log.i("SharedPreferences", "User info saved successfully")
                 updateUI(account)
             }
