@@ -1,4 +1,5 @@
 package com.xinchaongaymoi.hotelbookingapp.activity
+
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
