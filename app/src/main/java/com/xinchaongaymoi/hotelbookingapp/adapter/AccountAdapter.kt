@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.model.UserAccount
 
 class AccountAdapter(
@@ -15,8 +16,8 @@ class AccountAdapter(
 ) : RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
 
     inner class AccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvDisplayName: TextView = view.findViewById(android.R.id.text1)
-        val tvEmail: TextView = view.findViewById(android.R.id.text2)
+        val tvDisplayName: TextView = view.findViewById(R.id.tvDisplayName)
+        val tvEmail: TextView = view.findViewById(R.id.tvEmail)
 
         fun bind(account: UserAccount) {
             tvDisplayName.text = account.displayName
@@ -28,7 +29,7 @@ class AccountAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountViewHolder {
-        val view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_account_layout, parent, false) // Use custom layout
         return AccountViewHolder(view)
     }
 
@@ -38,3 +39,4 @@ class AccountAdapter(
 
     override fun getItemCount(): Int = accounts.size
 }
+

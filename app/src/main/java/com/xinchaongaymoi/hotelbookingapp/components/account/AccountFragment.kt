@@ -76,9 +76,6 @@ private var _binding: FragmentAccountBinding? = null
               })
               val auth = FirebaseAuth.getInstance()
               auth.signOut()
-
-              // Clear last used account (but keep accounts saved)
-              AccountManager.setLastUsedAccount(requireActivity(), "")
               val intent = Intent(requireActivity(),LoginActivity::class.java)
               startActivity(intent)
           },
