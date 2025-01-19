@@ -40,8 +40,13 @@ class RoomDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        imageSliderAdapter = ImageSliderAdapter(emptyList())
-        binding.viewPagerImages.adapter = imageSliderAdapter
+        // Thêm nút back
+        binding.btnBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+        
+        // Setup ViewPager2 với indicators và navigation arrows
+        setupImageSlider()
 
         // Thêm click listener cho nút đặt phòng
         binding.btnBookNow.setOnClickListener {
@@ -90,6 +95,54 @@ class RoomDetailFragment : Fragment() {
             // Set màu vàng cho RatingBar
             ratingBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#FFD700"))
             ratingBar.secondaryProgressTintList = ColorStateList.valueOf(Color.parseColor("#FFD700"))
+        }
+    }
+
+    private fun setupImageSlider() {
+        imageSliderAdapter = ImageSliderAdapter(emptyList())
+        binding.viewPagerImages.adapter = imageSliderAdapter
+        
+        // Setup indicators
+        binding.dotsIndicator.attachTo(binding.viewPagerImages)
+        
+        // Setup navigation arrows
+        binding.apply {
+            // Ẩn arrows ban đầu
+            prevButton.alpha = 0f
+            nextButton.alpha = 0f
+            
+            // Hiện arrows khi chạm vào ViewPager
+            viewPagerImages.setOnTouchListener { _, _ ->
+                prevButton.animate().alpha(0.7f).setDuration(200).start()
+                nextButton.animate().alpha(0.7f).setDuration(200).start()
+                false
+            }
+            
+            // Click listeners cho arrows
+            prevButton.setOnClickListener {
+                val currentItem = viewPagerImages.currentItem
+                if (currentItem > 0) {
+                    viewPagerImages.currentItem = currentItem - 1
+                }
+            }
+            
+            nextButton.setOnClickListener {
+                val currentItem = viewPagerImages.currentItem
+                if (currentItem < (imageSliderAdapter.itemCount - 1)) {
+                    viewPagerImages.currentItem = currentItem + 1
+                }
+            }
+            
+            // Auto hide arrows sau 2 giây không chạm
+            viewPagerImages.setOnClickListener {
+                prevButton.animate().alpha(0.7f).setDuration(200).start()
+                nextButton.animate().alpha(0.7f).setDuration(200).start()
+                
+                view?.postDelayed({
+                    prevButton.animate().alpha(0f).setDuration(200).start()
+                    nextButton.animate().alpha(0f).setDuration(200).start()
+                }, 2000)
+            }
         }
     }
 
