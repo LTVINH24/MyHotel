@@ -97,7 +97,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Thống kê phòng"
+                    android:text="Thống kê phòng của ngày hôm nay"
                     android:textStyle="bold"
                     android:textSize="18sp"/>
 
@@ -152,7 +152,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:text="Tổng doanh thu: 0 VNĐ" />
+                    android:text="Tổng doanh thu: 0 USD" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

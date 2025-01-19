@@ -45,8 +45,21 @@ class SearchFragment : Fragment() {
         observeRoomData()
     }
 
-    private fun showDatePicker(editText: EditText) {
+    private fun showDatePicker(editText: EditText, isCheckIn: Boolean = true) {
         val calendar = Calendar.getInstance()
+        val minDate = Calendar.getInstance().timeInMillis // Ngày hôm nay
+        
+        // Nếu là check-out, lấy ngày check-in làm ngày tối thiểu
+        val checkInText = binding.checkInDate.text.toString()
+        val minCheckOutDate = if (!isCheckIn && checkInText.isNotBlank()) {
+            val (day, month, year) = checkInText.split("/").map { it.toInt() }
+            Calendar.getInstance().apply {
+                set(year, month - 1, day)
+            }.timeInMillis
+        } else {
+            minDate
+        }
+
         DatePickerDialog(
             requireContext(),
             { _, year, month, day ->
@@ -56,12 +69,14 @@ class SearchFragment : Fragment() {
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        ).apply {
+            datePicker.minDate = if (isCheckIn) minDate else minCheckOutDate
+        }.show()
     }
 
     private fun setupDatePickers() {
-        binding.checkInDate.setOnClickListener { showDatePicker(binding.checkInDate) }
-        binding.checkOutDate.setOnClickListener { showDatePicker(binding.checkOutDate) }
+        binding.checkInDate.setOnClickListener { showDatePicker(binding.checkInDate, true) }
+        binding.checkOutDate.setOnClickListener { showDatePicker(binding.checkOutDate, false) }
     }
 
     private fun setupPriceSeekBar() {
@@ -137,11 +152,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun navigateToRoomDetail(roomId: String) {
-        // Sử dụng Navigation Component để chuyển fragment
         findNavController().navigate(
             R.id.action_searchFragment_to_roomDetailFragment,
             Bundle().apply {
                 putString("ROOM_ID", roomId)
+                putBoolean("FROM_SEARCH", true)
             }
         )
     }

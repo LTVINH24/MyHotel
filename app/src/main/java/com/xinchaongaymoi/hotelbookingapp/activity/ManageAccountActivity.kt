@@ -36,6 +36,7 @@ class ManageAccountsActivity : AppCompatActivity() {
         val accounts = AccountManager.getAccounts(this)
         Log.e("alluser",accounts.toString())
         rvAccounts.adapter = AccountAdapter(this, accounts) { account ->
+            Toast.makeText(this,"Switching...",Toast.LENGTH_SHORT).show()
             switchAccount(account)
         }
 

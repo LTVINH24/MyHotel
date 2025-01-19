@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_sort"
+        android:title="Sắp xếp"
+        android:icon="@drawable/ic_sort"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/sort_price_low_high"
+                android:title="Giá: Thấp đến cao"/>
+            <item
+                android:id="@+id/sort_price_high_low"
+                android:title="Giá: Cao đến thấp"/>
+            <item
+                android:id="@+id/sort_rating"
+                android:title="Xếp hạng cao nhất"/>
+        </menu>
+    </item>
+</menu>

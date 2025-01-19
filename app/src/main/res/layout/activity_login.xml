@@ -8,16 +8,15 @@
     tools:context=".activity.LoginActivity"
     android:background="@drawable/registerloginbackground"
     >
-
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:text="@string/welcome_authentication_text"
-        android:textColor="#FFFFFF"
-        android:textSize="38sp"
         android:fontFamily="sans-serif-medium"
+        android:text="@string/welcome_authentication_text"
+        android:textColor="#D032E2"
+        android:textSize="38sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +29,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginTop="32dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardElevation="2dp"
         app:cardBackgroundColor="#80FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/textView3">
 
@@ -45,17 +44,17 @@
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="@string/email_text"
-                app:boxStrokeColor="@color/white"
-                app:hintTextColor="@color/white"
-                android:textColorHint="#FFFFFF"
+                app:boxStrokeColor="@color/black"
+                app:hintTextColor="@color/black"
+                android:textColorHint="#000000"
                 app:startIconDrawable="@drawable/ic_email"
-                app:startIconTint="#FFFFFF">
+                app:startIconTint="#000000">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailLoginET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#000000"
                     android:inputType="textEmailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,19 +64,19 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="@string/password_text"
                 android:layout_marginTop="16dp"
-                app:boxStrokeColor="@color/white"
-                app:hintTextColor="@color/white"
-                android:textColorHint="#FFFFFF"
+                app:boxStrokeColor="@color/black"
+                app:hintTextColor="@color/black"
+                android:textColorHint="#000000"
                 app:startIconDrawable="@drawable/ic_lock"
-                app:startIconTint="#FFFFFF"
+                app:startIconTint="#000000"
                 app:endIconMode="password_toggle"
-                app:endIconTint="#FFFFFF">
+                app:endIconTint="#000000">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/passwordLoginET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#000000"
                     android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
 
