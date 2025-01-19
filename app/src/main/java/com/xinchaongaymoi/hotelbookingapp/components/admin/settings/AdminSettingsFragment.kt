@@ -61,11 +61,10 @@ class AdminSettingsFragment : Fragment() {
                 .setView(dialogBinding.root)
                 .setPositiveButton("Lưu") { _, _ ->
                     val name = dialogBinding.edtName.text.toString().trim()
-                    val email = dialogBinding.edtEmail.text.toString().trim()
                     val phone = dialogBinding.edtPhone.text.toString().trim()
 
-                    if (name.isNotEmpty() && email.isNotEmpty() && phone.isNotEmpty()) {
-                        updateProfile(name, email, phone)
+                    if (name.isNotEmpty() && phone.isNotEmpty()) {
+                        updateProfile(name, auth.currentUser?.email ?: "", phone)
                     } else {
                         Toast.makeText(context, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show()
                     }
@@ -75,6 +74,7 @@ class AdminSettingsFragment : Fragment() {
 
             auth.currentUser?.let { user ->
                 dialogBinding.edtEmail.setText(user.email)
+                dialogBinding.edtEmail.isEnabled = false
                 
                 database.getReference("user").child(user.uid)
                     .addValueEventListener(object : ValueEventListener {
@@ -98,7 +98,6 @@ class AdminSettingsFragment : Fragment() {
         if (currentUser != null) {
             val userUpdates = hashMapOf(
                 "name" to name,
-                "email" to email,
                 "phone" to phone
             )
 

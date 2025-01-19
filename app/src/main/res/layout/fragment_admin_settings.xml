@@ -44,6 +44,19 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/btnChangePassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/baseline_lock_24"
+                    android:drawablePadding="16dp"
+                    android:focusable="true"
+                    android:padding="16dp"
+                    android:text="Đổi mật khẩu"
+                    android:textSize="16sp" />
+
+                <TextView
                     android:id="@+id/btnLogout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
