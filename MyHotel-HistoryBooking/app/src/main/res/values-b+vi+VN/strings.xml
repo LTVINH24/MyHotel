@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Ứng dụng Đặt Phòng Khách Sạn</string>
+    <string name="navigation_drawer_open">Mở ngăn điều hướng</string>
+    <string name="navigation_drawer_close">Đóng ngăn điều hướng</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Tiêu đề điều hướng</string>
+    <string name="action_settings">Cài đặt</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_search">Tìm kiếm</string>
+    <string name="title_cart">Giỏ hàng</string>
+    <string name="title_account">Tài khoản</string>
+    <string name="menu_home">Trang chủ</string>
+    <string name="menu_gallery">Thư viện</string>
+    <string name="menu_slideshow">Trình chiếu</string>
+    <string name="menu_cart">Giỏ hàng</string>
+    <string name="menu_account">Tài khoản</string>
+    <string name="menu_search">Tìm kiếm</string>
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">1097629924798297</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb1097629924798297</string>
+    <string name="title_activity_login">Màn hình Đăng nhập</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Mật khẩu</string>
+    <string name="action_sign_in">Đăng nhập hoặc đăng ký</string>
+    <string name="action_sign_in_short">Đăng nhập</string>
+    <string name="welcome_text">"Chào mừng!"</string>
+    <string name="invalid_username">Tên người dùng không hợp lệ</string>
+    <string name="invalid_password">Mật khẩu phải lớn hơn 5 ký tự</string>
+    <string name="login_failed">"Đăng nhập thất bại"</string>
+    <string name="title_activity_aut">Màn hình Xác thực</string>
+    <string name="checkin_date_btn">Ngày nhận phòng</string>
+    <string name="welcome_authentication_text">Chào mừng đến với khách sạn của tôi</string>
+    <string name="sign_up_text">Đăng ký</string>
+    <string name="email_text">Email</string>
+    <string name="password_text">Mật khẩu</string>
+    <string name="login_text">Đăng nhập</string>
+    <string name="sign_in_with_google_text">Đăng nhập bằng Google</string>
+    <string name="search_rooms_text">Tìm phòng</string>
+    <string name="checkout_date_text">Ngày trả phòng</string>
+    <string name="search_button_text">Nút tìm kiếm</string>
+    <string name="search_text">Tìm kiếm</string>
+    <string name="royal_rooms_text">Phòng Hoàng Gia</string>
+    <string name="luxury_rooms_text">Phòng Sang Trọng</string>
+    <string name="image_room_text">Hình ảnh phòng</string>
+    <string name="_10_off_text">Giảm 10%</string>
+    <string name="rating_5_text">Đánh giá: 5</string>
+    <string name="luxury_room_text">Phòng Sang Trọng</string>
+    <string name="_100_per_night_text">100$ / đêm</string>
+    <string name="account_and_security_text">Tài khoản và bảo mật</string>
+    <string name="settings_text">Cài đặt</string>
+    <string name="item_title">Tiêu đề mục</string>
+    <string name="string_account">Tài khoản</string>
+    <string name="my_reviews">Đánh giá của tôi</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="english">Tiếng Anh</string>
+    <string name="vietnamese">Tiếng Việt</string>
+</resources>
