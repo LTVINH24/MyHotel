@@ -63,7 +63,9 @@ private var _binding: FragmentAccountBinding? = null
               )
           } ,
 
-          AccountPageItem(R.drawable.ic_star, getString(R.string.my_reviews)){} ,
+          AccountPageItem(R.drawable.ic_star, getString(R.string.my_reviews)){
+              findNavController().navigate(R.id.action_accountFragment_to_roomReviewsHistoryFragment)
+          } ,
           AccountPageItem(R.drawable.ic_logout, "Log out"){
               Kommunicate.logout(context, object : KMLogoutHandler {
                   override fun onSuccess(context: Context?) {
