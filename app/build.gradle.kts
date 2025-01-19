@@ -110,6 +110,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth:22.0.5")
 
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+
+    implementation(libs.mpandroidchart)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
