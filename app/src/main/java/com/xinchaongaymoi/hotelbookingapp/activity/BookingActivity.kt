@@ -98,11 +98,8 @@ class BookingActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .setPositiveButton("Confirm") { _, _ ->
-                // Hiển thị loading
                 binding.progressBar.visibility = View.VISIBLE
                 binding.btnConfirmBooking.isEnabled = false
-                
-                // Lấy tổng tiền từ TextView
                 val totalPriceText = binding.tvTotalPrice.text.toString()
                 val totalPrice = totalPriceText.replace("[^0-9.]".toRegex(), "").toDoubleOrNull() ?: 0.0
                 
