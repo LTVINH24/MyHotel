@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.xinchaongaymoi.hotelbookingapp.activity.ReviewActivity
 import com.xinchaongaymoi.hotelbookingapp.adapter.BookingHistoryAdapter
+import com.xinchaongaymoi.hotelbookingapp.components.ReviewDialog
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentBookingHistoryBinding
 import com.xinchaongaymoi.hotelbookingapp.service.BookingService
 
@@ -57,26 +58,27 @@ private lateinit var sharedPreferences: SharedPreferences
             onCancelClick = { bookingId ->
                 showCancelConfirmDialog(bookingId)
             },
-            onReviewClick = { bookingId ->
-                // Xử lý sự kiện khi người dùng muốn đánh giá
-                val database = Firebase.database
-                val myRef = database.getReference("Booking/$bookingId")
-
-                myRef.child("roomId").get().addOnSuccessListener {
-                    roomId = it.value.toString()
-                    val intent = Intent(requireActivity(), ReviewActivity::class.java)
-                    intent.putExtra("roomid", roomId)
-                    startActivity(intent)
-                    Log.i("firebase", "Got value ${it.value}")
-                }.addOnFailureListener {
-                        Log.e("firebase", "Error getting data", it)
-                    }
+            onReviewClick = { roomId ->
+                val userId = sharedPreferences.getString("id",null)?: return@BookingHistoryAdapter
+                showReviewDialog(roomId,userId)
             }
         )
         _binding.rvBookingHistory.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@BookingHistory.adapter
         }
+    }
+    private fun showReviewDialog(roomId: String, userId: String)
+    {
+        val reviewDialog =ReviewDialog(
+            requireContext(),
+            roomId,
+            userId
+        )
+        {
+            Toast.makeText(context,"Thank you for review",Toast.LENGTH_SHORT).show()
+        }
+        reviewDialog.show()
     }
     private fun showCancelConfirmDialog(bookingId:String){
         MaterialAlertDialogBuilder(requireContext())

@@ -29,22 +29,39 @@ class BookingHistoryAdapter(private val bookings: MutableList<BookingHistory> = 
                         Glide.with(itemView.context)
                             .load(bookingHistory.room.mainImage)
                             .into(ivRoom)
-                        btnCancelBooking.visibility = if(bookingHistory.booking.status=="pending"){
+                        btnCancelBooking.visibility = if(bookingHistory.booking.status=="pending"
+                            &&isCheckInDateAfterToday(bookingHistory.booking.checkInDate)
+                            ){
                             View.VISIBLE
                         }
                         else{
                             View.GONE
                         }
-                        
+                        reviewButton.visibility = if(bookingHistory.booking.status.lowercase()=="completed"){
+                            View.VISIBLE
+                        }
+                        else{
+                            View.GONE
+                        }
+
                         btnCancelBooking.setOnClickListener {
                             onCancelClick(bookingHistory.booking.id)
                         }
                         reviewButton.setOnClickListener {
-                            onReviewClick(bookingHistory.booking.id)
+                            onReviewClick(bookingHistory.room.id)
                         }
                     }
                 }
-
+            private fun isCheckInDateAfterToday(checkInDate: String): Boolean {
+                return try {
+                    val formatter = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                    val checkInDateTime = formatter.parse(checkInDate)
+                    val today = java.util.Calendar.getInstance().time
+                    checkInDateTime?.after(today) ?: false
+                } catch (e: Exception) {
+                    false
+                }
+            }
             private fun setStatusBackground(status: String, tvStatus: TextView) {
                 val textColor = when(status.lowercase()){
                     "pending"-> R.color.status_pending
