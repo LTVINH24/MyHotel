@@ -196,7 +196,7 @@ class RoomDetailFragment : Fragment() {
                             
                             // Giá phòng
                             val pricePerNight = snapshot.child("pricePerNight").value?.toString()?.toDoubleOrNull() ?: 0.0
-                            tvPricePerNight.text = "Giá theo đêm: ${String.format("%,.0f", pricePerNight)}đ"
+                            tvPricePerNight.text = "Giá theo đêm: ${String.format("%,.0f", pricePerNight)}$"
                             
                             // Tiện ích
                             tvUtilities.text = "Tiện ích: ${snapshot.child("utilities").value?.toString() ?: "N/A"}"
