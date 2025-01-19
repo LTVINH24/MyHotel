@@ -1,8 +1,10 @@
 package com.xinchaongaymoi.hotelbookingapp.components.account
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.Firebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
+import com.xinchaongaymoi.hotelbookingapp.activity.ReviewActivity
 import com.xinchaongaymoi.hotelbookingapp.adapter.BookingHistoryAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentBookingHistoryBinding
 import com.xinchaongaymoi.hotelbookingapp.service.BookingService
@@ -44,9 +52,35 @@ private lateinit var sharedPreferences: SharedPreferences
         loadBookingHistory()
     }
     private fun setRecyclerView(){
-        adapter = BookingHistoryAdapter { bookingId ->
-            showCancelConfirmDialog(bookingId)
-        }
+        adapter = BookingHistoryAdapter(
+            onCancelClick = { bookingId ->
+                showCancelConfirmDialog(bookingId)
+            },
+            onReviewClick = { bookingId ->
+                // Xử lý sự kiện khi người dùng muốn đánh giá
+                val database = Firebase.database
+                val myRef = database.getReference("Booking/$bookingId")
+                var roomId: String? = null
+                myRef.child("roomId").addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // Lấy giá trị của roomId
+                            roomId = dataSnapshot.getValue(String::class.java)
+                            Log.d("RealtimeDB", "Room ID: $roomId")
+                        } else {
+                            Log.d("RealtimeDB", "roomId không tồn tại trong Booking/$bookingId")
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.w("RealtimeDB", "Failed to read roomId.", databaseError.toException())
+                    }
+                })
+                val intent = Intent(getActivity(), ReviewActivity::class.java)
+                intent.putExtra("roomid", roomId)
+                startActivity(intent)
+            }
+        )
         _binding.rvBookingHistory.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@BookingHistory.adapter

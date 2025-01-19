@@ -7,6 +7,7 @@ plugins {
 buildscript {
     dependencies {
         classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+        classpath("com.google.gms:google-services:4.4.0")
     }
 }
 android {
@@ -109,9 +110,14 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth:22.0.5")
 
     implementation("com.google.android.gms:play-services-maps:19.0.0")
-    implementation ("androidx.appcompat:appcompat:1.6.1")
+
+    implementation(libs.mpandroidchart)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Add the dependencies for live-chat
+    implementation ("io.kommunicate.sdk:kommunicateui:2.10.0")
+    implementation ("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics")
 }

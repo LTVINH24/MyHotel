@@ -12,11 +12,12 @@ import com.xinchaongaymoi.hotelbookingapp.databinding.ItemBookingHistoryBinding
 import com.xinchaongaymoi.hotelbookingapp.model.BookingHistory
 
 class BookingHistoryAdapter(private val bookings: MutableList<BookingHistory> = mutableListOf(),
-                            private val onCancelClick: (String) -> Unit)
+                            private val onCancelClick: (String) -> Unit,
+                            private val onReviewClick: (String) -> Unit)
     : RecyclerView.Adapter<BookingHistoryAdapter.ViewHolder>() {
         class  ViewHolder(private val binding: ItemBookingHistoryBinding)
             :RecyclerView.ViewHolder(binding.root){
-                fun bind(bookingHistory: BookingHistory, onCancelClick: (String) -> Unit){
+                fun bind(bookingHistory: BookingHistory, onCancelClick: (String) -> Unit, onReviewClick: (String) -> Unit){
                     binding.apply {
                         tvRoomName.text = bookingHistory.room.roomName
                         tvCheckInDate.text = "CheckIn Date: ${bookingHistory.booking.checkInDate}"
@@ -37,6 +38,9 @@ class BookingHistoryAdapter(private val bookings: MutableList<BookingHistory> = 
                         
                         btnCancelBooking.setOnClickListener {
                             onCancelClick(bookingHistory.booking.id)
+                        }
+                        reviewButton.setOnClickListener {
+                            onReviewClick(bookingHistory.booking.id)
                         }
                     }
                 }
@@ -69,7 +73,7 @@ class BookingHistoryAdapter(private val bookings: MutableList<BookingHistory> = 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(bookings[position], onCancelClick )
+        holder.bind(bookings[position], onCancelClick, onReviewClick)
 
     }
     fun updateBookings(newBookings: List<BookingHistory>) {

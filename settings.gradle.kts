@@ -10,6 +10,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+
     }
 }
 dependencyResolutionManagement {
@@ -17,6 +18,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://jitpack.io")
+        maven { url = uri("https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk") }
     }
 }
 

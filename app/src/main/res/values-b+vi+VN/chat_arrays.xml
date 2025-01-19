@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="secret_message_timer_array">
+        <item>Tự hủy</item>
+        <item>Tắt</item>
+        <item>1 phút</item>
+        <item>2 phút</item>
+        <item>5 phút</item>
+        <item>10 phút</item>
+    </string-array>
+
+    <string-array name="send_type_options">
+        <item>SMS</item>
+        <item>MT</item>
+    </string-array>
+
+    <!-- Scheduled Message strings -->
+    <string-array name="schedule_menu">
+        <item>Sao chép</item>
+        <item>Hủy</item>
+    </string-array>
+
+    <string-array name="menu">
+        <item>Sao chép</item>
+        <item>Xóa cho tất cả</item>
+        <item>Gửi lại</item>
+        <item>Xóa</item>
+        <item>Thông tin</item>
+        <item>Chia sẻ</item>
+        <item>Trả lời</item>
+    </string-array>
+
+    <string-array name="conversation_options_menu">
+        <item>Xóa cuộc trò chuyện</item>
+        <item>Xóa nhóm</item>
+        <item>Rời nhóm</item>
+    </string-array>
+
+    <!-- Group member list menu -->
+    <string-array name="channel_users_menu_option">
+        <item>Nhắn tin</item>
+        <item>Xóa</item>
+        <item>Chuyển thành quản trị viên nhóm</item>
+    </string-array>
+</resources>
