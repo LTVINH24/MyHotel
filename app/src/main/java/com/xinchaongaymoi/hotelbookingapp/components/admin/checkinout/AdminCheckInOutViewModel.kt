@@ -7,23 +7,36 @@ import com.xinchaongaymoi.hotelbookingapp.model.BookingWithDetails
 import com.xinchaongaymoi.hotelbookingapp.service.BookingService
 import android.util.Log
 class AdminCheckInOutViewModel:ViewModel() {
+    private var currentStatus =""
+    private var currentSearchQuery = ""
     private val bookingService = BookingService()
     private val _bookings = MutableLiveData<List<BookingWithDetails>>()
     val bookings: LiveData<List<BookingWithDetails>> = _bookings
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
     fun loadBookingByStatus(status:String){
+        currentStatus = status
         _loading.value=true
         bookingService.getBookingsByStatus(status){
             bookings ->
-            _bookings.postValue(bookings)
+            val filteredBookings = filterBookings(bookings)
+            _bookings.postValue(filteredBookings)
             _loading.postValue(false)
         }
     }
-    fun updateBookingStatus(bookingId:String,newStatus:String,callback:(Boolean)->Unit){
-        bookingService.updateBookingStatus(bookingId,newStatus,callback)
+    fun searchBookings(query:String){
+        currentSearchQuery =query.lowercase()
+        loadBookingByStatus(currentStatus)
     }
-    fun updateBookingCheckOutStatus(bookingId:String,newCheckOutStatus:String,callback:(Boolean)->Unit){
-        bookingService.updateBookingCheckoutStatus(bookingId,newCheckOutStatus,callback)
-    }
+   private fun filterBookings(bookings:List<BookingWithDetails>):List<BookingWithDetails>
+   {
+      return if(currentSearchQuery.isEmpty()){
+          bookings
+      }
+       else{
+           bookings.filter { booking
+               ->booking.user.name.lowercase().contains(currentSearchQuery)
+           }
+      }
+   }
 }

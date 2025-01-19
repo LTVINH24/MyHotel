@@ -32,6 +32,7 @@ class AdminCheckInOutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupTabLayout()
+        setupSearchView()
         setupObservers()
         viewModel.loadBookingByStatus("pending")
     }
@@ -63,6 +64,21 @@ class AdminCheckInOutFragment : Fragment() {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+    private fun setupSearchView(){
+        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { viewModel.searchBookings(it) }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    viewModel.searchBookings(it)
+                }
+                return true
+            }
         })
     }
     private fun setupObservers(){
