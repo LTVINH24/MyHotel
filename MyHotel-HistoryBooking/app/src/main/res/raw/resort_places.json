@@ -1,0 +1,23 @@
+[
+    {
+    "geometry": {
+        "location": {
+            "lat": 15.880176926463037,
+            "lng":  108.31639889097984
+        }
+    },
+    "viewport": {
+        "northeast": {
+            "lat":  15.880176926463037,
+            "lng":  108.31639889097984
+        },
+        "southwest": {
+            "lat": 15.880176926463037,
+            "lng": 108.31639889097984
+        }
+    },
+    "name": "La Siesta Hoi An Resort & Spa",
+    "rating": 4.7,
+    "vicinity": "132 Hùng Vương, Phường Cẩm Phổ, Hội An, Quảng Nam 560000, Việt Nam"
+}
+]
