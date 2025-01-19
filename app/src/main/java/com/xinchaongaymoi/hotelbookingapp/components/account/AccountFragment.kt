@@ -57,14 +57,14 @@ private var _binding: FragmentAccountBinding? = null
               val intent = Intent(requireActivity(),AccountDetailActivity::class.java)
               startActivity(intent)
           },
-          AccountPageItem(R.drawable.ic_star, "Bookings History"){
+          AccountPageItem(R.drawable.ic_booking, "Bookings History"){
               findNavController().navigate(
                   R.id.action_accountFragment_to_bookingHistoryFragment
               )
           } ,
 
           AccountPageItem(R.drawable.ic_star, getString(R.string.my_reviews)){} ,
-          AccountPageItem(R.drawable.ic_star, "Log out"){
+          AccountPageItem(R.drawable.ic_logout, "Log out"){
               Kommunicate.logout(context, object : KMLogoutHandler {
                   override fun onSuccess(context: Context?) {
                       Log.i("Logout", "Success")
@@ -82,7 +82,7 @@ private var _binding: FragmentAccountBinding? = null
               val intent = Intent(requireActivity(),LoginActivity::class.java)
               startActivity(intent)
           },
-          AccountPageItem(R.drawable.ic_star, "Switch Account"){
+          AccountPageItem(R.drawable.ic_switch, "Switch Account"){
               val intent = Intent(requireActivity(), ManageAccountsActivity::class.java)
               startActivity(intent)
 

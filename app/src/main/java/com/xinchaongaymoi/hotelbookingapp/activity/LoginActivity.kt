@@ -9,23 +9,23 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.*
-import com.xinchaongaymoi.hotelbookingapp.R
-import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityLoginBinding
-
-import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager
-import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager.saveAccounts
-import com.xinchaongaymoi.hotelbookingapp.model.UserAccount
+import com.xinchaongaymoi.hotelbookingapp.R
+import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityLoginBinding
+import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
 
 
 class LoginActivity : AppCompatActivity() {
@@ -40,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         firebaseAuth = FirebaseAuth.getInstance()
+
         database = FirebaseDatabase.getInstance().reference
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         enableEdgeToEdge()

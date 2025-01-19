@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportHeight="24"
+    android:viewportWidth="24"
+    android:tint="#000000">
+
+    <!-- Larger circle representing one user -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M16,10c1.66,0 3,-1.34 3,-3s-1.34,-3 -3,-3 -3,1.34 -3,3 1.34,3 3,3zM12,12c-2.67,0 -8,1.34 -8,4v2h8v-2c0,-0.73 0.21,-1.41 0.58,-2C10.68,14.26 11.34,14 12,14c0.66,0 1.32,0.26 1.87,0.73 0.37,0.59 0.58,1.27 0.58,2v2h8v-2c0,-2.66 -5.33,-4 -8,-4z" />
+
+    <!-- Smaller circle for the second user -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M8,13c1.66,0 3,-1.34 3,-3s-1.34,-3 -3,-3 -3,1.34 -3,3 1.34,3 3,3zM8,15c-2.67,0 -5.33,1.34 -5.33,4v1.67h2.67V19c0,-0.73 0.21,-1.41 0.58,-2C6.68,16.26 7.34,16 8,16c0.66,0 1.32,0.26 1.87,0.73 0.37,0.59 0.58,1.27 0.58,2v1h2.67V19c0,-2.66 -2.66,-4 -5.33,-4z" />
+</vector>
