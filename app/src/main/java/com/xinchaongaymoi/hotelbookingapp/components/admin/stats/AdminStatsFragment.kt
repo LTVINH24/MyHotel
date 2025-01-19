@@ -21,6 +21,9 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import android.content.Context
 import com.github.mikephil.charting.components.LegendEntry
+import com.github.mikephil.charting.formatter.IValueFormatter
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.utils.ViewPortHandler
 
 class AdminStatsFragment : Fragment() {
     private var _binding: FragmentAdminStatsBinding? = null
@@ -490,9 +493,14 @@ class AdminStatsFragment : Fragment() {
                     circleRadius = 4f
                     valueTextSize = 10f
                     setDrawValues(true)
-                    valueFormatter = object : PercentFormatter() {
-                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                            return String.format("%,.0f", value)
+                    valueFormatter = object : IValueFormatter {
+                        override fun getFormattedValue(
+                            value: Float,
+                            entry: Entry?,
+                            dataSetIndex: Int,
+                            viewPortHandler: ViewPortHandler?
+                        ): String {
+                            return String.format("%,.0f $", value)
                         }
                     }
                 }
@@ -508,9 +516,9 @@ class AdminStatsFragment : Fragment() {
                     
                     axisLeft.apply {
                         axisMinimum = 0f
-                        valueFormatter = object : PercentFormatter() {
+                        valueFormatter = object : IAxisValueFormatter {
                             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                                return String.format("%,.0f", value)
+                                return String.format("%,.0f $", value)
                             }
                         }
                     }
@@ -681,8 +689,13 @@ class AdminStatsFragment : Fragment() {
                     circleRadius = 4f
                     valueTextSize = 10f
                     setDrawValues(true)
-                    valueFormatter = object : PercentFormatter() {
-                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                    valueFormatter = object : IValueFormatter {
+                        override fun getFormattedValue(
+                            value: Float,
+                            entry: Entry?,
+                            dataSetIndex: Int,
+                            viewPortHandler: ViewPortHandler?
+                        ): String {
                             return value.toInt().toString()
                         }
                     }
@@ -798,8 +811,13 @@ class AdminStatsFragment : Fragment() {
                     circleRadius = 4f
                     valueTextSize = 10f
                     setDrawValues(true)
-                    valueFormatter = object : PercentFormatter() {
-                        override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                    valueFormatter = object : IValueFormatter {
+                        override fun getFormattedValue(
+                            value: Float,
+                            entry: Entry?,
+                            dataSetIndex: Int,
+                            viewPortHandler: ViewPortHandler?
+                        ): String {
                             return value.toInt().toString()
                         }
                     }
