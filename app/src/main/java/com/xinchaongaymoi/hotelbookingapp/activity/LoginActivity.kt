@@ -63,22 +63,43 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.passwordLoginET.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-                    if (it.isSuccessful) {
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
-                        val userId = firebaseAuth.currentUser?.uid
-                        fetchUserInfo(userId.toString(), password)
-                        user?.let { firebaseUser ->
-                            navigateBasedOnRole(firebaseUser.uid)
+                        if (user != null) {
+                            // Kiểm tra trạng thái ban trước khi cho phép đăng nhập
+                            val userRef = database.child("user").child(user.uid)
+                            userRef.get().addOnSuccessListener { snapshot ->
+                                val isBanned = snapshot.child("isBanned").getValue(Boolean::class.java) ?: false
+                                if (isBanned) {
+                                    // Đăng xuất ngay lập tức nếu tài khoản bị ban
+                                    firebaseAuth.signOut()
+                                    showBanMessage()
+                                } else {
+                                    Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
+                                    // Tiếp tục đăng nhập nếu tài khoản không bị ban
+                                    fetchUserInfo(user.uid, password)
+                                    navigateBasedOnRole(user.uid)
+                                }
+                            }.addOnFailureListener {
+                                Toast.makeText(
+                                    this,
+                                    "Lỗi kiểm tra trạng thái tài khoản: ${it.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                firebaseAuth.signOut()
+                            }
                         }
                     } else {
                         Toast.makeText(
                             this,
-                            "Đăng nhập thất bại: ${it.exception?.message}",
+                            "Đăng nhập thất bại: ${task.exception?.message}",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 }
+            } else {
+                Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show()
             }
         }
         val gson = Gson()
@@ -143,17 +164,39 @@ class LoginActivity : AppCompatActivity() {
 
         }
     }
-    private fun updateUI(account: GoogleSignInAccount){
-        val credential = GoogleAuthProvider.getCredential(account.idToken,null)
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener{
-            if(it.isSuccessful)
-            {
-                val intent =Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            }
-            else{
-                Toast.makeText(this,it.exception.toString(),Toast.LENGTH_SHORT).show()
-
+    private fun updateUI(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = firebaseAuth.currentUser
+                if (user != null) {
+                    // Kiểm tra trạng thái ban cho tài khoản Google
+                    database.child("user").child(user.uid).get()
+                        .addOnSuccessListener { snapshot ->
+                            val isBanned = snapshot.child("isBanned").getValue(Boolean::class.java) ?: false
+                            if (isBanned) {
+                                firebaseAuth.signOut()
+                                googleSignInClient.signOut()
+                                showBanMessage()
+                            } else {
+                                Toast.makeText(this, "Đăng nhập Google thành công!", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                this,
+                                "Lỗi kiểm tra trạng thái tài khoản: ${it.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            firebaseAuth.signOut()
+                            googleSignInClient.signOut()
+                        }
+                }
+            } else {
+                Toast.makeText(this, "Đăng nhập Google thất bại: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -247,6 +290,34 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
+    }
+
+    // Hàm helper để lấy email admin và hiển thị thông báo
+    private fun showBanMessage() {
+        val usersRef = FirebaseDatabase.getInstance().getReference("user")
+        usersRef.orderByChild("role").equalTo("admin").limitToFirst(1)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var adminEmail = ""
+                    for (adminSnapshot in snapshot.children) {
+                        adminEmail = adminSnapshot.child("email").getValue(String::class.java) ?: ""
+                        break
+                    }
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Tài khoản đã bị khóa. Vui lòng liên hệ email: $adminEmail để được hỗ trợ",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Tài khoản đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
     }
 }
 
