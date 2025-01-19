@@ -24,7 +24,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.xinchaongaymoi.hotelbookingapp.R
+import com.xinchaongaymoi.hotelbookingapp.components.account.AccountManager.saveAccounts
 import com.xinchaongaymoi.hotelbookingapp.databinding.ActivityLoginBinding
+import com.xinchaongaymoi.hotelbookingapp.model.UserAccount
 import com.xinchaongaymoi.hotelbookingapp.model.UserInfo
 
 
@@ -164,7 +166,14 @@ class LoginActivity : AppCompatActivity() {
                         putString("phone", phone)
                         apply()
                     }
-
+                    val account = UserAccount(
+                        email=email,
+                        password = password,
+                        displayName = name,
+                        userId = userId,
+                        loginType = "email-password"
+                    )
+                    saveAccounts(this@LoginActivity,listOf(account))
                     // Navigate to HomeActivity
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
