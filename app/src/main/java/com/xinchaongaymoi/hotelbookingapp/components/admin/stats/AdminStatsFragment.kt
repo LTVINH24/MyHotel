@@ -548,7 +548,7 @@ class AdminStatsFragment : Fragment() {
                 }
                 
                 // Hiển thị tổng doanh thu
-                binding.tvTotalRevenue.text = String.format("Tổng doanh thu: %,.0f VNĐ", totalRevenue)
+                binding.tvTotalRevenue.text = String.format("Tổng doanh thu: %,.0f USD", totalRevenue)
             }
             
             override fun onCancelled(error: DatabaseError) {

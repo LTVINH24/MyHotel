@@ -152,7 +152,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:text="Tổng doanh thu: 0 VNĐ" />
+                    android:text="Tổng doanh thu: 0 USD" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
