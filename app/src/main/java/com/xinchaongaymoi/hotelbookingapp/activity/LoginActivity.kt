@@ -74,26 +74,7 @@ class LoginActivity : AppCompatActivity() {
                                 if (isBanned) {
                                     // Đăng xuất ngay lập tức nếu tài khoản bị ban
                                     firebaseAuth.signOut()
-                                    // Tìm email admin để hiển thị
-                                    database.child("user").orderByChild("role").equalTo("admin")
-                                        .limitToFirst(1)
-                                        .get()
-                                        .addOnSuccessListener { adminSnapshot ->
-                                            val adminEmail = adminSnapshot.children.firstOrNull()
-                                                ?.child("email")?.getValue(String::class.java) ?: "admin"
-                                            Toast.makeText(
-                                                this,
-                                                "Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ: $adminEmail",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
-                                        .addOnFailureListener {
-                                            Toast.makeText(
-                                                this,
-                                                "Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ admin.",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
+                                    showBanMessage()
                                 } else {
                                     Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
                                     // Tiếp tục đăng nhập nếu tài khoản không bị ban
@@ -196,25 +177,7 @@ class LoginActivity : AppCompatActivity() {
                             if (isBanned) {
                                 firebaseAuth.signOut()
                                 googleSignInClient.signOut()
-                                database.child("user").orderByChild("role").equalTo("admin")
-                                    .limitToFirst(1)
-                                    .get()
-                                    .addOnSuccessListener { adminSnapshot ->
-                                        val adminEmail = adminSnapshot.children.firstOrNull()
-                                            ?.child("email")?.getValue(String::class.java) ?: "admin"
-                                        Toast.makeText(
-                                            this,
-                                            "Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ: $adminEmail",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(
-                                            this,
-                                            "Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ admin.",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
+                                showBanMessage()
                             } else {
                                 Toast.makeText(this, "Đăng nhập Google thành công!", Toast.LENGTH_SHORT).show()
                                 val intent = Intent(this, MainActivity::class.java)
@@ -327,6 +290,34 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
+    }
+
+    // Hàm helper để lấy email admin và hiển thị thông báo
+    private fun showBanMessage() {
+        val usersRef = FirebaseDatabase.getInstance().getReference("user")
+        usersRef.orderByChild("role").equalTo("admin").limitToFirst(1)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var adminEmail = ""
+                    for (adminSnapshot in snapshot.children) {
+                        adminEmail = adminSnapshot.child("email").getValue(String::class.java) ?: ""
+                        break
+                    }
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Tài khoản đã bị khóa. Vui lòng liên hệ email: $adminEmail để được hỗ trợ",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Tài khoản đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
     }
 }
 
