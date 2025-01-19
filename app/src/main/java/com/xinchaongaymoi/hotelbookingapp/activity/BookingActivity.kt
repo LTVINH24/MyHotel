@@ -40,8 +40,6 @@ class BookingActivity : AppCompatActivity() {
         val checkIn = intent.getStringExtra("CHECK_IN")
         val checkOut = intent.getStringExtra("CHECK_OUT")
 
-        // Thêm log để debug
-        Log.d(TAG, "Received data: roomId=$roomId, checkIn=$checkIn, checkOut=$checkOut")
 
         if (roomId == null || checkIn == null || checkOut == null) {
             Toast.makeText(this, "Missing required booking information", Toast.LENGTH_SHORT).show()
@@ -101,8 +99,11 @@ class BookingActivity : AppCompatActivity() {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.btnConfirmBooking.isEnabled = false
                 val totalPriceText = binding.tvTotalPrice.text.toString()
-                val totalPrice = totalPriceText.replace("[^0-9.]".toRegex(), "").toDoubleOrNull() ?: 0.0
-                
+                val totalPrice = totalPriceText.toDouble()
+
+                Log.i("tottalll",totalPrice.toString())
+
+
                 bookingService.createBooking(
                     roomId = roomId,
                     userId = userId,
@@ -139,10 +140,10 @@ class BookingActivity : AppCompatActivity() {
                 room.pricePerNight
             }
 
-            tvPricePerNight.text = "${String.format("%.2f", pricePerNight)}$"
+            tvPricePerNight.text = pricePerNight.toString()
             tvNumberOfNights.text = "$nights night"
             val totalPrice = pricePerNight * nights
-            tvTotalPrice.text = "${String.format("%.2f", totalPrice)}$"
+            tvTotalPrice.text = totalPrice.toString()
         }
     }
     private fun calculateNights(checkIn: String, checkOut: String): Long {
