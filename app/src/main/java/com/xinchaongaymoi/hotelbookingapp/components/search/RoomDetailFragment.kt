@@ -40,6 +40,16 @@ class RoomDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        // Kiểm tra nguồn điều hướng
+        val isFromSearch = arguments?.getBoolean("FROM_SEARCH", false) ?: false
+        
+        // Ẩn nút đặt phòng nếu đến từ SearchFragment
+        if (isFromSearch) {
+            binding.btnBookNow.visibility = View.GONE
+        } else {
+            binding.btnBookNow.visibility = View.VISIBLE
+        }
+        
         // Thêm nút back
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()

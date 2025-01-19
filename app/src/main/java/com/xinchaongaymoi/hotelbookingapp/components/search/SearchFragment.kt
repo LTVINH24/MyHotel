@@ -137,11 +137,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun navigateToRoomDetail(roomId: String) {
-        // Sử dụng Navigation Component để chuyển fragment
         findNavController().navigate(
             R.id.action_searchFragment_to_roomDetailFragment,
             Bundle().apply {
                 putString("ROOM_ID", roomId)
+                putBoolean("FROM_SEARCH", true)
             }
         )
     }
