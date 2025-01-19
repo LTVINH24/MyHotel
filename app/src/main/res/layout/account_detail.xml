@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Password"
+                android:hint="Change your Password"
                 android:layout_marginTop="16dp"
                 app:startIconDrawable="@drawable/ic_lock"
                 app:endIconMode="password_toggle">

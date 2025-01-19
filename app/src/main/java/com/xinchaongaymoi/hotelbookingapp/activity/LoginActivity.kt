@@ -152,6 +152,7 @@ class LoginActivity : AppCompatActivity() {
         database.child("user").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    Log.e("user id",userId)
                     val name = snapshot.child("name").getValue(String::class.java) ?: "Unknown"
                     val email = snapshot.child("email").getValue(String::class.java) ?: "Unknown"
                     val phone = snapshot.child("phone").getValue(String::class.java) ?: "Unknown"
