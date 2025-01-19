@@ -22,6 +22,9 @@ import com.xinchaongaymoi.hotelbookingapp.activity.LoginActivity
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAdminSettingsBinding
 import com.xinchaongaymoi.hotelbookingapp.databinding.DialogEditProfileBinding
 import android.util.Log
+import com.google.firebase.auth.EmailAuthProvider
+import androidx.appcompat.app.AlertDialog
+import com.xinchaongaymoi.hotelbookingapp.databinding.DialogChangePasswordBinding
 
 class AdminSettingsFragment : Fragment() {
     private var _binding: FragmentAdminSettingsBinding? = null
@@ -40,6 +43,7 @@ class AdminSettingsFragment : Fragment() {
         
         setupEditProfile()
         setupLogout()
+        setupChangePassword()
         return binding.root
     }
 
@@ -120,6 +124,97 @@ class AdminSettingsFragment : Fragment() {
             }
             startActivity(intent)
             requireActivity().finish()
+        }
+    }
+
+    private fun setupChangePassword() {
+        binding.btnChangePassword.setOnClickListener {
+            val dialogBinding = DialogChangePasswordBinding.inflate(layoutInflater)
+            val dialog = MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Đổi mật khẩu")
+                .setView(dialogBinding.root)
+                .setPositiveButton("Lưu", null)
+                .setNegativeButton("Hủy", null)
+                .create()
+
+            dialog.setOnShowListener {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                    val currentPassword = dialogBinding.edtCurrentPassword.text.toString()
+                    val newPassword = dialogBinding.edtNewPassword.text.toString()
+                    val confirmPassword = dialogBinding.edtConfirmPassword.text.toString()
+
+                    when {
+                        currentPassword.isEmpty() -> {
+                            dialogBinding.edtCurrentPassword.error = "Vui lòng nhập mật khẩu hiện tại"
+                        }
+                        newPassword.isEmpty() -> {
+                            dialogBinding.edtNewPassword.error = "Vui lòng nhập mật khẩu mới"
+                        }
+                        newPassword.length < 8 -> {
+                            dialogBinding.edtNewPassword.error = "Mật khẩu phải có ít nhất 8 ký tự"
+                        }
+                        !newPassword.contains(Regex("[A-Z]")) -> {
+                            dialogBinding.edtNewPassword.error = "Mật khẩu phải chứa ít nhất 1 chữ viết hoa"
+                        }
+                        !newPassword.contains(Regex("[0-9]")) -> {
+                            dialogBinding.edtNewPassword.error = "Mật khẩu phải chứa ít nhất 1 số"
+                        }
+                        !newPassword.contains(Regex("[!@#\$%^&*(),.?\":{}|<>]")) -> {
+                            dialogBinding.edtNewPassword.error = "Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt"
+                        }
+                        confirmPassword.isEmpty() -> {
+                            dialogBinding.edtConfirmPassword.error = "Vui lòng xác nhận mật khẩu"
+                        }
+                        newPassword != confirmPassword -> {
+                            dialogBinding.edtConfirmPassword.error = "Mật khẩu xác nhận không khớp"
+                        }
+                        else -> {
+                            changePassword(currentPassword, newPassword, dialog)
+                        }
+                    }
+                }
+            }
+            
+            // Thêm helper text để hiển thị các yêu cầu về mật khẩu
+            dialogBinding.edtNewPassword.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    dialogBinding.tilNewPassword.helperText = """
+                        Mật khẩu phải có:
+                        • Ít nhất 8 ký tự
+                        • Ít nhất 1 chữ viết hoa
+                        • Ít nhất 1 số
+                        • Ít nhất 1 ký tự đặc biệt
+                    """.trimIndent()
+                } else {
+                    dialogBinding.tilNewPassword.helperText = null
+                }
+            }
+            
+            dialog.show()
+        }
+    }
+
+    private fun changePassword(currentPassword: String, newPassword: String, dialog: AlertDialog) {
+        val user = auth.currentUser
+        val email = user?.email
+
+        if (user != null && email != null) {
+            val credential = EmailAuthProvider.getCredential(email, currentPassword)
+            
+            user.reauthenticate(credential).addOnCompleteListener { reauth ->
+                if (reauth.isSuccessful) {
+                    user.updatePassword(newPassword).addOnCompleteListener { update ->
+                        if (update.isSuccessful) {
+                            Toast.makeText(context, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                        } else {
+                            Toast.makeText(context, "Lỗi: ${update.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    Toast.makeText(context, "Mật khẩu hiện tại không đúng", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
