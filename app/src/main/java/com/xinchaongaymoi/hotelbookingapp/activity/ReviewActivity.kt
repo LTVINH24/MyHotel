@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RatingBar
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.xinchaongaymoi.hotelbookingapp.R
 
 class ReviewActivity : AppCompatActivity() {
+    private lateinit var postButton: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,15 +30,16 @@ class ReviewActivity : AppCompatActivity() {
             insets
         }
         val roomID = intent.getStringExtra("roomid")
+        Log.d("ReviewActivity", "Room ID: $roomID")
         if (roomID.isNullOrEmpty()) {
             Log.e("Error", "roomID is null or empty")
-            return
         }
-        val postButton = findViewById<Button>(R.id.postBtn)
+        postButton = findViewById(R.id.postBtn)
         postButton.setOnClickListener {
             Log.d("ReviewActivity", "Button clicked")
             val database = Firebase.database
             val myRef = database.getReference("rooms/$roomID")
+            Log.d("ReviewActivity", "Database reference: $myRef")
             val rating = findViewById<RatingBar>(R.id.RatingBar).rating
             val content = findViewById<EditText>(R.id.multiLineEditText).text.toString()
             val review = mapOf(
@@ -50,6 +53,8 @@ class ReviewActivity : AppCompatActivity() {
                 .addOnFailureListener { e ->
                     Log.e("Firebase", "Failed to add review", e)
                 }
+            Toast.makeText(this, "Review added successfully", Toast.LENGTH_SHORT).show()
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 }
