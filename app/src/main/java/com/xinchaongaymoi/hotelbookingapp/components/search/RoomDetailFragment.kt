@@ -2,6 +2,8 @@ package com.xinchaongaymoi.hotelbookingapp.components.search
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +19,7 @@ import com.xinchaongaymoi.hotelbookingapp.adapter.ImageSliderAdapter
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentRoomDetailBinding
 import com.xinchaongaymoi.hotelbookingapp.activity.BookingActivity
 import com.xinchaongaymoi.hotelbookingapp.R
+import androidx.core.content.ContextCompat
 
 class RoomDetailFragment : Fragment() {
     private var _binding: FragmentRoomDetailBinding? = null
@@ -65,6 +68,28 @@ class RoomDetailFragment : Fragment() {
             Log.e(TAG, "No room ID provided")
             Toast.makeText(context, "Không tìm thấy ID phòng!", Toast.LENGTH_SHORT).show()
             parentFragmentManager.popBackStack()
+        }
+
+        // Thêm vào sau các code khởi tạo
+        setupIcons()
+    }
+
+    private fun setupIcons() {
+        val colorPrimary = ContextCompat.getColor(requireContext(), R.color.primary)
+        
+        binding.apply {
+            // Đặt màu cho các icon
+            tvRoomType.compoundDrawables.firstOrNull()?.setTint(colorPrimary)
+            tvArea.compoundDrawables.firstOrNull()?.setTint(colorPrimary)
+            tvBedType.compoundDrawables.firstOrNull()?.setTint(colorPrimary)
+            tvTotalBed.compoundDrawables.firstOrNull()?.setTint(colorPrimary)
+            tvMaxGuests.compoundDrawables.firstOrNull()?.setTint(colorPrimary)
+            tvPricePerNight.compoundDrawables.firstOrNull()?.setTint(colorPrimary)
+            tvUtilities.compoundDrawables.firstOrNull()?.setTint(colorPrimary)
+            
+            // Set màu vàng cho RatingBar
+            ratingBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#FFD700"))
+            ratingBar.secondaryProgressTintList = ColorStateList.valueOf(Color.parseColor("#FFD700"))
         }
     }
 
