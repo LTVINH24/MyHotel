@@ -13,9 +13,10 @@
 
     <fragment
         android:id="@+id/navigation_cart"
-        android:name="com.xinchaongaymoi.hotelbookingapp.components.cart.CartFragment"
-        android:label="@string/menu_search"
-        tools:layout="@layout/fragment_cart"/>
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.account.BookingHistory"
+        android:label="@string/menu_cart"
+        tools:layout="@layout/fragment_booking_history" >
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_search"
