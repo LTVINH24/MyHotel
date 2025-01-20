@@ -33,7 +33,7 @@ class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomViewHolder>() {
                 roomArea.text = "${room.area} m²"
                 roomPrice.text = "${room.pricePerNight}$"
                 ratingBar.rating = room.rating.toFloat()
-                ratingValue.text = room.rating.toString()
+                ratingValue.text ="${String.format("%.1f", room.rating)}"
 
                 // Xử lý click cho toàn bộ card
                 cardViewRoom.setOnClickListener {
