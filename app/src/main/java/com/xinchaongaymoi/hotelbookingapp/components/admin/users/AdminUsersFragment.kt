@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -198,15 +199,21 @@ class AdminUsersFragment : Fragment() {
         val userRef = FirebaseDatabase.getInstance().getReference("user").child(user.uid)
         val newBanStatus = !user.isBanned
         
-        // Cập nhật trạng thái ban và thêm các thông tin bổ sung
+        // Lấy current user ID
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        
         val updates = hashMapOf<String, Any>(
             "isBanned" to newBanStatus,
-            "banTimestamp" to ServerValue.TIMESTAMP,  // Sử dụng server timestamp
-            "forceLogout" to true,  // Force logout khi bị ban
+            "banTimestamp" to ServerValue.TIMESTAMP,
             "banReason" to (if (newBanStatus) "Tài khoản bị vô hiệu hóa bởi admin" else ""),
             "accountStatus" to (if (newBanStatus) "disabled" else "active")
         )
-        
+
+        // Chỉ thêm forceLogout nếu không phải là tài khoản admin đang đăng nhập
+        if (user.uid != currentUserId) {
+            updates["forceLogout"] = true
+        }
+
         userRef.updateChildren(updates)
             .addOnSuccessListener {
                 if (_binding != null) {
