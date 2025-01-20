@@ -10,7 +10,7 @@
         android:title="@string/title_search" />
     <item
         android:id="@+id/navigation_cart"
-        android:icon="@drawable/ic_cart"
+        android:icon="@drawable/ic_booking"
         android:title="@string/title_cart" />
     <item
         android:id="@+id/navigation_account"
