@@ -14,9 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.applozic.mobicomkit.api.account.register.RegistrationResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.activity.AccountDetailActivity
+import com.xinchaongaymoi.hotelbookingapp.activity.CustomerChatActivity
 import com.xinchaongaymoi.hotelbookingapp.activity.LoginActivity
 import com.xinchaongaymoi.hotelbookingapp.activity.ManageAccountsActivity
 import com.xinchaongaymoi.hotelbookingapp.model.AccountPageItem
@@ -24,7 +26,10 @@ import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentAccountBinding
 import com.xinchaongaymoi.hotelbookingapp.components.LanguageBottomSheet
 import com.xinchaongaymoi.hotelbookingapp.components.home.AccountViewModel
 import io.kommunicate.Kommunicate
+import io.kommunicate.callbacks.KMLoginHandler
 import io.kommunicate.callbacks.KMLogoutHandler
+import io.kommunicate.callbacks.KmCallback
+import io.kommunicate.users.KMUser
 
 class AccountFragment : Fragment() {
 
@@ -52,12 +57,48 @@ private var _binding: FragmentAccountBinding? = null
 //    }
       val accountRecyclerView: RecyclerView = binding.accountAndSecurityRecyclerView
       val settingsRecyclerView: RecyclerView = binding.settingsRecyclerView
+      val chatButton: View = binding.button2
+        chatButton.setOnClickListener {
+            sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            val _email = sharedPreferences.getString("email", null)
+            val _phone = sharedPreferences.getString("phone", null)
+            val _name = sharedPreferences.getString("name", null)
+//            var intent = Intent(requireActivity(), CustomerChatActivity::class.java)
+//            startActivity(intent)
+//
+//            Kommunicate.openConversation(this.requireContext(), null, null);
+            val user = KMUser().apply {
+                if (_email != null) {
+                    userId = _email
+                    email = _email
+                }
+                if (_phone != null) {
+                    contactNumber = _phone
+                }
+                if (_name != null) {
+                    displayName = _name
+                }
+            }
+            Kommunicate.login(requireActivity(), user, object : KMLoginHandler {
+                override fun onSuccess(registrationResponse: RegistrationResponse, context: Context) {
+                    Kommunicate.openConversation(requireActivity())
+                // You can perform operations such as opening the conversation, creating a new conversation or update user details on success
+                }
+
+                override fun onFailure(
+                    registrationResponse: RegistrationResponse,
+                    exception: java.lang.Exception
+                ) {
+                    // You can perform actions such as repeating the login call or throw an error message on failure
+                }
+            })
+        }
       val accountItemList = listOf(
           AccountPageItem(R.drawable.ic_account, getString(R.string.string_account)){
               val intent = Intent(requireActivity(),AccountDetailActivity::class.java)
               startActivity(intent)
           },
-          AccountPageItem(R.drawable.ic_booking, "Bookings History"){
+          AccountPageItem(R.drawable.ic_booking, getString(R.string.bookings_history)){
               findNavController().navigate(
                   R.id.action_accountFragment_to_bookingHistoryFragment
               )
@@ -66,7 +107,7 @@ private var _binding: FragmentAccountBinding? = null
           AccountPageItem(R.drawable.ic_star, getString(R.string.my_reviews)){
               findNavController().navigate(R.id.action_accountFragment_to_roomReviewsHistoryFragment)
           } ,
-          AccountPageItem(R.drawable.ic_logout, "Log out"){
+          AccountPageItem(R.drawable.ic_logout, getString(R.string.log_out)){
               Kommunicate.logout(context, object : KMLogoutHandler {
                   override fun onSuccess(context: Context?) {
                       Log.i("Logout", "Success")
@@ -81,7 +122,7 @@ private var _binding: FragmentAccountBinding? = null
               val intent = Intent(requireActivity(),LoginActivity::class.java)
               startActivity(intent)
           },
-          AccountPageItem(R.drawable.ic_switch, "Switch Account"){
+          AccountPageItem(R.drawable.ic_switch, getString(R.string.switch_account)){
               val intent = Intent(requireActivity(), ManageAccountsActivity::class.java)
               startActivity(intent)
 
