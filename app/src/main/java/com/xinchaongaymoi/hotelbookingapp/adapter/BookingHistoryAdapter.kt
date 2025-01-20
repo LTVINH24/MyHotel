@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.xinchaongaymoi.hotelbookingapp.databinding.ItemBookingHistoryBinding
 import com.xinchaongaymoi.hotelbookingapp.model.BookingHistory
-
+import android.util.Log
 class BookingHistoryAdapter(private val bookings: MutableList<BookingHistory> = mutableListOf(),
                             private val onCancelClick: (String) -> Unit,
                             private val onReviewClick: (String) -> Unit)
@@ -54,9 +54,17 @@ class BookingHistoryAdapter(private val bookings: MutableList<BookingHistory> = 
                 }
             private fun isCheckInDateAfterToday(checkInDate: String): Boolean {
                 return try {
-                    val formatter = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                    val formatter = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
                     val checkInDateTime = formatter.parse(checkInDate)
-                    val today = java.util.Calendar.getInstance().time
+                    
+                    val today = java.util.Calendar.getInstance().apply {
+                        time = java.util.Date()
+                        set(java.util.Calendar.HOUR_OF_DAY, 0)
+                        set(java.util.Calendar.MINUTE, 0)
+                        set(java.util.Calendar.SECOND, 0)
+                        set(java.util.Calendar.MILLISECOND, 0)
+                    }.time
+                    
                     checkInDateTime?.after(today) ?: false
                 } catch (e: Exception) {
                     false
