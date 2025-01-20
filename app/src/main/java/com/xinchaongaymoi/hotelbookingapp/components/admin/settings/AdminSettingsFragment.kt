@@ -100,18 +100,27 @@ class AdminSettingsFragment : Fragment() {
     private fun updateProfile(name: String, email: String, phone: String) {
         val currentUser = auth.currentUser?.uid
         if (currentUser != null) {
-            val userUpdates = hashMapOf(
-                "name" to name,
-                "phone" to phone
-            )
+            // Kiểm tra role trước khi update
+            database.getReference("user").child(currentUser).child("role")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val role = snapshot.getValue(String::class.java)
+                    if (role == "admin") {
+                        val userUpdates = hashMapOf(
+                            "name" to name,
+                            "phone" to phone,
+                            "forceLogout" to false  // Đảm bảo không force logout
+                        )
 
-            database.getReference("user").child(currentUser)
-                .updateChildren(userUpdates as Map<String, Any>)
-                .addOnSuccessListener {
-                    Toast.makeText(context, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(context, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
+                        database.getReference("user").child(currentUser)
+                            .updateChildren(userUpdates as Map<String, Any>)
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
                 }
         }
     }
@@ -197,24 +206,39 @@ class AdminSettingsFragment : Fragment() {
     private fun changePassword(currentPassword: String, newPassword: String, dialog: AlertDialog) {
         val user = auth.currentUser
         val email = user?.email
+        val userId = user?.uid
 
-        if (user != null && email != null) {
-            val credential = EmailAuthProvider.getCredential(email, currentPassword)
-            
-            user.reauthenticate(credential).addOnCompleteListener { reauth ->
-                if (reauth.isSuccessful) {
-                    user.updatePassword(newPassword).addOnCompleteListener { update ->
-                        if (update.isSuccessful) {
-                            Toast.makeText(context, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show()
-                            dialog.dismiss()
-                        } else {
-                            Toast.makeText(context, "Lỗi: ${update.exception?.message}", Toast.LENGTH_SHORT).show()
+        if (user != null && email != null && userId != null) {
+            // Kiểm tra xem user có phải là admin không
+            database.getReference("user").child(userId).child("role")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val role = snapshot.getValue(String::class.java)
+                    if (role == "admin") {
+                        val credential = EmailAuthProvider.getCredential(email, currentPassword)
+                        
+                        user.reauthenticate(credential).addOnCompleteListener { reauth ->
+                            if (reauth.isSuccessful) {
+                                user.updatePassword(newPassword).addOnCompleteListener { update ->
+                                    if (update.isSuccessful) {
+                                        // Cập nhật mật khẩu thành công, đảm bảo không force logout
+                                        database.getReference("user").child(userId)
+                                            .child("forceLogout")
+                                            .setValue(false)
+                                            .addOnSuccessListener {
+                                                Toast.makeText(context, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show()
+                                                dialog.dismiss()
+                                            }
+                                    } else {
+                                        Toast.makeText(context, "Lỗi: ${update.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(context, "Mật khẩu hiện tại không đúng", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
-                } else {
-                    Toast.makeText(context, "Mật khẩu hiện tại không đúng", Toast.LENGTH_SHORT).show()
                 }
-            }
         }
     }
 
