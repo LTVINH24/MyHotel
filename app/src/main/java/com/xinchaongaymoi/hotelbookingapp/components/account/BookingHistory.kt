@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.activity.ReviewActivity
 import com.xinchaongaymoi.hotelbookingapp.adapter.BookingHistoryAdapter
 import com.xinchaongaymoi.hotelbookingapp.components.ReviewDialog
@@ -76,18 +77,18 @@ private lateinit var sharedPreferences: SharedPreferences
             userId
         )
         {
-            Toast.makeText(context,"Thank you for review",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.thank_you_for_review),Toast.LENGTH_SHORT).show()
         }
         reviewDialog.show()
     }
     private fun showCancelConfirmDialog(bookingId:String){
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Confirm cancellation of booking")
-            .setMessage("Are you sure to cancel your booking?")
-            .setNegativeButton("No"){dialog,_->
+            .setTitle(getString(R.string.confirm_cancellation_of_booking))
+            .setMessage(getString(R.string.are_you_sure_to_cancel_your_booking))
+            .setNegativeButton(getString(R.string.no)){ dialog, _->
                 dialog.dismiss()
             }
-            .setPositiveButton("Yes"){_,_->
+            .setPositiveButton(getString(R.string.yes)){ _, _->
                 cancelBooking(bookingId)
             }
             .show()
@@ -98,10 +99,12 @@ private lateinit var sharedPreferences: SharedPreferences
             success->activity?.runOnUiThread{
                 _binding.progressBar.visibility= View.GONE
             if (success) {
-                Toast.makeText(context, "Reservation successfully canceled", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    getString(R.string.reservation_successfully_canceled), Toast.LENGTH_SHORT).show()
                 loadBookingHistory()
             } else {
-                Toast.makeText(context, "Reservations cannot be canceled", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    getString(R.string.reservations_cannot_be_canceled), Toast.LENGTH_SHORT).show()
             }
         }
         }

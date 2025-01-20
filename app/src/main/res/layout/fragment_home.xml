@@ -59,7 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="Chào mừng đến với La Siesta Hội An Resort &amp; Spa"
+                    android:text="@string/welcome_hotel"
                     android:textAlignment="center"
                     android:textSize="25sp"
                     android:textStyle="bold" />
@@ -69,7 +69,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="Một không gian nhỏ ẩn mình cạnh bên phố cổ."
+                    android:text="@string/m_t_kh_ng_gian_nh_n_m_nh_c_nh_b_n_ph_c"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -79,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="Chỉ cách trung tâm phố cổ Hội An 10 phút đi bộ hoặc 45 phút đi bằng xe ô tô từ Sân Bay Quốc Tế Đà Nẵng, hiếm có nơi nào còn giữ được vẻ đẹp tự nhiên như La Siesta Hoi An Resort &amp; Spa. Ẩn mình trong khu vườn nhiệt đới ngập tràn sắc xanh, bên khung cảnh nên thơ của cánh đồng hiền hoà, khu nghỉ dưỡng như một nơi ẩn náu lý tưởng giúp du khách rời xa mọi bộn bề của cuộc sống, để tìm về không gian riêng tư tuyệt đối và cảm nhận sự bình yên lắng đọng trong tâm hồn."
+                    android:text="@string/ch_c_ch_trung_t_m_ph_c_h_i_an_10_ph_t_i_b_ho_c_45_ph_t_i_b_ng_xe_t_t_s_n_bay_qu_c_t_n_ng_hi_m_c_n_i_n_o_c_n_gi_c_v_p_t_nhi_n_nh_la_siesta_hoi_an_resort_amp_spa_n_m_nh_trong_khu_v_n_nhi_t_i_ng_p_tr_n_s_c_xanh_b_n_khung_c_nh_n_n_th_c_a_c_nh_ng_hi_n_ho_khu_ngh_d_ng_nh_m_t_n_i_n_n_u_l_t_ng_gi_p_du_kh_ch_r_i_xa_m_i_b_n_b_c_a_cu_c_s_ng_t_m_v_kh_ng_gian_ri_ng_t_tuy_t_i_v_c_m_nh_n_s_b_nh_y_n_l_ng_ng_trong_t_m_h_n"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -89,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="Sự kết hợp hài hoà giữa lối kiến trúc hiện đại và vẻ đẹp truyền thống Việt Nam, cùng nét chấm phá bay bổng mang đến sự tinh tế trong từng đường nét thiết kế cho 137 căn phòng. Kiến trúc xanh kết hợp với nội thất hiện đại bằng gỗ tếch sẫm màu được làm thủ công, sàn gỗ đánh bóng, gạch khảm hoa văn và các vật liệu xây dựng địa phương mang đến một trải nghiệm nghỉ dưỡng đẳng cấp giữa thiên nhiên."
+                    android:text="@string/s_k_t_h_p_h_i_ho_gi_a_l_i_ki_n_tr_c_hi_n_i_v_v_p_truy_n_th_ng_vi_t_nam_c_ng_n_t_ch_m_ph_bay_b_ng_mang_n_s_tinh_t_trong_t_ng_ng_n_t_thi_t_k_cho_137_c_n_ph_ng_ki_n_tr_c_xanh_k_t_h_p_v_i_n_i_th_t_hi_n_i_b_ng_g_t_ch_s_m_m_u_c_l_m_th_c_ng_s_n_g_nh_b_ng_g_ch_kh_m_hoa_v_n_v_c_c_v_t_li_u_x_y_d_ng_a_ph_ng_mang_n_m_t_tr_i_nghi_m_ngh_d_ng_ng_c_p_gi_a_thi_n_nhi_n"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -101,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="Hình ảnh"
+                android:text="@string/h_nh_nh"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -238,7 +238,7 @@
                     android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="+20"
+                    android:text="+58"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView8"
@@ -248,24 +248,38 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/location"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/locationText"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+                app:layout_constraintTop_toBottomOf="@+id/textView15">
 
                 <TextView
                     android:id="@+id/textView12"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/_132_h_ng_v_ng_ph_ng_c_m_ph_h_i_an_qu_ng_nam_560000"
                     android:textColor="#403F3F"
-                    android:text="132 Hùng Vương, Phường Cẩm Phổ, Hội An, Quảng Nam 560000"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/imageView9"
                     app:layout_constraintTop_toTopOf="parent" />
 

@@ -616,4 +616,26 @@
     <string name="read_more">Read more</string>
     <string name="summary_title">Summary</string>
     <string name="language">Language</string>
+    <string name="chat_with_us">Chat With Us</string>
+    <string name="how_can_we_help_you">How can we help you?</string>
+    <string name="bookings_history">Bookings History</string>
+    <string name="log_out">Log out</string>
+    <string name="switch_account">Switch Account</string>
+    <string name="thank_you_for_review">Thank you for review</string>
+    <string name="confirm_cancellation_of_booking">Confirm cancellation of booking</string>
+    <string name="are_you_sure_to_cancel_your_booking">Are you sure to cancel your booking?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="reservation_successfully_canceled">Reservation successfully canceled</string>
+    <string name="reservations_cannot_be_canceled">Reservations cannot be canceled</string>
+    <string name="ch_o_m_ng_n_v_i_la_siesta_h_i_an_resort_spa"><![CDATA[Welcome to La Siesta Hội An Resort & Spa]]></string>
+    <string name="m_t_kh_ng_gian_nh_n_m_nh_c_nh_b_n_ph_c">A small space hidden next to the ancient town.</string>
+    <string name="ch_c_ch_trung_t_m_ph_c_h_i_an_10_ph_t_i_b_ho_c_45_ph_t_i_b_ng_xe_t_t_s_n_bay_qu_c_t_n_ng_hi_m_c_n_i_n_o_c_n_gi_c_v_p_t_nhi_n_nh_la_siesta_hoi_an_resort_amp_spa_n_m_nh_trong_khu_v_n_nhi_t_i_ng_p_tr_n_s_c_xanh_b_n_khung_c_nh_n_n_th_c_a_c_nh_ng_hi_n_ho_khu_ngh_d_ng_nh_m_t_n_i_n_n_u_l_t_ng_gi_p_du_kh_ch_r_i_xa_m_i_b_n_b_c_a_cu_c_s_ng_t_m_v_kh_ng_gian_ri_ng_t_tuy_t_i_v_c_m_nh_n_s_b_nh_y_n_l_ng_ng_trong_t_m_h_n"><![CDATA[Just 10 minutes on foot or 45 minutes by car from Da Nang International Airport, few places still preserve the natural beauty like La Siesta Hoi An Resort & Spa. Hidden in a tropical garden full of greenery, next to the peaceful fields, the resort is an ideal retreat for guests to escape the hustle and bustle of life, finding absolute privacy and feeling the tranquility that settles in the soul.]]></string>
+    <string name="s_k_t_h_p_h_i_ho_gi_a_l_i_ki_n_tr_c_hi_n_i_v_v_p_truy_n_th_ng_vi_t_nam_c_ng_n_t_ch_m_ph_bay_b_ng_mang_n_s_tinh_t_trong_t_ng_ng_n_t_thi_t_k_cho_137_c_n_ph_ng_ki_n_tr_c_xanh_k_t_h_p_v_i_n_i_th_t_hi_n_i_b_ng_g_t_ch_s_m_m_u_c_l_m_th_c_ng_s_n_g_nh_b_ng_g_ch_kh_m_hoa_v_n_v_c_c_v_t_li_u_x_y_d_ng_a_ph_ng_mang_n_m_t_tr_i_nghi_m_ngh_d_ng_ng_c_p_gi_a_thi_n_nhi_n">A harmonious combination of modern architecture and traditional Vietnamese beauty, with a whimsical touch that brings sophistication to the design of 137 rooms. The green architecture, combined with modern teak wood interiors, handcrafted, polished wooden floors, mosaic patterned tiles, and local building materials, offers a luxurious experience amidst nature.</string>
+    <string name="h_nh_nh">Images</string>
+    <string name="_132_h_ng_v_ng_ph_ng_c_m_ph_h_i_an_qu_ng_nam_560000">132 Hung Vuong, Cam Pho Ward, Hoi An, Quang Nam 560000</string>
+    <string name="welcome_hotel"><![CDATA[Welcome to La Siesta Hội An Resort & Spa]]></string>
+    <string name="location">Location</string>
+    <string name="logging_in">Logging in...</string>
+    <string name="please_wait_loading">Please wait...</string>
 </resources>

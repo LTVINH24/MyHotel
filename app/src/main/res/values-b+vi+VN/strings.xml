@@ -609,4 +609,26 @@
     <string name="summary_title">Tóm tắt</string>
     <string name="km_form_data_save_error">Lỗi khi lưu dữ liệu biểu mẫu</string>
     <string name="language">Ngôn ngữ</string>
+    <string name="chat_with_us">Trò chuyện với chúng tôi</string>
+    <string name="how_can_we_help_you">Chúng tôi có thể giúp gì cho bạn?</string>
+    <string name="bookings_history">Lịch sử đặt chỗ</string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="switch_account">Chuyển tài khoản</string>
+    <string name="thank_you_for_review">Cảm ơn bạn đã đánh giá</string>
+    <string name="confirm_cancellation_of_booking">Xác nhận hủy đặt chỗ</string>
+    <string name="are_you_sure_to_cancel_your_booking">Bạn có chắc chắn muốn hủy đặt chỗ của mình không?</string>
+    <string name="no">Không</string>
+    <string name="yes">Có</string>
+    <string name="reservation_successfully_canceled">Đặt chỗ đã được hủy thành công</string>
+    <string name="reservations_cannot_be_canceled">Đặt chỗ không thể hủy</string>
+    <string name="ch_o_m_ng_n_v_i_la_siesta_h_i_an_resort_spa"><![CDATA[Chào mừng đến với La Siesta Hội An Resort & Spa]]></string>
+    <string name="m_t_kh_ng_gian_nh_n_m_nh_c_nh_b_n_ph_c">Một không gian nhỏ ẩn mình cạnh bên phố cổ.</string>
+    <string name="ch_c_ch_trung_t_m_ph_c_h_i_an_10_ph_t_i_b_ho_c_45_ph_t_i_b_ng_xe_t_t_s_n_bay_qu_c_t_n_ng_hi_m_c_n_i_n_o_c_n_gi_c_v_p_t_nhi_n_nh_la_siesta_hoi_an_resort_amp_spa_n_m_nh_trong_khu_v_n_nhi_t_i_ng_p_tr_n_s_c_xanh_b_n_khung_c_nh_n_n_th_c_a_c_nh_ng_hi_n_ho_khu_ngh_d_ng_nh_m_t_n_i_n_n_u_l_t_ng_gi_p_du_kh_ch_r_i_xa_m_i_b_n_b_c_a_cu_c_s_ng_t_m_v_kh_ng_gian_ri_ng_t_tuy_t_i_v_c_m_nh_n_s_b_nh_y_n_l_ng_ng_trong_t_m_h_n"><![CDATA[Chỉ cách trung tâm phố cổ Hội An 10 phút đi bộ hoặc 45 phút đi bằng xe ô tô từ Sân Bay Quốc Tế Đà Nẵng, hiếm có nơi nào còn giữ được vẻ đẹp tự nhiên như La Siesta Hoi An Resort & Spa. Ẩn mình trong khu vườn nhiệt đới ngập tràn sắc xanh, bên khung cảnh nên thơ của cánh đồng hiền hoà, khu nghỉ dưỡng như một nơi ẩn náu lý tưởng giúp du khách rời xa mọi bộn bề của cuộc sống, để tìm về không gian riêng tư tuyệt đối và cảm nhận sự bình yên lắng đọng trong tâm hồn.]]></string>
+    <string name="s_k_t_h_p_h_i_ho_gi_a_l_i_ki_n_tr_c_hi_n_i_v_v_p_truy_n_th_ng_vi_t_nam_c_ng_n_t_ch_m_ph_bay_b_ng_mang_n_s_tinh_t_trong_t_ng_ng_n_t_thi_t_k_cho_137_c_n_ph_ng_ki_n_tr_c_xanh_k_t_h_p_v_i_n_i_th_t_hi_n_i_b_ng_g_t_ch_s_m_m_u_c_l_m_th_c_ng_s_n_g_nh_b_ng_g_ch_kh_m_hoa_v_n_v_c_c_v_t_li_u_x_y_d_ng_a_ph_ng_mang_n_m_t_tr_i_nghi_m_ngh_d_ng_ng_c_p_gi_a_thi_n_nhi_n">Sự kết hợp hài hoà giữa lối kiến trúc hiện đại và vẻ đẹp truyền thống Việt Nam, cùng nét chấm phá bay bổng mang đến sự tinh tế trong từng đường nét thiết kế cho 137 căn phòng. Kiến trúc xanh kết hợp với nội thất hiện đại bằng gỗ tếch sẫm màu được làm thủ công, sàn gỗ đánh bóng, gạch khảm hoa văn và các vật liệu xây dựng địa phương mang đến một trải nghiệm nghỉ dưỡng đẳng cấp giữa thiên nhiên.</string>
+    <string name="h_nh_nh">Hình ảnh</string>
+    <string name="_132_h_ng_v_ng_ph_ng_c_m_ph_h_i_an_qu_ng_nam_560000">132 Hùng Vương, Phường Cẩm Phổ, Hội An, Quảng Nam 560000</string>
+    <string name="welcome_hotel"><![CDATA[Chào mừng đến với La Siesta Hội An Resort & Spa]]></string>
+    <string name="location">Vị trí</string>
+    <string name="logging_in">Đang đăng nhập...</string>
+    <string name="please_wait_loading">Vui lòng chờ...</string>
 </resources>
