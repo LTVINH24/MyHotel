@@ -51,16 +51,16 @@
             android:exported="false" />
         <activity
             android:name=".activity.ReviewActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activity.CustomerChatActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activity.BookingActivity"
             android:exported="false" />
         <activity
             android:name=".activity.GoogleMapActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -74,6 +74,7 @@
         <activity
             android:name=".activity.GalleryActivity"
             android:exported="true">
+
         </activity>
         <activity
             android:name=".activity.ManageAccountsActivity"
