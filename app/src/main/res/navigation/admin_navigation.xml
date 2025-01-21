@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/admin_navigation"
+    app:startDestination="@+id/navigation_users">
+
+    <fragment
+        android:id="@+id/navigation_users"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.users.AdminUsersFragment"
+        android:label="Quản lý tài khoản">
+        <action
+            android:id="@+id/action_users_to_detail"
+            app:destination="@id/userDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userDetailFragment"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.users.UserDetailFragment"
+        android:label="Chi tiết người dùng" />
+
+    <fragment
+        android:id="@+id/navigation_rooms"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.rooms.AdminRoomsFragment"
+        android:label="Quản lý phòng" />
+
+    <fragment
+        android:id="@+id/navigation_checkinout"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.checkinout.AdminCheckInOutFragment"
+        android:label="Quản lý Check-in/out" />
+
+    <fragment
+        android:id="@+id/navigation_stats"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.stats.AdminStatsFragment"
+        android:label="Thống kê" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.settings.AdminSettingsFragment"
+        android:label="Cài đặt" />
+    <fragment
+        android:id="@+id/addRoomFragment"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.rooms.AddRoom"
+        android:label="Thêm phòng mới" />
+    <action
+        android:id="@+id/action_adminRoomsFragment_to_addRoomFragment"
+        app:destination="@id/addRoomFragment" />
+
+
+    <action
+        android:id="@+id/action_adminRoomsFragment_to_editRoomFragment"
+        app:destination="@id/editRoomFragment" />
+
+    <fragment
+        android:id="@+id/editRoomFragment"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.rooms.EditRoomFragment"
+        android:label="Chỉnh sửa phòng">
+        <argument
+            android:name="roomId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/AdminCheckInOutDetail"
+        android:name="com.xinchaongaymoi.hotelbookingapp.components.admin.checkinout.AdminCheckInOutDetail"
+        android:label="Chi tiết đặt phòng">
+        <argument
+            android:name="bookingIdDetail"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+    <action
+        android:id="@+id/action_adminCheckInOutFragment_to_adminCheckInOutDetail"
+        app:destination="@id/AdminCheckInOutDetail" />
+</navigation> 

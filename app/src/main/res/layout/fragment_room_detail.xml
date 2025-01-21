@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="90dp"
+        android:clipToPadding="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Thêm vào đầu ConstraintLayout, trước ViewPager2 -->
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/circle_background"
+                android:src="@drawable/ic_back"
+                android:elevation="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="Quay lại" />
+
+            <!-- ViewPager2 for sliding images -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPagerImages"
+                android:layout_width="0dp"
+                android:layout_height="250dp"
+                android:layout_marginTop="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Thêm vào cùng cấp với ViewPager2 -->
+            <ImageButton
+                android:id="@+id/prevButton"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/circle_background"
+                android:src="@drawable/ic_arrow_left"
+                android:alpha="0.85"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:elevation="12dp"
+                android:translationZ="4dp"
+                android:stateListAnimator="@null"
+                app:layout_constraintStart_toStartOf="@id/viewPagerImages"
+                app:layout_constraintTop_toTopOf="@id/viewPagerImages"
+                app:layout_constraintBottom_toBottomOf="@id/viewPagerImages"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <ImageButton
+                android:id="@+id/nextButton"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/circle_background"
+                android:src="@drawable/ic_arrow_right"
+                android:alpha="0.85"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:elevation="12dp"
+                android:translationZ="4dp"
+                android:stateListAnimator="@null"
+                app:layout_constraintEnd_toEndOf="@id/viewPagerImages"
+                app:layout_constraintTop_toTopOf="@id/viewPagerImages"
+                app:layout_constraintBottom_toBottomOf="@id/viewPagerImages"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                android:id="@+id/dotsIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:dotsColor="#80FFFFFF"
+                app:dotsCornerRadius="8dp"
+                app:dotsSize="8dp"
+                app:dotsSpacing="4dp"
+                app:dotsWidthFactor="2.5"
+                app:selectedDotColor="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@id/viewPagerImages"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Room Name -->
+            <TextView
+                android:id="@+id/tvRoomName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="24dp"
+                android:text="Room name"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:textAlignment="textStart"
+                app:layout_constraintTop_toBottomOf="@id/viewPagerImages"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Rating Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewReviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:paddingHorizontal="16dp"
+                android:text="Xem đánh giá"
+                android:textSize="14sp"
+                app:icon="@android:drawable/ic_menu_recent_history"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:layout_constraintTop_toTopOf="@id/tvRoomName"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- CardView for Details -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_marginTop="24dp"
+                android:background="#F5F5F5"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvRoomName">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#F8F9FA"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Individual Room Details -->
+                    <TextView
+                        android:id="@+id/tvRoomDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="16dp"
+                        android:text="Thông tin phòng:"
+                        android:textColor="#1A237E"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="#E0E0E0" />
+
+                    <TextView
+                        android:id="@+id/tvRoomType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_room_type"
+                        android:drawablePadding="12dp"
+                        android:paddingBottom="8dp"
+                        android:text="Loại phòng: N/A"
+                        android:textColor="#37474F"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvArea"
+                        style="@style/RoomDetailTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_area"
+                        android:drawablePadding="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Diện tích: N/A"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvBedType"
+                        style="@style/RoomDetailTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_bed"
+                        android:drawablePadding="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Loại giường: N/A"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvTotalBed"
+                        style="@style/RoomDetailTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_bed_count"
+                        android:drawablePadding="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Số giường: N/A"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvMaxGuests"
+                        style="@style/RoomDetailTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_people"
+                        android:drawablePadding="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Số khách tối đa: N/A"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvPricePerNight"
+                        style="@style/RoomDetailTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_price"
+                        android:drawablePadding="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Giá theo đêm: N/A"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvUtilities"
+                        style="@style/RoomDetailTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_utilities"
+                        android:drawablePadding="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Tiện ích: N/A"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingBottom="12dp">
+
+                        <TextView
+                            android:id="@+id/tvRatingLabel"
+                            style="@style/RoomDetailTextStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_rating"
+                            android:drawablePadding="12dp"
+                            android:paddingBottom="0dp"
+                            android:text="Đánh giá: " />
+
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:stepSize="0.1" />
+
+                        <TextView
+                            android:id="@+id/tvRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="(0.0)"
+                            android:textColor="#37474F"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Book Now Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBookNow"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:text="Đặt phòng ngay"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        app:cornerRadius="12dp"
+        app:elevation="4dp" />
+
+</FrameLayout> 

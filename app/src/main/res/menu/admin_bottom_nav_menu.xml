@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_users"
+        android:icon="@drawable/baseline_people_24"
+        android:title="Tài khoản"/>
+
+    <item
+        android:id="@+id/navigation_rooms"
+        android:icon="@drawable/baseline_hotel_24"
+        android:title="Phòng"/>
+
+    <item
+        android:id="@+id/navigation_checkinout"
+        android:icon="@drawable/baseline_assignment_24"
+        android:title="Check-in/out"/>
+
+    <item
+        android:id="@+id/navigation_stats"
+        android:icon="@drawable/baseline_bar_chart_24"
+        android:title="Thống kê"/>
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="Cài đặt"/>
+</menu> 

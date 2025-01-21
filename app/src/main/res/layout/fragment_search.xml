@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#F5F5F5">
+
+        <!-- Search Filters -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:elevation="4dp">
+
+            <!-- Guest Count -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="#F8F8F8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_person"
+                    app:tint="#6200EE" />
+
+                <TextView
+                    android:layout_width="145dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Guest(s)"
+                    android:textColor="#212121"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:id="@+id/decreaseGuests"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_remove"
+                    android:contentDescription="Remove"
+                    app:tint="#6200EE" />
+
+                <TextView
+                    android:id="@+id/guestCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:text="1"
+                    android:textColor="#212121"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/increaseGuests"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_add"
+                    android:contentDescription="Add"
+                    app:tint="#6200EE" />
+
+            </LinearLayout>
+
+            <!-- Date Range -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <!-- Check-in Date -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="#F8F8F8"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginEnd="4dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_calendar"
+                        android:layout_marginEnd="8dp"
+                        app:tint="#6200EE"/>
+
+                    <EditText
+                        android:id="@+id/checkInDate"
+                        android:layout_width="124dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:hint="Check-in"
+                        android:textColor="#212121"
+                        android:textColorHint="#9E9E9E" />
+                </LinearLayout>
+
+                <!-- Check-out Date -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="#F8F8F8"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginStart="4dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_calendar"
+                        android:layout_marginEnd="8dp"
+                        app:tint="#6200EE"/>
+
+                    <EditText
+                        android:id="@+id/checkOutDate"
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:hint="Check-out"
+                        android:textColor="#212121"
+                        android:textColorHint="#9E9E9E" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Price Range -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp">
+
+
+
+                <TextView
+                    android:id="@+id/priceRangeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0$ - 1000$"
+                    android:textColor="#757575"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="8dp"/>
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/priceSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="1000"
+                android:progressTint="#6200EE"
+                android:thumbTint="#6200EE"
+                android:layout_marginBottom="10dp"/>
+
+
+
+            <!-- Rating Filter -->
+
+            <!-- Search Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tìm kiếm"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#6200EE"
+                app:icon="@drawable/ic_search"
+                app:iconTint="#FFFFFF"
+                app:iconGravity="textStart"/>
+
+        </LinearLayout>
+
+        <!-- Sort Options -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Luxury Rooms Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Luxury Rooms"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:layout_marginBottom="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/luxuryRoomsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:clipToPadding="false" />
+
+        <!-- Royal Rooms Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Royal Rooms"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:layout_marginBottom="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/royalRoomsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:clipToPadding="false"
+             />
+
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:elevation="10dp"
+        android:background="@android:color/transparent"/>
+
+</FrameLayout>
