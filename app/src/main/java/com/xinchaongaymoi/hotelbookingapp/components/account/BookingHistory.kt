@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Firebase
@@ -18,10 +19,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.xinchaongaymoi.hotelbookingapp.R
+import com.xinchaongaymoi.hotelbookingapp.activity.BookingActivity
 import com.xinchaongaymoi.hotelbookingapp.activity.ReviewActivity
 import com.xinchaongaymoi.hotelbookingapp.adapter.BookingHistoryAdapter
 import com.xinchaongaymoi.hotelbookingapp.components.ReviewDialog
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentBookingHistoryBinding
+import com.xinchaongaymoi.hotelbookingapp.model.BookingHistory
 import com.xinchaongaymoi.hotelbookingapp.service.BookingService
 
 
@@ -56,17 +59,30 @@ private lateinit var sharedPreferences: SharedPreferences
     private fun setRecyclerView(){
         var roomId: String? = null
         adapter = BookingHistoryAdapter(
+            bookings = mutableListOf(),
             onCancelClick = { bookingId ->
                 showCancelConfirmDialog(bookingId)
             },
             onReviewClick = { roomId ->
                 val userId = sharedPreferences.getString("id",null)?: return@BookingHistoryAdapter
                 showReviewDialog(roomId,userId)
-            }
+            },
+
+            onDeleteClick = { bookingHistory ->
+                // Xử lý việc xoá booking từ server
+                deleteBookingFromServer(bookingHistory)
+            },
+
+                    onShowDatePicker = {bookingHistory -> showDatePickerFragment(bookingHistory) } // Gọi hàm showDatePickerFragment()
+
         )
         _binding.rvBookingHistory.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@BookingHistory.adapter
+            // Sử dụng ép kiểu an toàn
+            (adapter as? BookingHistoryAdapter)?.let {
+                ItemTouchHelper(it.getItemTouchHelper()).attachToRecyclerView(this)
+            }
         }
     }
     private fun showReviewDialog(roomId: String, userId: String)
@@ -128,6 +144,32 @@ private lateinit var sharedPreferences: SharedPreferences
             else{
                 _binding.tvNoBookings.visibility =View.GONE
                 adapter.updateBookings(bookings)
+            }
+        }
+    }
+
+    private fun showDatePickerFragment(bookingHistory: BookingHistory) {
+        val datePickerFragment = DatePickerFragment().apply {
+            onBookingConfirmed = { checkIn, checkOut ->
+                // Truyền dữ liệu qua Intent đến màn hình BookingActivity
+                val intent = Intent(context, BookingActivity::class.java).apply {
+                    // Thêm các giá trị vào Intent
+                    putExtra("ROOM_ID", bookingHistory.room.id)
+                    putExtra("CHECK_IN", checkIn) // Ngày check-in được chọn
+                    putExtra("CHECK_OUT", checkOut) // Ngày check-out được chọn
+                }
+                // Chuyển sang BookingActivity
+                startActivity(intent)
+            }
+        }
+        datePickerFragment.show(parentFragmentManager, "datePickerFragment")
+    }
+
+    private fun deleteBookingFromServer(bookingHistory: BookingHistory) {
+        // Xử lý việc xoá booking từ server, ví dụ gọi API xoá booking
+        bookingService.deleteBooking(bookingHistory.booking.id) { success ->
+            if (!success) {
+                Toast.makeText(context, "Failed to delete booking", Toast.LENGTH_SHORT).show()
             }
         }
     }

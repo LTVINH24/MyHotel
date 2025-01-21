@@ -224,4 +224,13 @@ class BookingService {
             .setValue(newCheckoutStatus)
             .addOnCompleteListener { task->callback(task.isSuccessful) }
     }
+
+    // Thêm phương thức deleteBooking
+    fun deleteBooking(bookingId: String, callback: (Boolean) -> Unit) {
+        bookingsRef.child(bookingId)
+            .removeValue()  // Xoá booking khỏi Firebase
+            .addOnCompleteListener { task ->
+                callback(task.isSuccessful)
+            }
+    }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.xinchaongaymoi.hotelbookingapp.R
 import com.xinchaongaymoi.hotelbookingapp.activity.GalleryActivity
 import com.xinchaongaymoi.hotelbookingapp.activity.GoogleMapActivity
+import com.xinchaongaymoi.hotelbookingapp.activity.ReservationActivity
 
 import com.xinchaongaymoi.hotelbookingapp.databinding.FragmentHomeBinding
 
@@ -43,6 +45,14 @@ private var _binding: FragmentHomeBinding? = null
             val intent = Intent(requireContext(), GoogleMapActivity::class.java)
             startActivity(intent)
         }
+
+      // Xử lý sự kiện cho nút "Đặt bàn" trong HomeFragment
+      val bookTableButton = root.findViewById<Button>(R.id.book_table_button)
+      bookTableButton.setOnClickListener {
+          // Chuyển sang ReservationActivity
+          val intent = Intent(requireContext(), ReservationActivity::class.java)
+          startActivity(intent)
+      }
     return root
   }
 

@@ -15,4 +15,8 @@
     <color name="status_confirmed">#4CAF50</color>
     <color name="status_cancelled">#F44336</color>
     <color name="status_completed">#2196F3</color>
+
+    <color name="green">#7CFC00</color>
+    <color name="red">#FF0000</color>
+    <color name="silver">#C0C0C0</color>
 </resources>
