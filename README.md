@@ -1,7 +1,3 @@
----
-
-## filename: LICENSE.md
-
 # 📜 **Copyright & License**
 
 ## ©️ **Copyright**
